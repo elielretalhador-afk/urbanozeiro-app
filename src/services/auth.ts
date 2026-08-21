@@ -1,7 +1,10 @@
+import { Capacitor } from '@capacitor/core';
 import { db, auth } from '../lib/firebase';
 import { 
   GoogleAuthProvider, 
-  signInWithPopup, 
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult, 
   signOut, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
@@ -144,33 +147,72 @@ export const AuthService = {
     try { await signOut(auth); } catch(e) {}
   },
 
-  async loginWithGoogle(): Promise<AuthUser> {
+  
+  async loginWithGoogle(): Promise<AuthUser | void> {
     const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    const fbUser = result.user;
     
-    const username = fbUser.displayName || 'GooglePlayer';
-    const email = fbUser.email || '';
+    if (Capacitor.isNativePlatform()) {
+      await signInWithRedirect(auth, provider);
+      return; // Execution stops here as the page will redirect
+    } else {
+      const result = await signInWithPopup(auth, provider);
+      const fbUser = result.user;
+          
+      const username = fbUser.displayName || 'GooglePlayer';
+      const email = fbUser.email || '';
 
-    // Save to Firestore to ensure user exists
-    try {
-      await setDoc(doc(db, 'users', fbUser.uid), {
+      try {
+        await setDoc(doc(db, 'users', fbUser.uid), {
+          uid: fbUser.uid,
+          username: username,
+          email: email
+        }, { merge: true });
+      } catch (e) {}
+
+      const sessionUser: AuthUser = {
         uid: fbUser.uid,
         username: username,
-        email: email
-      }, { merge: true });
-    } catch (e) {}
+        email: email || undefined,
+        accountVerified: true,
+        authProvider: 'google'
+      };
+          
+      localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(sessionUser));
+      return sessionUser;
+    }
+  },
 
-    const sessionUser: AuthUser = {
-      uid: fbUser.uid,
-      username: username,
-      email: email || undefined,
-      accountVerified: true,
-      authProvider: 'google'
-    };
-    
-    localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(sessionUser));
-    return sessionUser;
+  async handleRedirectResult(): Promise<AuthUser | null> {
+    try {
+      const result = await getRedirectResult(auth);
+      if (!result || !result.user) return null;
+      
+      const fbUser = result.user;
+      const username = fbUser.displayName || 'GooglePlayer';
+      const email = fbUser.email || '';
+
+      try {
+        await setDoc(doc(db, 'users', fbUser.uid), {
+          uid: fbUser.uid,
+          username: username,
+          email: email
+        }, { merge: true });
+      } catch (e) {}
+
+      const sessionUser: AuthUser = {
+        uid: fbUser.uid,
+        username: username,
+        email: email || undefined,
+        accountVerified: true,
+        authProvider: 'google'
+      };
+      
+      localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(sessionUser));
+      return sessionUser;
+    } catch (error) {
+      console.error("Erro no getRedirectResult:", error);
+      throw error;
+    }
   },
 
   async requestPasswordReset(email: string): Promise<void> {

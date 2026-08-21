@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthService } from '../services/auth';
 
 interface AuthScreenProps {
@@ -16,6 +16,24 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState('');
 
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const checkRedirect = async () => {
+      try {
+        setIsLoading(true);
+        const user = await AuthService.handleRedirectResult();
+        if (user) {
+          onLoginSuccess();
+        }
+      } catch (err: any) {
+        setError(err.message || 'Falha na autenticação Google.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkRedirect();
+  }, [onLoginSuccess]);
+
   const [successMsg, setSuccessMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -66,8 +84,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLoginSuccess }) => {
     setError('');
     setIsLoading(true);
     try {
-      await AuthService.loginWithGoogle();
-      onLoginSuccess();
+      const user = await AuthService.loginWithGoogle();
+      if (user) {
+        onLoginSuccess();
+      }
     } catch (err: any) {
       setError(err.message || 'Falha na autenticação Google.');
     } finally {
