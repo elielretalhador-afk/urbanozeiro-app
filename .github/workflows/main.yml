@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -30,8 +30,8 @@ jobs:
 
       - name: Sync Capacitor
         run: npx cap sync android
-      
-      - name: Configurar Gradle 8.14.3
+
+      - name: Setup Gradle 8.14.3
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.14.3'
