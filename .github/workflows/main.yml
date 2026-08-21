@@ -30,14 +30,14 @@ jobs:
 
       - name: Sync Capacitor
         run: npx cap sync android
+      
+      - name: Configurar Gradle 8.14.3
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
 
-- name: Configurar Gradle 8.14.3
-  uses: gradle/actions/setup-gradle@v4
-  with:
-    gradle-version: '8.14.3'
-
-- name: Build APK
-  run: cd android && gradle assembleDebug
+      - name: Build APK
+        run: cd android && gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
