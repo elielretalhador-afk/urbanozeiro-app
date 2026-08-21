@@ -102,19 +102,7 @@ export const Header: React.FC<HeaderProps> = ({
         )}
 
         {/* Virtual Currency Pill (Moedas do Jogo) */}
-        {onOpenWallet && (
-          <button
-            type="button"
-            id="btn-open-wallet-header"
-            onClick={onOpenWallet}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-b from-[#1c2419] to-[#0f1712] border border-amber-400/40 hover:border-amber-400 text-amber-300 text-xs font-black font-mono-stat shadow-[0_2px_8px_rgba(0,0,0,0.6)] active:scale-95 transition-all cursor-pointer"
-            title="Carteira de Moedas do Urbanozeiro"
-            aria-label="Abrir Carteira"
-          >
-            <span className="text-sm">🪙</span>
-            <span>{(wallet?.balance ?? user.coins ?? 1250).toLocaleString('pt-BR')}</span>
-          </button>
-        )}
+        
 
         {/* Central de Atividades / Feed Urbano */}
         {onOpenActivityFeed && (

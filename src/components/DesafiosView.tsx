@@ -36,7 +36,7 @@ export const DesafiosView: React.FC<DesafiosViewProps> = ({
   onOpenCreateChallenge,
   onStartLiveChallenge,
   onSelectZoneOnMap,
-  initialTab = 'urbanos',
+  initialTab = 'diretos',
 }) => {
   const [activeMainTab, setActiveMainTab] = useState<'urbanos' | 'diretos' | 'eventos'>(initialTab);
 
@@ -71,31 +71,8 @@ export const DesafiosView: React.FC<DesafiosViewProps> = ({
       </div>
 
       {/* Main Mode Toggle: MISSÕES URBANAS | DESAFIOS X1 | EVENTOS */}
-      <div className="grid grid-cols-3 p-1 bg-[#0c1420] border border-white/10 rounded-2xl mb-4 gap-1">
-        <button
-          id="tab-toggle-desafios-urbanos"
-          type="button"
-          onClick={() => setActiveMainTab('urbanos')}
-          className={`py-2.5 px-2 rounded-xl text-xs font-bold uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 relative cursor-pointer ${
-            activeMainTab === 'urbanos'
-              ? 'bg-emerald-400 text-black font-black shadow-[0_0_15px_rgba(0,255,102,0.4)]'
-              : 'text-slate-400 hover:text-white'
-          }`}
-        >
-          <Target className="w-3.5 h-3.5" />
-          <span className="truncate">MISSÕES</span>
-          {completedMissionsCount > 0 && (
-            <span
-              className={`px-1.5 py-0.2 rounded-full text-[9px] font-black font-mono-stat ${
-                activeMainTab === 'urbanos'
-                  ? 'bg-black text-emerald-400'
-                  : 'bg-emerald-400 text-black animate-pulse'
-              }`}
-            >
-              {completedMissionsCount}
-            </span>
-          )}
-        </button>
+      <div className="grid grid-cols-2 p-1 bg-[#0c1420] border border-white/10 rounded-2xl mb-4 gap-1">
+        
 
         <button
           id="tab-toggle-desafios-diretos"

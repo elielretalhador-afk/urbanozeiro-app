@@ -343,14 +343,14 @@ export const INITIAL_ACTIVITIES: Activity[] = [
 ];
 
 export function filterActivities(
-  activities: Activity[],
+  activities: Activity[] = [],
   filter: ActivityFilterType,
   currentUserId: string,
   friendIds: string[] = ['p_streetfox', 'p_urbanskater'],
   followingIds: string[] = ['p_streetfox', 'p_bladerunner', 'p_shadow'],
   blockedIds: string[] = []
 ): Activity[] {
-  return activities.filter((act) => {
+  return (activities || []).filter((act) => {
     // 1. Bloqueio mútuo: remover se autor está bloqueado
     if (blockedIds.includes(act.playerId)) {
       return false;

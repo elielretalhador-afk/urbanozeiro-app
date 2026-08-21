@@ -1,4 +1,4 @@
-export type TabType = 'mapa' | 'rotas' | 'ranking' | 'desafios' | 'perfil';
+export type TabType = 'mapa' | 'feed' | 'ranking' | 'desafios' | 'perfil';
 
 export type ZoneType = 'street' | 'speed' | 'free_skate' | 'slalom';
 export type ZoneStatus = 'free' | 'controlled' | 'contested';
@@ -162,9 +162,9 @@ export interface UserProfile {
   titlesCount?: number;
   seasonalStats?: PlayerSeasonalStats;
   skateSetup: {
-    model: string;
-    wheels: string;
-    bearings: string;
+    model?: string;
+    wheels?: any;
+    bearings?: any;
   };
 }
 
@@ -780,6 +780,7 @@ export interface AppNotification {
     [key: string]: any;
   };
   metadata?: Record<string, any>;
+  mediaUrl?: string;
 }
 
 // ==========================================
@@ -1863,6 +1864,9 @@ export interface SecurityIntegrityState {
 
 export type ActivityType =
   | 'TEXT_POST'
+  | 'TEXT'
+  | 'IMAGE'
+  | 'VIDEO'
   | 'PHOTO_POST'
   | 'ROUTE_SHARED'
   | 'SESSION_COMPLETED'
@@ -1906,6 +1910,7 @@ export interface Activity {
   title: string;
   description: string;
   metadata?: Record<string, any>;
+  mediaUrl?: string;
   relatedId?: string;
   createdAt: string;
   // Estruturas preparadas para interação futura

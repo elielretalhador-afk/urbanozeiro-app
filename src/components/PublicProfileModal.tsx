@@ -20,10 +20,11 @@ import {
   Share2,
   Lock,
   Radio,
-} from 'lucide-react';
+MessageSquare } from 'lucide-react';
 import { RankPlayer, RankingPeriod, SocialPlayer, UserProfile } from '../types';
 
 interface PublicProfileModalProps {
+  onMessage?: (userId: string) => void;
   player: (RankPlayer | SocialPlayer) | null;
   period?: RankingPeriod;
   currentUser?: UserProfile;
@@ -51,6 +52,7 @@ export const PublicProfileModal: React.FC<PublicProfileModalProps> = ({
   onClose,
   onSendChallenge,
   onToggleFollow,
+  onMessage,
   onSendFriendRequest,
   onAcceptFriendRequest,
   onRemoveFriend,
@@ -434,6 +436,18 @@ export const PublicProfileModal: React.FC<PublicProfileModalProps> = ({
         <div className="p-3 bg-[#080c12] border-t border-white/10 space-y-2">
           {!isOwnProfile && !isBlocked && (
             <div className="grid grid-cols-2 gap-2">
+              {/* Message Button */}
+              {onMessage && (
+                <button
+                  type="button"
+                  id="btn-social-message"
+                  onClick={() => onMessage(player.id || 'usr_unknown')}
+                  className="col-span-2 py-2 px-3 mb-1 rounded-xl font-bold text-xs uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer bg-blue-500/20 border border-blue-400/50 text-blue-300 hover:bg-blue-500/30"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
+                  <span>MENSAGEM</span>
+                </button>
+              )}
               {/* Follow Button */}
               {onToggleFollow && (
                 <button

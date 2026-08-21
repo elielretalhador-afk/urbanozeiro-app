@@ -108,7 +108,7 @@ export const EventsHub: React.FC<EventsHubProps> = ({
   };
 
   // Filter Logic
-  const filteredEvents = events.filter((ev) => {
+  const filteredEvents = (events || []).filter((ev) => {
     // Type Filter
     if (selectedTypeFilter !== 'TODOS' && ev.type !== selectedTypeFilter) {
       return false;
@@ -137,8 +137,8 @@ export const EventsHub: React.FC<EventsHubProps> = ({
     return true;
   });
 
-  const totalActiveCount = events.filter((e) => e.status === 'ACTIVE').length;
-  const totalOpenCount = events.filter((e) => e.status === 'REGISTRATION_OPEN' && e.currentParticipants < e.maxParticipants).length;
+  const totalActiveCount = (events || []).filter((e) => e.status === 'ACTIVE').length;
+  const totalOpenCount = (events || []).filter((e) => e.status === 'REGISTRATION_OPEN' && e.currentParticipants < e.maxParticipants).length;
 
   return (
     <div className="space-y-4">

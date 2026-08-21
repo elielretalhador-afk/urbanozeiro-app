@@ -31,11 +31,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab, on
               key={tab.id}
               id={`nav-tab-${tab.id}`}
               onClick={() => {
-                if (tab.id === 'feed' && onOpenFeed) {
-                  onOpenFeed();
-                } else {
-                  onChangeTab(tab.id as TabType);
-                }
+                onChangeTab(tab.id as TabType);
               }}
               className={`relative flex flex-col items-center justify-center py-1 px-2.5 min-w-[58px] transition-all duration-150 active:scale-95 cursor-pointer ${
                 isActive ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-200'

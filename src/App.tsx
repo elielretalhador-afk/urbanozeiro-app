@@ -1,5 +1,10 @@
+import { auth } from './lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { fetchFeed } from './lib/feedService';
 import React, { useState, useEffect, useRef } from 'react';
 import { Geolocation } from '@capacitor/geolocation';
+import { Capacitor } from '@capacitor/core';
+import { ForegroundService } from '@capawesome-team/capacitor-android-foreground-service';
 import {
   CURRENT_USER,
   INITIAL_ZONES,
@@ -49,6 +54,7 @@ import { JoinClanModal } from './components/JoinClanModal';
 import { PublicProfileModal } from './components/PublicProfileModal';
 import { FollowListModal } from './components/FollowListModal';
 import { SocialHubModal, SocialTabType } from './components/SocialHubModal';
+import { ChatModal } from './components/ChatModal';
 import { ReportPlayerModal } from './components/ReportPlayerModal';
 import { CreateDirectChallengeModal } from './components/CreateDirectChallengeModal';
 import { DirectChallengeDetailsModal } from './components/DirectChallengeDetailsModal';
@@ -64,7 +70,8 @@ import { LevelUpModal } from './components/LevelUpModal';
 import { SeasonHubModal } from './components/SeasonHubModal';
 import { VirtualWalletModal } from './components/VirtualWalletModal';
 import { SecurityIntegrityModal } from './components/SecurityIntegrityModal';
-import { ActivityFeedModal } from './components/ActivityFeedModal';
+import { FeedView } from './components/FeedView';
+import { EquipmentSetupModal } from './components/EquipmentSetupModal';
 import { SearchDiscoveryModal } from './components/SearchDiscoveryModal';
 import { SettingsModal } from './components/SettingsModal';
 import { OnboardingModal } from './components/OnboardingModal';
@@ -199,9 +206,36 @@ export default function App() {
     return CURRENT_USER;
   });
   const userRef = useRef(user);
+
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(prev => {
+          if (prev.authId === firebaseUser.uid) return prev;
+          const updated = { ...prev, authId: firebaseUser.uid };
+          localStorage.setItem('urbanozeiro_user', JSON.stringify(updated));
+          return updated;
+        });
+      } else {
+        // If they are not in firebase but have a local token, clear it to force re-login
+        if (localStorage.getItem('urbanozeiro_auth_token')) {
+            localStorage.removeItem('urbanozeiro_auth_token');
+            setAuthState('UNAUTHENTICATED');
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+    useEffect(() => {
+    const handleOpenEq = () => setIsEquipmentModalOpen(true);
+    window.addEventListener('open-equipment-modal', handleOpenEq);
+    return () => window.removeEventListener('open-equipment-modal', handleOpenEq);
+  }, []);
   useEffect(() => {
     if (user && user.id) {
-      SocialService.getAllPlayers(user.id).then(players => setSocialPlayers(players));
+      loadSocialData();
       FeedService.seedMockActivitiesIfEmpty(user);
       // setActivities(FeedService.getActivitiesDB()); // Removido para evitar carga total
       loadInitialFeed(user.id);
@@ -372,11 +406,25 @@ export default function App() {
   const handleGainXP = (xp: number, reason: string, a?: any, b?: any) => { showToast('+' + xp + ' XP: ' + reason); };
   const syncConquestProgresses = (a?: any) => {};
 
-  const loadInitialFeed = async (userId: string) => {};
+
+  const loadInitialFeed = async (userId: string) => {
+    try {
+      setIsLoadingFeed(true);
+      const posts = await fetchFeed();
+      
+      // Combine with local activities if any (or just use posts)
+      // For now, let's just prepend posts to initial activities
+      setActivities(posts);
+      setFeedHasMore(false);
+    } catch (e) {
+      console.error('Error loading feed', e);
+    } finally {
+      setIsLoadingFeed(false);
+    }
+  };
 
 
-  const [isActivityFeedOpen, setIsActivityFeedOpen] = useState(false);
-  const [activities, setActivities] = useState<any[]>(INITIAL_ACTIVITIES || []);
+    const [activities, setActivities] = useState<any[]>(INITIAL_ACTIVITIES || []);
   const [feedHasMore, setFeedHasMore] = useState(true);
   const [isLoadingFeed, setIsLoadingFeed] = useState(false);
   const [activityFeedInitialFilter, setActivityFeedInitialFilter] = useState<any>('TODAS');
@@ -501,6 +549,16 @@ export default function App() {
   const [levelUpModalData, setLevelUpModalData] = useState<any>(null);
 
   const [isSocialHubOpen, setIsSocialHubOpen] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const [chatTargetUser, setChatTargetUser] = useState<any>(null);
+
+  const loadSocialData = async () => {
+    if (user && user.id) {
+      const players = await SocialService.getAllPlayers(user.id);
+      setSocialPlayers(players);
+    }
+  };
+
   const [socialPlayers, setSocialPlayers] = useState<any[]>([]);
   const [socialRelationships, setSocialRelationships] = useState<any[]>([]);
   const [socialActivities, setSocialActivities] = useState<any[]>([]);
@@ -511,8 +569,7 @@ export default function App() {
   const [isReportPlayerOpen, setIsReportPlayerOpen] = useState(false);
   const [playerToReport, setPlayerToReport] = useState<any>(null);
 
-  const [isSeasonHubOpen, setIsSeasonHubOpen] = useState(false);
-  const [activeSeasonTab, setActiveSeasonTab] = useState<any>('temporada');
+    const [activeSeasonTab, setActiveSeasonTab] = useState<any>('temporada');
 
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [wallet, setWallet] = useState<any>({ coins: 0, history: [] });
@@ -524,6 +581,7 @@ export default function App() {
   const [playerReports, setPlayerReports] = useState<any[]>([]);
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isEquipmentModalOpen, setIsEquipmentModalOpen] = useState(false);
   const [playerSettings, setPlayerSettings] = useState<any>(DEFAULT_PLAYER_SETTINGS);
 
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
@@ -539,11 +597,50 @@ export default function App() {
   const handleOpenProgressionHub = (tab: any) => { setActiveHonorsTab(tab); setIsAchievementsModalOpen(true); };
   const handleOpenCreateDirectChallenge = (player: any) => { showToast('Criar desafio com ' + player.nickname); };
   
-  const handleSendFriendRequest = (id: string) => { showToast('Solicitação de amizade enviada!'); };
-  const handleAcceptFriendRequest = (id: string) => { showToast('Solicitação aceita!'); };
-  const handleDeclineFriendRequest = (id: string) => { showToast('Solicitação recusada!'); };
-  const handleCancelFriendRequest = (id: string) => { showToast('Solicitação cancelada.'); };
-  const handleRemoveFriend = (id: string) => { showToast('Amigo removido.'); };
+  const handleSendFriendRequest = async (id: string) => {
+    try {
+      if (user) {
+        await SocialService.sendFriendRequest(user.id, id);
+        showToast('Pedido de amizade enviado com sucesso.');
+        loadSocialData(); // Refresh UI
+      }
+    } catch (e: any) {
+      showToast(e.message || 'Erro ao enviar pedido.');
+    }
+  };
+  const handleAcceptFriendRequest = async (id: string) => {
+    try {
+      if (user) {
+        await SocialService.acceptFriendRequest(id, user.id);
+        showToast('Solicitação aceita!');
+        loadSocialData();
+      }
+    } catch (e: any) {
+      showToast(e.message || 'Erro ao aceitar solicitação.');
+    }
+  };
+  const handleDeclineFriendRequest = async (id: string) => { 
+    try {
+      if (user) {
+        await SocialService.rejectFriendRequest(id, user.id);
+        showToast('Solicitação recusada!');
+        loadSocialData();
+      }
+    } catch (e: any) {}
+  };
+  const handleCancelFriendRequest = async (id: string) => { 
+    try {
+      if (user) {
+        await SocialService.rejectFriendRequest(user.id, id);
+        showToast('Solicitação cancelada.');
+        loadSocialData();
+      }
+    } catch (e: any) {}
+  };
+  const handleRemoveFriend = async (id: string) => { 
+    // Out of scope for this MVP but good to have
+    showToast('Amigo removido.'); 
+  };
   const handleToggleFollow = async (id: string) => { 
     try {
       if (user) {
@@ -638,7 +735,26 @@ export default function App() {
     let timerInterval: any = null;
     if (sessionStatus === 'ACTIVE') {
       timerInterval = setInterval(() => {
-        setSessionDuration((prev) => prev + 1);
+        setSessionDuration((prev) => {
+          const newDur = prev + 1;
+          // Atualiza notificação persistente a cada 5 segundos
+          if (newDur % 5 === 0) {
+             const m = Math.floor(newDur / 60);
+             const s = newDur % 60;
+             const ds = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+             if (Capacitor.isNativePlatform()) ForegroundService.updateForegroundService({
+                id: 111,
+                title: 'Urbanozeiro',
+                body: `Atividade ativa: ${ds} - ${sessionDistanceRef.current.toFixed(1)} km`,
+                smallIcon: 'ic_stat_name',
+                buttons: [
+                  { id: 1, title: 'PAUSAR' },
+                  { id: 2, title: 'ENCERRAR' }
+                ]
+             }).catch(()=>{});
+          }
+          return newDur;
+        });
       }, 1000);
     }
     return () => {
@@ -741,8 +857,31 @@ export default function App() {
               currentSpeed = 0;
             }
 
-            // Only append point if it's the first point OR moved at least 2 meters and less than 500m (skip teleport jumps)
-            if (!lastPt || (deltaKm >= 0.002 && deltaKm < 0.5)) {
+            // GPS VALIDATION LOGIC
+            let isValid = false;
+            
+            if (accuracy && accuracy > 100) {
+              // Ignore points with very poor accuracy (> 100m)
+              isValid = false;
+            } else if (!lastPt) {
+              isValid = true; // First point is always accepted if accuracy is fine
+            } else {
+              const timeDeltaHours = (now - lastPt.timestamp) / 3600000;
+              const calculatedSpeedKmH = timeDeltaHours > 0 ? deltaKm / timeDeltaHours : 0;
+              
+              // Skip if moved less than 2 meters (noise)
+              if (deltaKm < 0.002) {
+                isValid = false; 
+              } 
+              // Skip if the calculated speed is physically impossible for a skater (e.g. > 120 km/h)
+              else if (calculatedSpeedKmH > 120) {
+                isValid = false;
+              } else {
+                isValid = true;
+              }
+            }
+
+            if (isValid) {
               const newPoint: ActivityTrackPoint = {
                 latitude,
                 longitude,
@@ -1015,6 +1154,21 @@ export default function App() {
     setSessionDistanceKm(0.0);
     sessionDistanceRef.current = 0.0;
     setSessionCurrentSpeedKmH(user.currentSpeedKmH || 0);
+    
+    // Inicia notificação persistente e serviço em segundo plano
+    try {
+      if (Capacitor.isNativePlatform()) ForegroundService.startForegroundService({
+        id: 111,
+        title: 'Urbanozeiro',
+        body: 'Iniciando atividade...',
+        smallIcon: 'ic_stat_name',
+        serviceType: 8, // Location
+        buttons: [
+          { id: 1, title: 'PAUSAR' },
+          { id: 2, title: 'ENCERRAR' }
+        ]
+      }).catch(()=>{});
+    } catch(e) {}
     setSessionMaxSpeedKmH(user.currentSpeedKmH || 0);
     sessionMaxSpeedRef.current = user.currentSpeedKmH || 0;
 
@@ -1095,6 +1249,19 @@ export default function App() {
     setSessionStatus('PAUSED');
     isSessionPausedRef.current = true;
     showToast('⏸️ Sessão de patinação PAUSADA. Cronômetro e rastro suspensos.');
+    
+    try {
+      if (Capacitor.isNativePlatform()) ForegroundService.updateForegroundService({
+         id: 111,
+         title: 'Urbanozeiro',
+         body: `Atividade pausada - ${sessionDistanceRef.current.toFixed(1)} km`,
+         smallIcon: 'ic_stat_name',
+         buttons: [
+           { id: 3, title: 'RETOMAR' },
+           { id: 2, title: 'ENCERRAR' }
+         ]
+      }).catch(()=>{});
+    } catch(e) {}
   };
 
   // Resume Skating Activity Session
@@ -1103,6 +1270,19 @@ export default function App() {
     setSessionStatus('ACTIVE');
     isSessionPausedRef.current = false;
     showToast('▶️ Sessão de patinação RETOMADA!');
+    
+    try {
+      if (Capacitor.isNativePlatform()) ForegroundService.updateForegroundService({
+         id: 111,
+         title: 'Urbanozeiro',
+         body: `Atividade retomada`,
+         smallIcon: 'ic_stat_name',
+         buttons: [
+           { id: 1, title: 'PAUSAR' },
+           { id: 2, title: 'ENCERRAR' }
+         ]
+      }).catch(()=>{});
+    } catch(e) {}
   };
 
   // End Skating Activity Session
@@ -1113,6 +1293,10 @@ export default function App() {
     isSessionActiveRef.current = false;
     isSessionPausedRef.current = false;
     setPendingZonePrompt(null);
+    
+    try {
+      if (Capacitor.isNativePlatform()) ForegroundService.stopForegroundService().catch(()=>{});
+    } catch(e) {}
     promptedZonesRef.current.clear();
 
     // Finalize all active zone presences with exitedAt
@@ -1189,6 +1373,9 @@ export default function App() {
 
     const newActivity = FeedService.createSkateSessionActivity(finishedSession, user);
     setActivities(prev => [newActivity, ...prev]);
+    
+    // Save locally and queue for sync to avoid losing activities offline
+    DatabaseService.queueSessionForSync(finishedSession, newActivity as any).catch(e => console.warn('Sync queue error', e));
     setIsSummaryModalOpen(true);
     setSessionCurrentSpeedKmH(0);
 
@@ -1275,6 +1462,21 @@ export default function App() {
     setSessionDistanceKm(0.0);
     sessionDistanceRef.current = 0.0;
     setSessionCurrentSpeedKmH(user.currentSpeedKmH || 0);
+    
+    // Inicia notificação persistente e serviço em segundo plano
+    try {
+      if (Capacitor.isNativePlatform()) ForegroundService.startForegroundService({
+        id: 111,
+        title: 'Urbanozeiro',
+        body: 'Iniciando atividade...',
+        smallIcon: 'ic_stat_name',
+        serviceType: 8, // Location
+        buttons: [
+          { id: 1, title: 'PAUSAR' },
+          { id: 2, title: 'ENCERRAR' }
+        ]
+      }).catch(()=>{});
+    } catch(e) {}
     setSessionMaxSpeedKmH(user.currentSpeedKmH || 0);
     sessionMaxSpeedRef.current = user.currentSpeedKmH || 0;
 
@@ -1761,7 +1963,7 @@ export default function App() {
   };
 
   // Filtered zones based on category chips and exploration filters
-  const filteredZones = zones.filter((zone) => {
+  const filteredZones = (zones || []).filter((zone) => {
     if (activeFilter === 'Todas') return true;
     const filterLower = activeFilter.toLowerCase();
     const zoneTypeLower = (zone.type || '').toLowerCase();
@@ -1807,7 +2009,7 @@ export default function App() {
     );
   });
 
-  const userControlledZones = zones.filter(
+  const userControlledZones = (zones || []).filter(
     (z) =>
       (z.status !== 'free' &&
         z.controller &&
@@ -1816,9 +2018,10 @@ export default function App() {
   );
 
   // Central de Notificações Handlers
-  const unreadNotificationsCount = notifications.filter((n) => !n.isRead).length;
+  const unreadNotificationsCount = (notifications || []).filter((n) => !n.isRead).length;
 
   const handleMarkNotificationAsRead = (id: string) => {
+    SocialService.markNotificationAsRead(id).catch(console.error);
     setNotifications((prev) =>
       prev.map((notif) => (notif.id === id ? { ...notif, isRead: true } : notif))
     );
@@ -1874,7 +2077,7 @@ export default function App() {
     } else if (notification.actionType === 'open_profile') {
       setActiveTab('perfil');
     } else if (notification.actionType === 'open_routes') {
-      setActiveTab('rotas');
+      setActiveTab('feed');
     } else if (notification.actionType === 'open_direct_challenge') {
       const targetChallengeId = notification.actionPayload?.directChallengeId;
       const foundChallenge = directChallenges.find((c) => c.id === targetChallengeId);
@@ -1896,6 +2099,24 @@ export default function App() {
       setIsProgressionHubModalOpen(true);
     }
   };
+
+  // Handle Foreground Service Buttons
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    const buttonListener = ForegroundService.addListener('buttonClicked', (event) => {
+       if (event.buttonId === 1) {
+         handlePauseSession();
+       } else if (event.buttonId === 2) {
+         handleEndSession();
+       } else if (event.buttonId === 3) {
+         handleResumeSession();
+       }
+    });
+    
+    return () => {
+      buttonListener.then(l => l.remove()).catch(()=>{});
+    };
+  }, [sessionStatus, sessionDistanceKm, sessionDuration]); // Dependencies ensure the latest handle functions are used
 
   // ==========================================
   // RENDERIZAÇÃO CONDICIONAL DA ARQUITETURA
@@ -1984,7 +2205,7 @@ export default function App() {
           onOpenNotifications={() => setIsNotificationsModalOpen(true)}
           onOpenSocial={() => handleOpenSocialHub('amigos')}
           onOpenWallet={() => setIsWalletModalOpen(true)}
-          onOpenActivityFeed={() => setIsActivityFeedOpen(true)}
+          
           onOpenProfile={() => setActiveTab('perfil')}
           onOpenSearch={() => setIsSearchModalOpen(true)}
           onOpenSettings={() => setIsSettingsModalOpen(true)}
@@ -2096,7 +2317,7 @@ export default function App() {
               onStartRedoRoute={handleStartRedoRoute}
               onExitRedoMode={handleCloseViewedTrack}
               onOpenNearbyZones={() => setIsNearbyZonesDrawerOpen(true)}
-              onOpenRotas={() => setActiveTab('rotas')}
+              onOpenRotas={() => setActiveTab('feed')}
               onOpenDesafios={() => setActiveTab('desafios')}
             />
 
@@ -2132,7 +2353,7 @@ export default function App() {
           </div>
 
           {/* Tab 2: ROTAS */}
-          {activeTab === 'rotas' && (
+          {activeTab === 'feed' && (
             <RotasView
               routes={routes}
               onSelectRouteOnMap={handleSelectRouteOnMap}
@@ -2191,8 +2412,8 @@ export default function App() {
               onOpenSessionHistory={handleOpenSessionHistory}
               onOpenStatistics={() => setIsStatisticsModalOpen(true)}
               achievements={achievements}
-              medalsCount={medals.filter((m) => m.unlocked).length}
-              titlesCount={titles.filter((t) => t.unlocked).length}
+              medalsCount={(medals || []).filter((m) => m.unlocked).length}
+              titlesCount={(titles || []).filter((t) => t.unlocked).length}
               progression={progression}
               onOpenProgressionHub={handleOpenProgressionHub}
               onOpenSeasonHub={handleOpenSeasonHub}
@@ -2201,11 +2422,6 @@ export default function App() {
               onOpenSecurity={() => setIsSecurityModalOpen(true)}
               onOpenSettings={() => setIsSettingsModalOpen(true)}
               recentActivities={activities}
-              onOpenActivityFeed={() => setIsActivityFeedOpen(true)}
-              onOpenAchievements={() => {
-                setActiveHonorsTab('conquistas');
-                setIsAchievementsModalOpen(true);
-              }}
               onOpenAchievementsWithTab={(tab) => {
                 setActiveHonorsTab(tab);
                 setIsAchievementsModalOpen(true);
@@ -2215,10 +2431,10 @@ export default function App() {
               onOpenCreateClan={() => setIsCreateClanModalOpen(true)}
               onOpenJoinClan={() => setIsJoinClanModalOpen(true)}
               onOpenClanLeaderboard={() => setIsClanLeaderboardModalOpen(true)}
-              friendsCount={socialPlayers.filter((p) => p.isFriend).length}
+              friendsCount={(socialPlayers || []).filter((p) => p.isFriend).length}
               followersCount={128}
-              followingCount={socialPlayers.filter((p) => p.isFollowing).length}
-              nearbyPlayersCount={socialPlayers.filter((p) => p.isNearby).length}
+              followingCount={(socialPlayers || []).filter((p) => p.isFollowing).length}
+              nearbyPlayersCount={(socialPlayers || []).filter((p) => p.isNearby).length}
               onOpenSocialHub={handleOpenSocialHub}
               onSelectZoneOnMap={(zone) => {
                 setSelectedZone(zone);
@@ -2331,7 +2547,19 @@ export default function App() {
             setSelectedRoute(route);
             setSelectedZone(null);
             setSelectedChallenge(null);
-            setActiveTab('rotas');
+            setActiveTab('feed');
+          }}
+        />
+
+                {/* Modal: Equipment Setup */}
+        <EquipmentSetupModal
+          isOpen={isEquipmentModalOpen}
+          onClose={() => setIsEquipmentModalOpen(false)}
+          currentUser={user}
+          onSave={(setup) => {
+             const newUser = { ...user, skateSetup: setup };
+             setUser(newUser);
+             showToast('Equipamento atualizado com sucesso!');
           }}
         />
 
@@ -2345,29 +2573,9 @@ export default function App() {
           onSelectNotificationAction={handleNotificationAction}
         />
 
-        {/* Modal: Central de Conquistas, Medalhas & Títulos (Estrutura de Honra) */}
-        <AchievementsModal
-          isOpen={isAchievementsModalOpen}
-          onClose={() => setIsAchievementsModalOpen(false)}
-          achievements={achievements}
-          medals={medals}
-          titles={titles}
-          activeTitleId={user.activeTitleId}
-          initialTab={activeHonorsTab}
-          onEquipTitle={(t) => handleEquipTitle(t.id)}
-          onTriggerAchievementUnlock={handleTriggerAchievementUnlock}
-        />
+        
 
-        {/* Modal: Celebração de Conquista Desbloqueada */}
-        <AchievementUnlockedModal
-          achievement={celebrationAchievement}
-          onClose={() => setCelebrationAchievement(null)}
-          onEquipTitle={(t) => handleEquipTitle(t.id)}
-          onViewAllAchievements={() => {
-            setCelebrationAchievement(null);
-            setIsAchievementsModalOpen(true);
-          }}
-        />
+        
 
         {/* Modal: Perfil Coletivo do Clã */}
         <ClanProfileModal
@@ -2439,6 +2647,13 @@ export default function App() {
           onBlockPlayer={handleBlockPlayer}
           onUnblockPlayer={handleUnblockPlayer}
           onOpenReportModal={handleOpenReportModal}
+          onMessage={(id: string) => {
+            const target = socialPlayers.find(p => p.id === id);
+            if (target) {
+              setChatTargetUser(target);
+              setIsChatModalOpen(true);
+            }
+          }}
           isFriend={selectedPublicPlayer?.id ? socialPlayers.find((p) => p.id === selectedPublicPlayer.id)?.isFriend : false}
           friendRequestStatus={selectedPublicPlayer?.id ? (socialPlayers.find((p) => p.id === selectedPublicPlayer.id)?.friendRequestStatus || 'NONE') : 'NONE'}
           isBlocked={selectedPublicPlayer?.id ? blockedPlayerIds.includes(selectedPublicPlayer.id) : false}
@@ -2551,28 +2766,9 @@ export default function App() {
           }}
         />
 
-        {/* Modal: Central de Progressão e Inventário */}
-        <ProgressionHubModal
-          isOpen={isProgressionHubModalOpen}
-          onClose={() => setIsProgressionHubModalOpen(false)}
-          user={user}
-          progression={progression}
-          initialTab={activeProgressionTab}
-          onEquipItem={handleEquipInventoryItemProp}
-          onTriggerLevelUpDemo={handleTriggerLevelUpDemo}
-        />
+        
 
-        {/* Modal: Celebração de Level Up */}
-        <LevelUpModal
-          isOpen={isLevelUpModalOpen}
-          onClose={() => setIsLevelUpModalOpen(false)}
-          newLevel={levelUpModalData?.newLevel || user.level}
-          levelDefinition={levelUpModalData?.definition}
-          onOpenInventory={() => {
-            setIsLevelUpModalOpen(false);
-            handleOpenProgressionHub('inventario');
-          }}
-        />
+        
 
         {/* Modal: Central Social de Jogadores (Urbanozeiro Social Hub) */}
         <SocialHubModal
@@ -2597,15 +2793,15 @@ export default function App() {
           onToggleFollow={handleToggleFollow}
           onOpenActivityFeed={() => {
             setIsSocialHubOpen(false);
-            setIsActivityFeedOpen(true);
+            
           }}
           initialTab={activeSocialTab}
         />
 
         {/* Modal: Central de Atividades & Feed Urbanozeiro */}
-        <ActivityFeedModal
-          isOpen={isActivityFeedOpen}
-          onClose={() => setIsActivityFeedOpen(false)}
+        {activeTab === 'feed' && (
+        <FeedView
+          onClose={() => setActiveTab('mapa')}
           currentUser={user}
           activities={activities}
           hasMore={feedHasMore}
@@ -2615,7 +2811,7 @@ export default function App() {
              if (metadata?.trackPreview && metadata.trackPreview.length > 0) {
                 // Future: Prepare a route from trackPreview and start
                 showToast("Rota carregada no mapa para iniciar futura sessão.");
-                setIsActivityFeedOpen(false);
+                
                 // Simulation of finding the session to redo
                 const refSession = sessionHistory.find(s => s.id === metadata.relatedId || s.id === activityId);
                 if (refSession) {
@@ -2625,8 +2821,8 @@ export default function App() {
                 }
              }
           }}
-          friendIds={socialPlayers.filter((p) => p.isFriend).map((p) => p.id)}
-          followingIds={socialPlayers.filter((p) => p.isFollowing).map((p) => p.id)}
+          friendIds={(socialPlayers || []).filter((p) => p.isFriend).map((p) => p.id)}
+          followingIds={(socialPlayers || []).filter((p) => p.isFollowing).map((p) => p.id)}
           blockedIds={socialRelationships
             .filter((r) => r.type === 'BLOCK' && r.fromPlayerId === user.id)
             .map((r) => r.toPlayerId)}
@@ -2644,7 +2840,7 @@ export default function App() {
               setSelectedZone(foundZone);
               setSelectedRoute(null);
               setSelectedChallenge(null);
-              setIsActivityFeedOpen(false);
+              
               setActiveTab('mapa');
               showToast(`📍 Zona focada no mapa: ${foundZone.name}`);
             }
@@ -2656,7 +2852,7 @@ export default function App() {
               setSelectedChallenge(foundChallenge);
               setSelectedRoute(null);
               setSelectedZone(null);
-              setIsActivityFeedOpen(false);
+              
               setActiveTab('mapa');
               showToast(`⚔️ Desafio selecionado: ${foundChallenge.title}`);
             }
@@ -2666,15 +2862,22 @@ export default function App() {
             const foundEvent = events.find((e) => e.id === eventId);
             if (foundEvent) {
               setSelectedEvent(foundEvent);
-              setIsActivityFeedOpen(false);
+              
             }
           }}
           onOpenAchievements={() => {
             setActiveHonorsTab('conquistas');
             setIsAchievementsModalOpen(true);
           }}
+
+          onNewPost={(newPost) => {
+             setActivities(prev => [newPost, ...prev]);
+             showToast("Publicação realizada com sucesso!");
+          }}
           initialFilter={activityFeedInitialFilter}
+
         />
+        )}
 
         {/* Modal: Denunciar Jogador (Moderação e Segurança) */}
         <ReportPlayerModal
@@ -2687,49 +2890,9 @@ export default function App() {
           onSubmitReport={handleSubmitPlayerReport}
         />
 
-        {/* Modal: Central de Temporadas (Temporada Ativa, Ranking, Prêmios & Histórico) */}
-        <SeasonHubModal
-          isOpen={isSeasonHubOpen}
-          onClose={() => setIsSeasonHubOpen(false)}
-          currentUser={user}
-          initialTab={activeSeasonTab}
-          onOpenEvents={() => {
-            setIsSeasonHubOpen(false);
-            setActiveTab('desafios');
-          }}
-          onOpenMissions={() => {
-            setIsSeasonHubOpen(false);
-            setActiveTab('desafios');
-          }}
-          onOpenProgressionHub={(tab) => {
-            setIsSeasonHubOpen(false);
-            handleOpenProgressionHub(tab);
-          }}
-          onSelectPlayer={(player) => {
-            setSelectedPublicPlayer(player);
-          }}
-        />
+        
 
-        {/* Modal: Carteira Virtual & Economia Interna (Moedas do Urbanozeiro) */}
-        <VirtualWalletModal
-          isOpen={isWalletModalOpen}
-          onClose={() => setIsWalletModalOpen(false)}
-          wallet={wallet}
-          onEarnCoins={(amount: number, source: CurrencySource, desc: string, relatedId?: string) => {
-            handleEarnCoins(amount, source, desc, relatedId);
-            showToast(`🪙 +${amount} moedas creditadas!`);
-          }}
-          onSpendCoins={(amount: number, source: CurrencySource, desc: string, relatedId?: string) => {
-            const success = handleSpendCoins(amount, source, desc, relatedId);
-            if (success) {
-              showToast(`🛍️ Compra realizada! -${amount} moedas.`);
-            } else {
-              showToast('❌ Saldo insuficiente!');
-            }
-            return success;
-          }}
-          onSimulateAdReward={handleSimulateAdReward}
-        />
+        
 
         {/* Modal: Central de Segurança, Moderação e Integridade (Fair Play) */}
         <SecurityIntegrityModal
@@ -2751,7 +2914,7 @@ export default function App() {
           user={user}
           settings={playerSettings}
           onUpdateSettings={handleUpdatePlayerSettings}
-          blockedPlayersCount={socialRelationships.filter((r) => r.type === 'BLOCK' && r.fromPlayerId === user.id).length}
+          blockedPlayersCount={(socialRelationships || []).filter((r) => r.type === 'BLOCK' && r.fromPlayerId === user.id).length}
           onOpenReportModal={() => {
             setIsSettingsModalOpen(false);
             setIsReportPlayerOpen(true);
@@ -2781,9 +2944,20 @@ export default function App() {
           }}
         />
 
+        {/* Modal: Chat */}
+        {chatTargetUser && (
+          <ChatModal
+            isOpen={isChatModalOpen}
+            onClose={() => {
+              setIsChatModalOpen(false);
+              setChatTargetUser(null);
+            }}
+            currentUser={user}
+            targetUser={chatTargetUser}
+          />
+        )}
         {/* Bottom Fixed Navigation Bar */}
-        <BottomNav activeTab={activeTab} onChangeTab={setActiveTab} onOpenFeed={() => setIsActivityFeedOpen(true)} />
-
+        <BottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
       </main>
     </div>
   );

@@ -190,484 +190,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
         </div>
       </div>
 
-      {/* Discreet Seasonal Banner */}
-      {onOpenSeasonHub && (
-        <div
-          id="perfil-season-banner"
-          onClick={() => onOpenSeasonHub('visao_geral')}
-          className="mt-3 p-3 rounded-2xl bg-gradient-to-r from-[#121c27] via-[#0e1722] to-[#121c27] border border-amber-400/40 hover:border-amber-400 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] group shadow-md"
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-400 border border-amber-400/40 flex items-center justify-center text-sm shrink-0">
-              🏆
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[9px] font-black uppercase font-mono-stat text-amber-400">
-                  TEMPORADA 1
-                </span>
-                <span className="px-1.5 py-0.2 rounded text-[8px] font-black uppercase font-mono-stat bg-emerald-400/20 text-emerald-300 border border-emerald-400/30">
-                  ATIVA
-                </span>
-              </div>
-              <p className="text-xs font-bold text-white truncate">
-                Primeiro Rolê • <span className="text-amber-400 font-mono-stat font-black">#12 (4.250 pts)</span>
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 text-[10px] font-black text-amber-400 uppercase font-mono-stat shrink-0 pl-2 group-hover:translate-x-0.5 transition-transform">
-            <span>DETALHES</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </div>
-        </div>
-      )}
-
-      {/* Discreet Virtual Wallet Banner */}
-      {onOpenWallet && (
-        <div
-          id="perfil-wallet-banner"
-          onClick={onOpenWallet}
-          className="mt-2.5 p-3 rounded-2xl bg-gradient-to-r from-[#17160e] via-[#10141c] to-[#17160e] border border-amber-400/40 hover:border-amber-400 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] group shadow-md"
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-400 border border-amber-400/40 flex items-center justify-center text-sm shrink-0">
-              🪙
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[9px] font-black uppercase font-mono-stat text-amber-400">
-                  CARTEIRA VIRTUAL
-                </span>
-                <span className="px-1.5 py-0.2 rounded text-[8px] font-black uppercase font-mono-stat bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                  INTERNA
-                </span>
-              </div>
-              <p className="text-xs font-bold text-white truncate">
-                Saldo: <span className="text-amber-400 font-mono-stat font-black">{(wallet?.balance ?? user.coins ?? 1250).toLocaleString('pt-BR')} moedas</span>
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 text-[10px] font-black text-amber-400 uppercase font-mono-stat shrink-0 pl-2 group-hover:translate-x-0.5 transition-transform">
-            <span>EXTRATO</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </div>
-        </div>
-      )}
-
-      {/* Central de Atividades & Feed Urbano Banner */}
-      {onOpenActivityFeed && (
-        <div
-          id="perfil-activity-feed-banner"
-          onClick={onOpenActivityFeed}
-          className="mt-2.5 p-3 rounded-2xl bg-gradient-to-r from-[#0d1622] via-[#0b131e] to-[#0d1622] border border-cyan-500/40 hover:border-cyan-400 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] group shadow-md"
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center text-sm shrink-0">
-              ⚡
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[9px] font-black uppercase font-mono-stat text-cyan-400">
-                  CENTRAL DE ATIVIDADES
-                </span>
-                <span className="px-1.5 py-0.2 rounded text-[8px] font-black uppercase font-mono-stat bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                  FEED
-                </span>
-              </div>
-              <p className="text-xs font-bold text-white truncate">
-                Acompanhe conquistas, duelos e avanços urbanos
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 text-[10px] font-black text-cyan-400 uppercase font-mono-stat shrink-0 pl-2 group-hover:translate-x-0.5 transition-transform">
-            <span>VER FEED</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </div>
-        </div>
-      )}
-
-      {/* Discreet Security & Fair Play Banner */}
-      {onOpenSecurity && (
-        <div
-          id="perfil-security-banner"
-          onClick={onOpenSecurity}
-          className="mt-2.5 p-3 rounded-2xl bg-gradient-to-r from-[#0d1814] via-[#0b121a] to-[#0d1814] border border-emerald-500/40 hover:border-emerald-400 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] group shadow-md"
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-sm shrink-0">
-              🛡️
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[9px] font-black uppercase font-mono-stat text-emerald-400">
-                  SEGURANÇA & FAIR PLAY
-                </span>
-                <span className="px-1.5 py-0.2 rounded text-[8px] font-black uppercase font-mono-stat bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  CONTA ÍNTEGRA
-                </span>
-              </div>
-              <p className="text-xs font-bold text-white truncate">
-                Status: <span className="text-emerald-400 font-mono-stat font-black">Ativo (Telemetria & Idempotência)</span>
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 text-[10px] font-black text-emerald-400 uppercase font-mono-stat shrink-0 pl-2 group-hover:translate-x-0.5 transition-transform">
-            <span>AUDITORIA</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </div>
-        </div>
-      )}
-
-      {/* Discreet Settings & Preferences Banner */}
-      {onOpenSettings && (
-        <div
-          id="perfil-settings-banner"
-          onClick={onOpenSettings}
-          className="mt-2.5 p-3 rounded-2xl bg-gradient-to-r from-[#121c27] via-[#0b131e] to-[#121c27] border border-emerald-500/40 hover:border-emerald-400 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] group shadow-md"
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-emerald-400/20 text-emerald-400 border border-emerald-400/40 flex items-center justify-center text-sm shrink-0">
-              <Settings className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[9px] font-black uppercase font-mono-stat text-emerald-400">
-                  CENTRAL DE CONFIGURAÇÕES
-                </span>
-                <span className="px-1.5 py-0.2 rounded text-[8px] font-black uppercase font-mono-stat bg-emerald-400/20 text-emerald-300 border border-emerald-400/30">
-                  PREFERÊNCIAS
-                </span>
-              </div>
-              <p className="text-xs font-bold text-white truncate">
-                Conta, Privacidade, Notificações, Mapa, Som & Aparência
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 text-[10px] font-black text-emerald-400 uppercase font-mono-stat shrink-0 pl-2 group-hover:translate-x-0.5 transition-transform">
-            <span>AJUSTES</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </div>
-        </div>
-      )}
-
-      {/* LOGOUT BUTTON */}
-      {onLogout && (
-        <div 
-          onClick={onLogout}
-          className="mt-2.5 p-3 rounded-2xl bg-gradient-to-r from-[#1c1212] via-[#1e0b0b] to-[#1c1212] border border-rose-500/30 hover:border-rose-400 flex items-center justify-between cursor-pointer transition-all active:scale-[0.99] group shadow-md"
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-rose-400/10 text-rose-400 border border-rose-400/30 flex items-center justify-center text-sm shrink-0">
-              <span className="text-sm font-black uppercase font-mono-stat leading-none">!</span>
-            </div>
-            <div className="min-w-0">
-              <span className="text-[10px] font-black uppercase font-mono-stat text-rose-400">
-                ENCERRAR SESSÃO
-              </span>
-              <p className="text-xs font-bold text-slate-300 truncate">
-                Sair do aplicativo com segurança
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 text-[10px] font-black text-rose-400 uppercase font-mono-stat shrink-0 pl-2 group-hover:translate-x-0.5 transition-transform">
-            <span>SAIR</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </div>
-        </div>
-      )}
-
-      {/* Skater Stats Grid */}
-      <div className="grid grid-cols-3 gap-2 mt-3">
-        <div className="p-3 rounded-2xl bg-[#0d141d] border-2 border-white/10 text-center">
-          <div className="text-[9px] text-slate-400 font-bold uppercase font-mono-stat">DISTÂNCIA</div>
-          <div className="text-base font-bold text-white mt-0.5 font-mono-stat">{user.totalKm} KM</div>
-        </div>
-
-        <div className="p-3 rounded-2xl bg-[#0d141d] border-2 border-white/10 text-center">
-          <div className="text-[9px] text-slate-400 font-bold uppercase font-mono-stat">RANKING SP</div>
-          <div className="text-base font-bold text-amber-400 mt-0.5 font-mono-stat">#{user.globalRank}</div>
-        </div>
-
-        <div className="p-3 rounded-2xl bg-[#0d141d] border-2 border-white/10 text-center">
-          <div className="text-[9px] text-slate-400 font-bold uppercase font-mono-stat">STREAK</div>
-          <div className="text-base font-bold text-emerald-400 mt-0.5 flex items-center justify-center gap-1 font-mono-stat">
-            <Flame className="w-3.5 h-3.5 fill-emerald-400/20" />
-            {user.streakDays}D
-          </div>
-        </div>
-      </div>
-
-      {/* CARD CENTRAL DE ESTATÍSTICAS DO JOGADOR */}
-      <div
-        id="perfil-statistics-card"
-        onClick={onOpenStatistics}
-        className="mt-3 p-4 rounded-3xl bg-gradient-to-b from-[#101926] to-[#0a1017] border-2 border-emerald-500/40 hover:border-emerald-400 shadow-xl relative overflow-hidden transition-all active:scale-[0.99] cursor-pointer group"
-      >
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
-
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="p-2 rounded-2xl bg-emerald-400/15 border border-emerald-400/40 text-emerald-400 text-lg shrink-0 group-hover:scale-105 transition-transform">
-              📊
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-black text-white uppercase tracking-tight font-display truncate">
-                  ESTATÍSTICAS DO JOGADOR
-                </h3>
-                <span className="px-2 py-0.2 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 text-[9px] font-black font-mono-stat shrink-0">
-                  DADOS
-                </span>
-              </div>
-              <p className="text-[10px] text-slate-400 font-mono-stat truncate">
-                Recordes, telemetria, duelos e territórios
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            id="btn-open-statistics-modal"
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpenStatistics?.();
-            }}
-            className="px-3 py-1.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black text-[10px] font-black font-mono-stat uppercase tracking-wider transition-all shadow-[0_0_12px_rgba(0,255,102,0.3)] active:scale-95 cursor-pointer shrink-0"
-          >
-            DETALHES →
-          </button>
-        </div>
-
-        {/* 4 Mini Destaques de Estatísticas */}
-        <div className="grid grid-cols-4 gap-1.5 sm:gap-2 mt-3 pt-3 border-t border-white/10 font-mono-stat">
-          <div className="p-2 rounded-xl bg-black/40 border border-emerald-500/20 text-center">
-            <span className="text-[8px] font-bold text-slate-400 uppercase block truncate">
-              DISTÂNCIA
-            </span>
-            <div className="text-xs font-black text-emerald-400 mt-0.5 truncate">
-              {user.totalKm} km
-            </div>
-          </div>
-
-          <div className="p-2 rounded-xl bg-black/40 border border-cyan-500/20 text-center">
-            <span className="text-[8px] font-bold text-slate-400 uppercase block truncate">
-              VEL. MÁX
-            </span>
-            <div className="text-xs font-black text-cyan-300 mt-0.5 truncate">
-              27.4 km/h
-            </div>
-          </div>
-
-          <div className="p-2 rounded-xl bg-black/40 border border-amber-500/20 text-center">
-            <span className="text-[8px] font-bold text-slate-400 uppercase block truncate">
-              WIN RATE
-            </span>
-            <div className="text-xs font-black text-amber-300 mt-0.5 truncate">
-              73%
-            </div>
-          </div>
-
-          <div className="p-2 rounded-xl bg-black/40 border border-purple-500/20 text-center">
-            <span className="text-[8px] font-bold text-slate-400 uppercase block truncate">
-              ZONAS
-            </span>
-            <div className="text-xs font-black text-purple-300 mt-0.5 truncate">
-              {controlledZones.length || user.controlledZonesCount || 2} dom.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* CARD CENTRAL DE PERSONALIZAÇÃO & INVENTÁRIO */}
-      <div
-        id="perfil-progression-card"
-        className="mt-3 p-4 rounded-3xl bg-gradient-to-b from-[#111d29] to-[#090f15] border-2 border-emerald-500/50 shadow-xl relative overflow-hidden"
-      >
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
-
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-2xl bg-emerald-400/15 border border-emerald-400/40 text-emerald-400">
-              <Zap className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-black text-white uppercase tracking-tight font-display">
-                  PERSONALIZAÇÃO & COSMÉTICOS
-                </h3>
-                <span className="px-2 py-0.2 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 text-[9px] font-black font-mono-stat">
-                  LVL.{user.level}
-                </span>
-              </div>
-              <p className="text-[10px] text-slate-400 font-mono-stat">
-                {nextLevelDef?.title || 'Lenda Urbana em Ascensão'} • {user.totalXP ? `${user.totalXP.toLocaleString()} XP Total` : `${user.xp} XP`}
-              </p>
-            </div>
-          </div>
-
-          {onOpenProgressionHub && (
-            <button
-              type="button"
-              id="btn-open-progression-hub"
-              onClick={() => onOpenProgressionHub('visao_geral')}
-              className="px-3 py-1.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black text-[10px] font-black font-mono-stat uppercase tracking-wider transition-all shadow-[0_0_12px_rgba(0,255,102,0.3)] active:scale-95 cursor-pointer shrink-0"
-            >
-              INVENTÁRIO →
-            </button>
-          )}
-        </div>
-
-        {/* Companions / Equipped Showcase (4 items) */}
-        <div className="grid grid-cols-4 gap-1.5 sm:gap-2 mt-3.5 pt-3 border-t border-white/10">
-          <div
-            onClick={() => onOpenProgressionHub && onOpenProgressionHub('inventario')}
-            className="p-2 rounded-xl bg-black/40 border border-emerald-500/30 hover:border-emerald-400 text-center transition-all cursor-pointer"
-          >
-            <span className="text-[8px] font-bold text-slate-400 uppercase font-mono-stat block truncate">
-              MASCOTE
-            </span>
-            <div className="text-lg my-0.5">{equipped.mascotIcon || '🤖'}</div>
-            <div className="text-[10px] font-bold text-white truncate">
-              {equipped.mascotName || 'Mini Urbano'}
-            </div>
-          </div>
-
-          <div
-            onClick={() => onOpenProgressionHub && onOpenProgressionHub('inventario')}
-            className="p-2 rounded-xl bg-black/40 border border-cyan-500/30 hover:border-cyan-400 text-center transition-all cursor-pointer"
-          >
-            <span className="text-[8px] font-bold text-slate-400 uppercase font-mono-stat block truncate">
-              SKATE
-            </span>
-            <div className="text-lg my-0.5">🛹</div>
-            <div className="text-[10px] font-bold text-white truncate">
-              {equipped.skateName || 'Powerslide'}
-            </div>
-          </div>
-
-          <div
-            onClick={() => onOpenProgressionHub && onOpenProgressionHub('inventario')}
-            className="p-2 rounded-xl bg-black/40 border border-purple-500/30 hover:border-purple-400 text-center transition-all cursor-pointer"
-          >
-            <span className="text-[8px] font-bold text-slate-400 uppercase font-mono-stat block truncate">
-              MOLDURA
-            </span>
-            <div className="text-lg my-0.5">🟢</div>
-            <div className="text-[10px] font-bold text-white truncate">
-              {equipped.frameName || 'Neon Pulse'}
-            </div>
-          </div>
-
-          <div
-            onClick={() => onOpenProgressionHub && onOpenProgressionHub('colecoes')}
-            className="p-2 rounded-xl bg-black/40 border border-amber-500/30 hover:border-amber-400 text-center transition-all cursor-pointer"
-          >
-            <span className="text-[8px] font-bold text-slate-400 uppercase font-mono-stat block truncate">
-              ÁLBUM
-            </span>
-            <div className="text-lg my-0.5">🎴</div>
-            <div className="text-[10px] font-bold text-amber-300 truncate">
-              Coleções
-            </div>
-          </div>
-        </div>
-
-        {/* Next reward teaser */}
-        {nextLevelDef && nextLevelDef.rewards.length > 0 && (
-          <div className="mt-2.5 p-2 rounded-xl bg-emerald-950/30 border border-emerald-500/20 flex items-center justify-between text-[10px] font-mono-stat">
-            <span className="text-slate-300 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-emerald-400 shrink-0" />
-              <span>Próxima recompensa (Nível {nextLevelDef.level}):</span>
-            </span>
-            <span className="text-emerald-400 font-bold truncate ml-1">
-              {nextLevelDef.rewards[0].name}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Quick Honor Stats Bento Grid (Conquistas, Medalhas, Título) */}
-      <div className="grid grid-cols-3 gap-2 mt-3">
-        <button
-          type="button"
-          onClick={() => handleOpenTab('conquistas')}
-          className="p-3 rounded-2xl bg-gradient-to-b from-[#101824] to-[#0a1017] border border-emerald-500/30 hover:border-emerald-400 text-center transition-all cursor-pointer active:scale-95"
-        >
-          <div className="text-[9px] text-slate-400 font-bold uppercase font-mono-stat flex items-center justify-center gap-1">
-            <Trophy className="w-3 h-3 text-emerald-400" />
-            <span>CONQUISTAS</span>
-          </div>
-          <div className="text-sm sm:text-base font-black text-white mt-0.5 font-mono-stat">
-            {unlockedAchievementsCount}/{totalAchievementsCount}
-          </div>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleOpenTab('medalhas')}
-          className="p-3 rounded-2xl bg-gradient-to-b from-[#101824] to-[#0a1017] border border-cyan-500/30 hover:border-cyan-400 text-center transition-all cursor-pointer active:scale-95"
-        >
-          <div className="text-[9px] text-slate-400 font-bold uppercase font-mono-stat flex items-center justify-center gap-1">
-            <Award className="w-3 h-3 text-cyan-400" />
-            <span>MEDALHAS</span>
-          </div>
-          <div className="text-sm sm:text-base font-black text-cyan-300 mt-0.5 font-mono-stat">
-            {medalsCount} 🏅
-          </div>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleOpenTab('titulos')}
-          className="p-3 rounded-2xl bg-gradient-to-b from-[#101824] to-[#0a1017] border border-amber-500/30 hover:border-amber-400 text-center transition-all cursor-pointer active:scale-95"
-        >
-          <div className="text-[9px] text-slate-400 font-bold uppercase font-mono-stat flex items-center justify-center gap-1">
-            <Crown className="w-3 h-3 text-amber-400" />
-            <span>TÍTULOS</span>
-          </div>
-          <div className="text-sm sm:text-base font-black text-amber-300 mt-0.5 font-mono-stat truncate">
-            {titlesCount} 👑
-          </div>
-        </button>
-      </div>
-
-      {/* ÁREA DE RECOMPENSAS & DESBLOQUEIOS POR NÍVEL */}
-      <RewardsHubSection currentUser={user} />
-
-      {/* COMUNIDADE & AMIGOS (SISTEMA SOCIAL) */}
-      <div
-        id="perfil-social-section"
-        className="mt-3 p-4 rounded-3xl bg-gradient-to-b from-[#101b27] to-[#090f15] border-2 border-emerald-500/40 shadow-xl relative overflow-hidden"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-2xl bg-emerald-400/15 border border-emerald-400/40 text-emerald-400">
-              <Users className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm font-black text-white uppercase tracking-tight font-display flex items-center gap-2">
-                <span>COMUNIDADE & SOCIAL</span>
-                <span className="px-2 py-0.2 rounded-full bg-emerald-400/20 text-emerald-400 text-[9px] font-black font-mono-stat border border-emerald-400/40">
-                  REDE
-                </span>
-              </h3>
-              <p className="text-[10px] text-slate-400 font-mono-stat">
-                Amigos, Patinadores Próximos e Desafios
-              </p>
-            </div>
-          </div>
-
-          {onOpenSocialHub && (
-            <button
-              type="button"
-              id="btn-open-social-hub-perfil"
-              onClick={() => onOpenSocialHub('amigos')}
-              className="px-3 py-1.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black text-[10px] font-black font-mono-stat uppercase tracking-wider transition-all shadow-[0_0_12px_rgba(0,255,102,0.3)] active:scale-95 cursor-pointer shrink-0"
-            >
-              CENTRAL →
-            </button>
-          )}
-        </div>
+      
 
         {/* Social Metrics Grid */}
         <div className="grid grid-cols-3 gap-2 mt-3.5 pt-3 border-t border-white/10">
@@ -710,27 +233,35 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
             <div className="text-[9px] text-slate-400">{followingCount} seguindo</div>
           </div>
         </div>
-      </div>
 
       {/* Setup de Patins / Gear Card */}
       <div className="mt-4 p-4 rounded-2xl bg-[#0d141d] border-2 border-white/10">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-200 uppercase tracking-wider mb-3 font-mono-stat">
-          <Disc className="w-4 h-4 text-emerald-400" />
-          SETUP ATUAL DE RODAS
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-200 uppercase tracking-wider font-mono-stat">
+            <Disc className="w-4 h-4 text-emerald-400" />
+            SETUP DE EQUIPAMENTO
+          </div>
+          <button onClick={() => window.dispatchEvent(new CustomEvent('open-equipment-modal'))} className="text-[10px] uppercase font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md hover:bg-emerald-500/20">
+            Editar
+          </button>
         </div>
 
         <div className="space-y-2 text-xs font-medium">
           <div className="flex items-center justify-between py-1.5 border-b border-white/10">
             <span className="text-slate-400 uppercase font-mono-stat text-[11px]">BOTA / MODELO</span>
-            <span className="font-bold text-white">{user.skateSetup.model}</span>
+            <span className="font-bold text-white">{user.skateSetup?.model || 'Não informado'}</span>
           </div>
           <div className="flex items-center justify-between py-1.5 border-b border-white/10">
             <span className="text-slate-400 uppercase font-mono-stat text-[11px]">RODAS</span>
-            <span className="font-bold text-emerald-400 font-mono-stat">{user.skateSetup.wheels}</span>
+            <span className="font-bold text-emerald-400 font-mono-stat text-right max-w-[60%]">
+              {typeof user.skateSetup?.wheels === 'string' ? user.skateSetup.wheels : (user.skateSetup?.wheels ? `${user.skateSetup.wheels.brand} ${user.skateSetup.wheels.model} ${user.skateSetup.wheels.size}mm ${user.skateSetup.wheels.hardness}` : 'Não informado')}
+            </span>
           </div>
           <div className="flex items-center justify-between py-1.5">
             <span className="text-slate-400 uppercase font-mono-stat text-[11px]">ROLAMENTOS</span>
-            <span className="font-bold text-cyan-300 font-mono-stat">{user.skateSetup.bearings}</span>
+            <span className="font-bold text-cyan-300 font-mono-stat text-right max-w-[60%]">
+              {typeof user.skateSetup?.bearings === 'string' ? user.skateSetup.bearings : (user.skateSetup?.bearings ? `${user.skateSetup.bearings.brand} ${user.skateSetup.bearings.model} ${user.skateSetup.bearings.type}` : 'Não informado')}
+            </span>
           </div>
         </div>
       </div>
@@ -1005,7 +536,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
         <div className="flex items-center justify-between mb-2.5">
           <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-mono-stat">
             <Zap className="w-4 h-4 text-cyan-400" />
-            ATIVIDADES RECENTES ({recentActivities.filter((a) => a.isOwnActivity || a.playerId === user.id).length})
+            ATIVIDADES RECENTES ({(recentActivities || []).filter((a) => a.isOwnActivity || a.playerId === user.id).length})
           </h3>
           {onOpenActivityFeed && (
             <button
@@ -1020,7 +551,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
           )}
         </div>
 
-        {recentActivities.filter((a) => a.isOwnActivity || a.playerId === user.id).length > 0 ? (
+        {(recentActivities || []).filter((a) => a.isOwnActivity || a.playerId === user.id).length > 0 ? (
           <div className="space-y-2">
             {recentActivities
               .filter((a) => a.isOwnActivity || a.playerId === user.id)
@@ -1099,7 +630,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
           const stats_maxSpeed = sessionHistory.reduce((acc, sess) => Math.max(acc, sess.maxSpeed ?? sess.maxSpeedKmH ?? 0), 0);
           const final_maxSpeed = Math.max(stats_maxSpeed, user.currentSpeedKmH || 0);
 
-          const validSpeedSessions = sessionHistory.filter(s => (s.averageSpeed ?? s.avgSpeedKmH ?? 0) > 0);
+          const validSpeedSessions = (sessionHistory || []).filter(s => (s.averageSpeed ?? s.avgSpeedKmH ?? 0) > 0);
           const stats_avgSpeed = validSpeedSessions.length > 0
             ? validSpeedSessions.reduce((acc, sess) => acc + (sess.averageSpeed ?? sess.avgSpeedKmH ?? 0), 0) / validSpeedSessions.length
             : 0;

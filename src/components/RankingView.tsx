@@ -47,7 +47,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
       <div className="text-center mb-4">
         <button
           type="button"
-          onClick={() => onOpenSeasonHub && onOpenSeasonHub('visao_geral')}
+          
           className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-amber-500/20 via-emerald-500/20 to-amber-500/20 hover:from-amber-500/30 hover:to-emerald-500/30 border border-amber-400/50 rounded-full text-amber-300 text-[10px] font-black uppercase tracking-wider mb-2 font-mono-stat transition-all active:scale-95 shadow-[0_0_12px_rgba(251,191,36,0.2)] cursor-pointer"
         >
           <Trophy className="w-3.5 h-3.5 text-amber-400 animate-pulse" />

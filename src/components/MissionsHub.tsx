@@ -51,13 +51,13 @@ export const MissionsHub: React.FC<MissionsHubProps> = ({
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('ALL');
 
   // Contadores para filtros
-  const completedUnclaimedCount = missions.filter((m) => m.status === 'COMPLETED').length;
-  const dailyCount = missions.filter((m) => m.category === 'DAILY').length;
-  const weeklyCount = missions.filter((m) => m.category === 'WEEKLY').length;
-  const longTermCount = missions.filter((m) => m.category === 'LONG_TERM').length;
-  const timedCount = missions.filter((m) => m.category === 'TIMED' || m.category === 'SPECIAL').length;
+  const completedUnclaimedCount = (missions || []).filter((m) => m.status === 'COMPLETED').length;
+  const dailyCount = (missions || []).filter((m) => m.category === 'DAILY').length;
+  const weeklyCount = (missions || []).filter((m) => m.category === 'WEEKLY').length;
+  const longTermCount = (missions || []).filter((m) => m.category === 'LONG_TERM').length;
+  const timedCount = (missions || []).filter((m) => m.category === 'TIMED' || m.category === 'SPECIAL').length;
 
-  const filteredMissions = missions.filter((mission) => {
+  const filteredMissions = (missions || []).filter((mission) => {
     if (activeFilter === 'ALL') return true;
     if (activeFilter === 'DAILY') return mission.category === 'DAILY';
     if (activeFilter === 'WEEKLY') return mission.category === 'WEEKLY';

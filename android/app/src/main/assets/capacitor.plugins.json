@@ -2,5 +2,13 @@
 	{
 		"pkg": "@capacitor/geolocation",
 		"classpath": "com.capacitorjs.plugins.geolocation.GeolocationPlugin"
+	},
+	{
+		"pkg": "@capacitor/share",
+		"classpath": "com.capacitorjs.plugins.share.SharePlugin"
+	},
+	{
+		"pkg": "@capawesome-team/capacitor-android-foreground-service",
+		"classpath": "io.capawesome.capacitorjs.plugins.foregroundservice.ForegroundServicePlugin"
 	}
 ]

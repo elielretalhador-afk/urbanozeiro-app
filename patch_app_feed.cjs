@@ -1,69 +1,38 @@
 const fs = require('fs');
 let content = fs.readFileSync('src/App.tsx', 'utf8');
 
-// Adicionar states de paginação no Feed
-content = content.replace(
-  /const \[activityFeedInitialFilter, setActivityFeedInitialFilter\] = useState<ActivityFilterType>\('TODAS'\);/,
-  `const [activityFeedInitialFilter, setActivityFeedInitialFilter] = useState<ActivityFilterType>('TODAS');
-  const [feedHasMore, setFeedHasMore] = useState<boolean>(true);
-  const [feedLastDocId, setFeedLastDocId] = useState<string | undefined>(undefined);
-  const [isLoadingFeed, setIsLoadingFeed] = useState<boolean>(false);`
-);
+// Add feedService import
+if (!content.includes('fetchFeed')) {
+    content = content.replace(
+        "import { onAuthStateChanged } from 'firebase/auth';",
+        "import { onAuthStateChanged } from 'firebase/auth';\nimport { fetchFeed } from './lib/feedService';"
+    );
+}
 
-// Atualizar o useEffect inicial para não carregar TODO o feed, e sim a página inicial se necessário
-// Vamos remover setActivities(FeedService.getActivitiesDB()); do useEffect
-content = content.replace(
-  /setActivities\(FeedService\.getActivitiesDB\(\)\);/,
-  `// setActivities(FeedService.getActivitiesDB()); // Removido para evitar carga total
-      loadInitialFeed(user.id);`
-);
-
-// Vamos injetar a função loadInitialFeed
-const feedFunctions = `
+// Modify loadInitialFeed
+const feedCode = `
   const loadInitialFeed = async (userId: string) => {
-    setIsLoadingFeed(true);
     try {
-      // Usa paginação em vez de leitura completa
-      const followingIds = socialPlayers.filter(p => p.isFollowing).map(p => p.id);
-      const res = await FeedService.getFeedPaginated(userId, followingIds, 10);
-      setActivities(res.data);
-      setFeedLastDocId(res.lastDocId);
-      setFeedHasMore(res.hasMore);
+      setIsLoadingFeed(true);
+      const posts = await fetchFeed();
+      
+      // Combine with local activities if any (or just use posts)
+      // For now, let's just prepend posts to initial activities
+      setActivities(posts);
+      setFeedHasMore(false);
     } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoadingFeed(false);
-    }
-  };
-
-  const loadMoreActivities = async () => {
-    if (isLoadingFeed || !feedHasMore || !user) return;
-    setIsLoadingFeed(true);
-    try {
-      const followingIds = socialPlayers.filter(p => p.isFollowing).map(p => p.id);
-      const res = await FeedService.getFeedPaginated(user.id, followingIds, 10, feedLastDocId);
-      setActivities(prev => [...prev, ...res.data]);
-      setFeedLastDocId(res.lastDocId);
-      setFeedHasMore(res.hasMore);
-    } catch (e) {
-      console.error(e);
+      console.error('Error loading feed', e);
     } finally {
       setIsLoadingFeed(false);
     }
   };
 `;
 
-content = content.replace(
-  /useEffect\(\(\) => \{\n    try \{\n      localStorage.setItem\('urbanozeiro_activities'/,
-  `${feedFunctions}\n  useEffect(() => {
-    try {
-      localStorage.setItem('urbanozeiro_activities'`
-);
+content = content.replace(/  const loadInitialFeed = async \(userId: string\) => \{\};\n/g, feedCode);
 
-// Otimizar leitura de ZONAS: carregar via DatabaseService.getZonesInRegion() no lugar de InitialZONES puro se possível
-// Porem, no App.tsx ele pega 'zones' do initializeApp() no mount.
-// Vamos manter o 'zones' sendo populado inicialmente (como fallback do initialize),
-// mas a lógica para futuro Firebase está preparada no db.ts.
+// Add a hook to reload feed when it mounts or just load once
+content = content.replace(/    \/\/ Initialize DB\n/g, "    // Initialize DB\n    loadInitialFeed(user.id);\n");
 
-fs.writeFileSync('src/App.tsx', content);
-console.log('Patched App.tsx feed pagination');
+
+fs.writeFileSync('src/App.tsx', content, 'utf8');
+console.log('App.tsx feed loading patched');
