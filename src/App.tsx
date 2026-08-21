@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Geolocation } from '@capacitor/geolocation';
 import {
   CURRENT_USER,
   INITIAL_ZONES,
@@ -187,10 +188,16 @@ function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: num
 }
 
 export default function App() {
-  const [isDbReady, setIsDbReady] = useState<boolean>(false);
-  const [dbError, setDbError] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<TabType>('mapa');
-  const [user, setUser] = useState<UserProfile>(CURRENT_USER);
+  const [user, setUser] = useState<UserProfile>(() => {
+    try {
+      const saved = localStorage.getItem('urbanozeiro_user');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error('Error loading user profile', e);
+    }
+    return CURRENT_USER;
+  });
   const userRef = useRef(user);
   useEffect(() => {
     if (user && user.id) {
@@ -203,7 +210,11 @@ export default function App() {
 
   useEffect(() => {
     userRef.current = user;
-    DatabaseService.saveUser(user);
+    try {
+      localStorage.setItem('urbanozeiro_user', JSON.stringify(user));
+    } catch (e) {
+      console.error('Error saving user profile', e);
+    }
   }, [user]);
 
   const [userCoords, setUserCoords] = useState<[number, number] | null>(null);
@@ -214,15 +225,25 @@ export default function App() {
   // ESTADO DE ZONAS (OTIMIZADO PARA PREVENÇÃO DE READS)
   // =========================================================================
   const [zones, setZones] = useState<Zone[]>([]);
-
+  
   useEffect(() => {
-    if (isDbReady && zones.length > 0) {
-      DatabaseService.updateZoneList(zones).catch(console.error);
-    }
-  }, [zones, isDbReady]);
-
-  
-  
+    // PREPARAÇÃO FIRESTORE:
+    // Em vez de carregar todas as milhares de zonas do mundo no start do App,
+    // apenas carregamos as zonas baseadas no Viewport do mapa (bounds).
+    // Por enquanto, o mock global usa INITIAL_ZONES como fallback, 
+    // mas a chamada passa pela camada de caching geográfico do DatabaseService.
+    const loadInitialZones = async () => {
+      try {
+        const boundsMock = null; // Na vida real, Leaflet bounds
+        const regionZones = await DatabaseService.getZonesInRegion(boundsMock);
+        setZones(regionZones);
+      } catch (e) {
+        console.error('Error loading zones via Service', e);
+        setZones(INITIAL_ZONES);
+      }
+    };
+    loadInitialZones();
+  }, []);
 
   // O sincronismo de mock com localStorage agora é feito pela camada Service (db.ts),
   // e o cliente apenas recebe o novo array quando necessário.
@@ -355,14 +376,7 @@ export default function App() {
 
 
   const [isActivityFeedOpen, setIsActivityFeedOpen] = useState(false);
-  const [activities, setActivities] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (isDbReady && activities.length > 0) {
-      DatabaseService.updateActivitiesList(activities).catch(console.error);
-    }
-  }, [activities, isDbReady]);
-
+  const [activities, setActivities] = useState<any[]>(INITIAL_ACTIVITIES || []);
   const [feedHasMore, setFeedHasMore] = useState(true);
   const [isLoadingFeed, setIsLoadingFeed] = useState(false);
   const [activityFeedInitialFilter, setActivityFeedInitialFilter] = useState<any>('TODAS');
@@ -377,38 +391,14 @@ export default function App() {
   const [challenges, setChallenges] = useState<any[]>([]);
   const [directChallenges, setDirectChallenges] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
-  const [authState, setAuthState] = useState<any>({ isAuthenticated: true, user: CURRENT_USER });
-
-
-
+  const [authState, setAuthState] = useState<any>('LOADING');
   useEffect(() => {
-        const handleOnline = () => {
-      console.log('Conexão restabelecida! Processando fila de sincronização...');
-      DatabaseService.processSyncQueue().catch(console.error);
-    };
-    window.addEventListener('online', handleOnline);
-
-    DatabaseService.initializeApp().then(data => {
-      setUser(data.user);
-      setZones(data.zones);
-      setSessionHistory(data.sessions);
-      setActivities(data.activities);
-      setChallenges(data.challenges);
-      setDirectChallenges(data.directChallenges);
-      setEvents(data.events);
-      if (typeof setAchievements !== 'undefined') setAchievements(data.achievements);
-      if (typeof setNotifications !== 'undefined') setNotifications(data.notifications);
-      setIsDbReady(true);
-    }).catch(err => {
-      console.error(err);
-            setDbError(err.message || 'Error initializing DB');
-    });
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-    };
+    AuthService.getCurrentUser().then(session => {
+      setAuthState(session ? 'AUTHENTICATED' : 'UNAUTHENTICATED');
+    }).catch(() => setAuthState('UNAUTHENTICATED'));
   }, []);
-
+  const [isDbReady, setIsDbReady] = useState<boolean>(true);
+  const [dbError, setDbError] = useState<any>(null);
   
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [activeZones, setActiveZones] = useState<any[]>([]);
@@ -426,20 +416,7 @@ export default function App() {
 
   const [isSessionHistoryModalOpen, setIsSessionHistoryModalOpen] = useState(false);
   const [selectedHistoryDetailSession, setSelectedHistoryDetailSession] = useState<any>(null);
-  const [notifications, setNotifications] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (isDbReady && notifications.length > 0) {
-      DatabaseService.saveNotifications(notifications).catch(console.error);
-    }
-  }, [notifications, isDbReady]);
-
-  useEffect(() => {
-    if (isDbReady && achievements && achievements.length > 0) {
-      DatabaseService.saveAchievements(achievements).catch(console.error);
-    }
-  }, [achievements, isDbReady]);
-
+  const [notifications, setNotifications] = useState<any[]>(INITIAL_NOTIFICATIONS || []);
   const [celebrationAchievement, setCelebrationAchievementState] = useState<any>(null);
 
   // Fallbacks for specific typed events
@@ -592,21 +569,17 @@ export default function App() {
   };
   
   const handleToggleActivityLike = (id: string) => { 
-    setActivities(prev => {
-      const updated = prev.map(act => {
-        if (act.id === id) {
-          const isLiked = !act.hasLiked;
-          return {
-            ...act,
-            hasLiked: isLiked,
-            likesCount: (act.likesCount || 0) + (isLiked ? 1 : -1)
-          };
-        }
-        return act;
-      });
-      DatabaseService.updateActivitiesList(updated).catch(console.error);
-      return updated;
-    });
+    setActivities(prev => prev.map(act => {
+      if (act.id === id) {
+        const isLiked = !act.hasLiked;
+        return {
+          ...act,
+          hasLiked: isLiked,
+          likesCount: (act.likesCount || 0) + (isLiked ? 1 : -1)
+        };
+      }
+      return act;
+    }));
   };
   const handleSubmitPlayerReport = (report: any) => { showToast('Denúncia enviada com sucesso!'); setIsReportPlayerOpen(false); };
   
@@ -675,41 +648,44 @@ export default function App() {
 
   // Real Geolocation API tracking
   useEffect(() => {
-    if (!('geolocation' in navigator)) {
-      setIsGpsActive(false);
-      return;
-    }
-
-    // Request initial position
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        if (
-          pos &&
-          pos.coords &&
-          typeof pos.coords.latitude === 'number' &&
-          !isNaN(pos.coords.latitude) &&
-          isFinite(pos.coords.latitude) &&
-          typeof pos.coords.longitude === 'number' &&
-          !isNaN(pos.coords.longitude) &&
-          isFinite(pos.coords.longitude)
-        ) {
-          const newCoords: [number, number] = [pos.coords.latitude, pos.coords.longitude];
-          setPlayerLocation({ latitude: pos.coords.latitude, longitude: pos.coords.longitude });
-          setUserCoords(newCoords);
-          setIsGpsActive(true);
-          prevCoordsRef.current = newCoords;
+    let watchIdStr: string | null = null;
+    
+    const initGPS = async () => {
+      try {
+        const permStatus = await Geolocation.checkPermissions();
+        if (permStatus.location !== 'granted') {
+          const reqStatus = await Geolocation.requestPermissions();
+          if (reqStatus.location !== 'granted') {
+            setIsGpsActive(false);
+            console.info('Permissão de GPS negada.');
+            return;
+          }
         }
-      },
-      (err) => {
-        console.info('GPS initial position fallback:', err.message);
-        setIsGpsActive(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
 
-    // Watch position continuously
-    const watchId = navigator.geolocation.watchPosition(
-      (pos) => {
+        const initPos = await Geolocation.getCurrentPosition({ enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+        if (initPos && initPos.coords) {
+          const { latitude, longitude } = initPos.coords;
+          if (typeof latitude === 'number' && !isNaN(latitude) && typeof longitude === 'number' && !isNaN(longitude)) {
+            const newCoords: [number, number] = [latitude, longitude];
+            setPlayerLocation({ latitude, longitude });
+            setUserCoords(newCoords);
+            setIsGpsActive(true);
+            prevCoordsRef.current = newCoords;
+          }
+        }
+      } catch (err: any) {
+        setIsGpsActive(false);
+      }
+
+      try {
+        watchIdStr = await Geolocation.watchPosition(
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
+          (pos, err) => {
+            if (err) {
+              setIsGpsActive(false);
+              return;
+            }
+            if (!pos || !pos.coords) return;
         if (
           pos &&
           pos.coords &&
@@ -983,20 +959,17 @@ export default function App() {
           setUser((prev) => ({ ...prev, currentSpeedKmH: currentSpeed }));
           prevCoordsRef.current = newCoords;
         }
-      },
-      (err) => {
-        console.info('GPS watch fallback:', err.message);
-        setIsGpsActive(false);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 5000,
-        timeout: 15000,
+
+          }
+        );
+      } catch (e: any) {
+        console.warn('Geolocation watch error', e);
       }
-    );
+    };
+    initGPS();
 
     return () => {
-      navigator.geolocation.clearWatch(watchId);
+      if (watchIdStr) Geolocation.clearWatch({ id: watchIdStr }).catch(()=>{});
     };
   }, []);
 
@@ -1216,7 +1189,6 @@ export default function App() {
 
     const newActivity = FeedService.createSkateSessionActivity(finishedSession, user);
     setActivities(prev => [newActivity, ...prev]);
-    DatabaseService.queueSessionForSync(finishedSession, newActivity as any).catch(console.error);
     setIsSummaryModalOpen(true);
     setSessionCurrentSpeedKmH(0);
 
@@ -1718,11 +1690,7 @@ export default function App() {
 
   // Add new zone (Starts as LIVRE / 0% dominance)
   const handleCreateZone = (newZone: Zone) => {
-    setZones((prev) => {
-      const updated = [newZone, ...prev];
-      DatabaseService.updateZoneList(updated).catch(console.error);
-      return updated;
-    });
+    setZones((prev) => [newZone, ...prev]);
     setSelectedZone(newZone);
     showToast(`🏁 Nova Zona Livre "${newZone.name}" registrada no mapa!`);
   };
