@@ -1,4 +1,8 @@
+const fs = require('fs');
 
+let authTs = fs.readFileSync('src/services/auth.ts', 'utf8');
+
+authTs = `
 import { Capacitor } from '@capacitor/core';
 import { db, auth } from '../lib/firebase';
 import { 
@@ -104,7 +108,7 @@ export const AuthService = {
           const userDoc = await getDoc(doc(db, 'users', fbUser.uid));
           if (userDoc.exists() && userDoc.data().username) {
             const existingUsername = userDoc.data().username;
-            const err2 = new Error(`Esta conta de e-mail já está associada ao usuário: ${existingUsername}`);
+            const err2 = new Error(\`Esta conta de e-mail já está associada ao usuário: \${existingUsername}\`);
             (err2 as any).code = 'auth/email-already-has-username';
             throw err2;
           }
@@ -200,3 +204,17 @@ export const AuthService = {
     await sendPasswordResetEmail(auth, email);
   }
 };
+`;
+
+fs.writeFileSync('src/services/auth.ts', authTs, 'utf8');
+
+// Fix AuthScreen.tsx
+let authScreen = fs.readFileSync('src/components/AuthScreen.tsx', 'utf8');
+authScreen = authScreen.replace(
+  /useEffect\(\(\) => \{[\s\S]*?checkRedirect\(\);\n  \}, \[onLoginSuccess\]\);\n/m,
+  '' // Remove checkRedirect hook
+);
+// Make sure we remove the 'useEffect' import if it was added solely for this, but to be safe we can just leave it.
+
+fs.writeFileSync('src/components/AuthScreen.tsx', authScreen, 'utf8');
+console.log('Fixed auth files.');
