@@ -36,6 +36,8 @@ jobs:
         with:
           gradle-version: '8.14.3'
 
+      - name: Print Debug Signature
+        run: cd android && gradle signingReport
       - name: Build APK
         run: cd android && gradle assembleDebug
 
