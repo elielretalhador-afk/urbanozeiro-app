@@ -159,7 +159,7 @@ import { Zap, CheckCircle2, Award, Shield, Users } from 'lucide-react';
 
 function triggerZoneVibration() {
   try {
-    // Respeita preferência do jogador de vibração se configurada
+    // Respeita preferÃªncia do jogador de vibraÃ§Ã£o se configurada
     const rawSettings = typeof window !== 'undefined' ? localStorage.getItem('urbanozeiro_player_settings') : null;
     if (rawSettings) {
       try {
@@ -256,16 +256,16 @@ export default function App() {
   
   
   // =========================================================================
-  // ESTADO DE ZONAS (OTIMIZADO PARA PREVENÇÃO DE READS)
+  // ESTADO DE ZONAS (OTIMIZADO PARA PREVENÃ‡ÃƒO DE READS)
   // =========================================================================
   const [zones, setZones] = useState<Zone[]>([]);
   
   useEffect(() => {
-    // PREPARAÇÃO FIRESTORE:
+    // PREPARAÃ‡ÃƒO FIRESTORE:
     // Em vez de carregar todas as milhares de zonas do mundo no start do App,
     // apenas carregamos as zonas baseadas no Viewport do mapa (bounds).
     // Por enquanto, o mock global usa INITIAL_ZONES como fallback, 
-    // mas a chamada passa pela camada de caching geográfico do DatabaseService.
+    // mas a chamada passa pela camada de caching geogrÃ¡fico do DatabaseService.
     const loadInitialZones = async () => {
       try {
         const boundsMock = null; // Na vida real, Leaflet bounds
@@ -279,8 +279,8 @@ export default function App() {
     loadInitialZones();
   }, []);
 
-  // O sincronismo de mock com localStorage agora é feito pela camada Service (db.ts),
-  // e o cliente apenas recebe o novo array quando necessário.
+  // O sincronismo de mock com localStorage agora Ã© feito pela camada Service (db.ts),
+  // e o cliente apenas recebe o novo array quando necessÃ¡rio.
 
 
   const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
@@ -299,7 +299,7 @@ export default function App() {
   const [isGpsActive, setIsGpsActive] = useState<boolean>(false);
 
   // =========================================================================
-  // ETAPA 7: SESSÃO REAL DE PATINAÇÃO (Active Skating Activity Session Engine)
+  // ETAPA 7: SESSÃƒO REAL DE PATINAÃ‡ÃƒO (Active Skating Activity Session Engine)
   // =========================================================================
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>('IDLE');
   const isSessionActive = sessionStatus === 'ACTIVE' || sessionStatus === 'PAUSED';
@@ -338,7 +338,7 @@ export default function App() {
   
   useEffect(() => {
     if (sessionStatus !== 'IDLE' && sessionStatus !== 'COMPLETED') {
-      // Otimização: Só salva no IndexedDB a cada 10 segundos ou quando o track acumular novos pontos significativos
+      // OtimizaÃ§Ã£o: SÃ³ salva no IndexedDB a cada 10 segundos ou quando o track acumular novos pontos significativos
       // Para simplificar no React sem criar hooks customizados de debounce, faremos pelo modulo do tempo
       if (sessionDuration % 10 === 0) {
         const ongoingData = {
@@ -364,15 +364,15 @@ export default function App() {
   const [isRedoMode, setIsRedoMode] = useState<boolean>(false);
   
   // =========================================================================
-  // HISTÓRICO DE SESSÕES (OTIMIZADO PARA PREVENÇÃO DE READS)
+  // HISTÃ“RICO DE SESSÃ•ES (OTIMIZADO PARA PREVENÃ‡ÃƒO DE READS)
   // =========================================================================
   const [sessionHistory, setSessionHistory] = useState<ActivitySession[]>([]);
 
   useEffect(() => {
-    // PREPARAÇÃO FIRESTORE:
-    // Evita carregar o histórico inteiro do jogador no mount da aplicação.
-    // Inicialmente carregamos apenas a primeira página para estatísticas básicas,
-    // e o restante será carregado sob demanda.
+    // PREPARAÃ‡ÃƒO FIRESTORE:
+    // Evita carregar o histÃ³rico inteiro do jogador no mount da aplicaÃ§Ã£o.
+    // Inicialmente carregamos apenas a primeira pÃ¡gina para estatÃ­sticas bÃ¡sicas,
+    // e o restante serÃ¡ carregado sob demanda.
     const loadInitialSessions = async () => {
       try {
         if (user) {
@@ -392,7 +392,7 @@ export default function App() {
   // Sincronismo mantido internamente pelo db.ts.
 
   // =========================================================================
-  // RECONSTRUÇÃO DE ESTADOS DA UI (PARTE 4 - REFS E FUNÇÕES DE ZONAS)
+  // RECONSTRUÃ‡ÃƒO DE ESTADOS DA UI (PARTE 4 - REFS E FUNÃ‡Ã•ES DE ZONAS)
   // =========================================================================
   const activeZoneActivitiesRef = useRef<Map<string, any>>(new Map());
   const currentSessionIdRef = useRef<string | null>(null);
@@ -433,7 +433,7 @@ export default function App() {
 
 
   // =========================================================================
-  // RECONSTRUÇÃO DE ESTADOS DA UI (PARTE 3)
+  // RECONSTRUÃ‡ÃƒO DE ESTADOS DA UI (PARTE 3)
   // =========================================================================
   const [isNotificationsModalOpen, setIsNotificationsModalOpen] = useState(false);
   const [challenges, setChallenges] = useState<any[]>([]);
@@ -478,7 +478,7 @@ export default function App() {
   const handleSelectDirectChallenge = () => {};
   const handleOpenSeasonHub = () => {};
 
-  // Correções de tipagem para as props dos Modais
+  // CorreÃ§Ãµes de tipagem para as props dos Modais
   const handleEquipTitleProp = (title: any) => { handleEquipTitle(title.id); };
   const handleJoinClanProp = (clan: any) => { handleJoinClan(clan.id); };
   const handleNegotiateScheduleProp = (id: string, date: string, time: string) => { handleNegotiateSchedule(id, new Date()); };
@@ -488,7 +488,7 @@ export default function App() {
 
 
   // =========================================================================
-  // RECONSTRUÇÃO DE ESTADOS DA UI (PARTE 2)
+  // RECONSTRUÃ‡ÃƒO DE ESTADOS DA UI (PARTE 2)
   // =========================================================================
   const [selectedClanProfile, setSelectedClanProfile] = useState<any>(null);
   const [isClanLeaderboardModalOpen, setIsClanLeaderboardModalOpen] = useState(false);
@@ -517,11 +517,11 @@ export default function App() {
   const [progression, setProgression] = useState<any>({ level: 1, xp: 0 });
 
   const setCelebrationAchievement = (ach: any) => {};
-  const handleEquipTitle = (titleId: string) => { showToast('Título equipado.'); };
+  const handleEquipTitle = (titleId: string) => { showToast('TÃ­tulo equipado.'); };
   
-  const handleLeaveClan = () => { showToast('Você saiu do clã.'); };
-  const handleCreateClan = (data: any) => { showToast('Clã criado com sucesso!'); setIsCreateClanModalOpen(false); };
-  const handleJoinClan = (clanId: string) => { showToast('Solicitação para entrar no clã enviada.'); setIsJoinClanModalOpen(false); };
+  const handleLeaveClan = () => { showToast('VocÃª saiu do clÃ£.'); };
+  const handleCreateClan = (data: any) => { showToast('ClÃ£ criado com sucesso!'); setIsCreateClanModalOpen(false); };
+  const handleJoinClan = (clanId: string) => { showToast('SolicitaÃ§Ã£o para entrar no clÃ£ enviada.'); setIsJoinClanModalOpen(false); };
 
   const handleBlockPlayer = (id: string) => { setBlockedPlayerIds(prev => [...prev, id]); showToast('Jogador bloqueado.'); };
   const handleUnblockPlayer = (id: string) => { setBlockedPlayerIds(prev => prev.filter(b => b !== id)); showToast('Jogador desbloqueado.'); };
@@ -534,8 +534,8 @@ export default function App() {
   const handleCancelDirectChallenge = (id: string) => { showToast('Desafio cancelado.'); };
 
   const handleStartLiveChallenge = (challenge: any) => { showToast('Desafio iniciado no mapa!'); setActiveTab('mapa'); setIsDirectChallengeDetailsOpen(false); };
-  const handleRegisterEvent = (eventId: string) => { showToast('Inscrição confirmada no evento!'); };
-  const handleCancelEventRegistration = (eventId: string) => { showToast('Inscrição cancelada.'); };
+  const handleRegisterEvent = (eventId: string) => { showToast('InscriÃ§Ã£o confirmada no evento!'); };
+  const handleCancelEventRegistration = (eventId: string) => { showToast('InscriÃ§Ã£o cancelada.'); };
 
   const handleEquipInventoryItem = (itemId: string) => { showToast('Item equipado.'); };
   
@@ -543,7 +543,7 @@ export default function App() {
 
 
   // =========================================================================
-  // RECONSTRUÇÃO DE ESTADOS DA UI (MODALS)
+  // RECONSTRUÃ‡ÃƒO DE ESTADOS DA UI (MODALS)
   // =========================================================================
   const [isLevelUpModalOpen, setIsLevelUpModalOpen] = useState(false);
   const [levelUpModalData, setLevelUpModalData] = useState<any>(null);
@@ -612,18 +612,18 @@ export default function App() {
     try {
       if (user) {
         await SocialService.acceptFriendRequest(id, user.id);
-        showToast('Solicitação aceita!');
+        showToast('SolicitaÃ§Ã£o aceita!');
         loadSocialData();
       }
     } catch (e: any) {
-      showToast(e.message || 'Erro ao aceitar solicitação.');
+      showToast(e.message || 'Erro ao aceitar solicitaÃ§Ã£o.');
     }
   };
   const handleDeclineFriendRequest = async (id: string) => { 
     try {
       if (user) {
         await SocialService.rejectFriendRequest(id, user.id);
-        showToast('Solicitação recusada!');
+        showToast('SolicitaÃ§Ã£o recusada!');
         loadSocialData();
       }
     } catch (e: any) {}
@@ -632,7 +632,7 @@ export default function App() {
     try {
       if (user) {
         await SocialService.rejectFriendRequest(user.id, id);
-        showToast('Solicitação cancelada.');
+        showToast('SolicitaÃ§Ã£o cancelada.');
         loadSocialData();
       }
     } catch (e: any) {}
@@ -656,10 +656,10 @@ export default function App() {
         showToast('Deixou de seguir o jogador.');
         return prev.map(r => r.targetPlayerId === id ? { ...r, isFollowing: false } : r);
       } else if (existing) {
-        showToast('Começou a seguir o jogador.');
+        showToast('ComeÃ§ou a seguir o jogador.');
         return prev.map(r => r.targetPlayerId === id ? { ...r, isFollowing: true } : r);
       } else {
-        showToast('Começou a seguir o jogador.');
+        showToast('ComeÃ§ou a seguir o jogador.');
         return [...prev, { targetPlayerId: id, status: 'NONE', isFollowing: true, isBlocked: false }];
       }
     });
@@ -678,20 +678,20 @@ export default function App() {
       return act;
     }));
   };
-  const handleSubmitPlayerReport = (report: any) => { showToast('Denúncia enviada com sucesso!'); setIsReportPlayerOpen(false); };
+  const handleSubmitPlayerReport = (report: any) => { showToast('DenÃºncia enviada com sucesso!'); setIsReportPlayerOpen(false); };
   
   const handleEarnCoins = (amount: number, source: any, desc: string, relatedId?: string) => { setWallet((prev: any) => ({...prev, coins: prev.coins + amount})); };
   const handleSpendCoins = (amount: number, source: any, desc: string, relatedId?: string) => { 
     if (wallet.coins >= amount) { setWallet((prev: any) => ({...prev, coins: prev.coins - amount})); return true; } 
     return false; 
   };
-  const handleSimulateAdReward = () => { handleEarnCoins(50, 'AD_REWARD', 'Anúncio Assistido'); showToast('Recompensa recebida!'); };
+  const handleSimulateAdReward = () => { handleEarnCoins(50, 'AD_REWARD', 'AnÃºncio Assistido'); showToast('Recompensa recebida!'); };
   
   const handleSimulateGpsAnomaly = () => { showToast('Anomalia de GPS detectada.'); };
-  const handleSimulateDuplicateRewardCheck = () => { showToast('Verificação de recompensa duplicada.'); };
+  const handleSimulateDuplicateRewardCheck = () => { showToast('VerificaÃ§Ã£o de recompensa duplicada.'); };
   const handleReportPlayer = (id: string) => { setIsReportPlayerOpen(true); setPlayerToReport({ id }); };
   
-  const handleUpdatePlayerSettings = (settings: any) => { setPlayerSettings(settings); showToast('Configurações atualizadas!'); };
+  const handleUpdatePlayerSettings = (settings: any) => { setPlayerSettings(settings); showToast('ConfiguraÃ§Ãµes atualizadas!'); };
   const handleOpenSocialHub = (tab: any) => { setActiveSocialTab(tab); setIsSocialHubOpen(true); };
   const handleUpdateTutorial = (state: any) => { setTutorialState(state); };
 
@@ -737,7 +737,7 @@ export default function App() {
       timerInterval = setInterval(() => {
         setSessionDuration((prev) => {
           const newDur = prev + 1;
-          // Atualiza notificação persistente a cada 5 segundos
+          // Atualiza notificaÃ§Ã£o persistente a cada 5 segundos
           if (newDur % 5 === 0) {
              const m = Math.floor(newDur / 60);
              const s = newDur % 60;
@@ -745,11 +745,11 @@ export default function App() {
              if (Capacitor.isNativePlatform()) ForegroundService.updateForegroundService({
                 id: 111,
                 title: 'Urbanozeiro',
-                body: `Atividade ativa: ${ds} - ${sessionDistanceRef.current.toFixed(1)} km`,
+                body: `â± ${ds} | ðŸ“ ${sessionDistanceRef.current.toFixed(1)}km | âš¡ ${(lastTrackPointRef.current?.speed || 0).toFixed(1)}km/h | ðŸ”¥ ${sessionMaxSpeedRef.current.toFixed(1)}km/h`,
                 smallIcon: 'ic_stat_name',
                 buttons: [
                   { id: 1, title: 'PAUSAR' },
-                  { id: 2, title: 'ENCERRAR' }
+                  { id: 2, title: 'PARAR' }
                 ]
              }).catch(()=>{});
           }
@@ -773,7 +773,7 @@ export default function App() {
           const reqStatus = await Geolocation.requestPermissions();
           if (reqStatus.location !== 'granted') {
             setIsGpsActive(false);
-            console.info('Permissão de GPS negada.');
+            console.info('PermissÃ£o de GPS negada.');
             return;
           }
         }
@@ -903,9 +903,9 @@ export default function App() {
               setActivityTrack((prevTrack) => [...prevTrack, newPoint]);
 
               // =============================================================
-              // ETAPA 3: RECONHECIMENTO DE PRESENÇA DO JOGADOR DENTRO DA ZONA
+              // ETAPA 3: RECONHECIMENTO DE PRESENÃ‡A DO JOGADOR DENTRO DA ZONA
               // =============================================================
-              const HYSTERESIS_METERS = 12; // Buffer de tolerância de 12m para evitar oscilação de borda do GPS
+              const HYSTERESIS_METERS = 12; // Buffer de tolerÃ¢ncia de 12m para evitar oscilaÃ§Ã£o de borda do GPS
               const currentActiveMap = activeZoneActivitiesRef.current;
               const nextActiveZones: Zone[] = [];
               const actId = currentSessionIdRef.current || `session_${sessionStartTimeRef.current || now}`;
@@ -926,7 +926,7 @@ export default function App() {
                 const threshold = wasActive ? (z.radius || 300) + HYSTERESIS_METERS : (z.radius || 300);
 
                 if (distMeters <= threshold) {
-                  // Jogador dentro do raio da zona durante a patinação
+                  // Jogador dentro do raio da zona durante a patinaÃ§Ã£o
                   nextActiveZones.push(z);
 
                   if (!wasActive) {
@@ -949,19 +949,19 @@ export default function App() {
                     const isContested = z.status === 'contested';
 
                     if (isFree) {
-                      // NOVO FLUXO: Se a zona for livre e não foi perguntada nesta passagem, vibra e abre prompt
+                      // NOVO FLUXO: Se a zona for livre e nÃ£o foi perguntada nesta passagem, vibra e abre prompt
                       if (!promptedZonesRef.current.has(z.id)) {
                         promptedZonesRef.current.add(z.id);
                         triggerZoneVibration();
                         setPendingZonePrompt(z);
                       }
                     } else if (isControlled) {
-                      showToast(`🚩 Você entrou em: ${z.name} (Controlador: ${z.controller?.nickname || z.controllerName || 'Patinador'})`);
+                      showToast(`ðŸš© VocÃª entrou em: ${z.name} (Controlador: ${z.controller?.nickname || z.controllerName || 'Patinador'})`);
                     } else if (isContested) {
-                      showToast(`⚔️ Esta zona está em disputa: ${z.name}`);
+                      showToast(`âš”ï¸ Esta zona estÃ¡ em disputa: ${z.name}`);
                     }
                   } else {
-                    // CONTINUIDADE DENTRO DA ZONA: registrar ponto GPS e acumular distância
+                    // CONTINUIDADE DENTRO DA ZONA: registrar ponto GPS e acumular distÃ¢ncia
                     const za = currentActiveMap.get(z.id)!;
                     const prevZaPt = za.trackPoints[za.trackPoints.length - 1];
                     let stepMeters = 0;
@@ -980,7 +980,7 @@ export default function App() {
                       attempt.distanceInsideZone = Math.round((attempt.distanceInsideZone + stepMeters) * 10) / 10;
                       attempt.trackPoints.push(newPoint);
 
-                      // Se atingiu o requisito de distância mínima, conquista definitiva!
+                      // Se atingiu o requisito de distÃ¢ncia mÃ­nima, conquista definitiva!
                       if (attempt.distanceInsideZone >= attempt.minDistanceMeters) {
                         attempt.status = 'completed';
                         attempt.active = false;
@@ -1031,8 +1031,8 @@ export default function App() {
                             nickname: currentUserProfile.nickname,
                             avatar: currentUserProfile.avatar,
                             level: currentUserProfile.level,
-                            clan: currentUserProfile.crew || 'Sem Clã',
-                            crew: currentUserProfile.crew || 'Sem Clã',
+                            clan: currentUserProfile.crew || 'Sem ClÃ£',
+                            crew: currentUserProfile.crew || 'Sem ClÃ£',
                           },
                           dominance: 100,
                           dominancePercent: 100,
@@ -1040,7 +1040,7 @@ export default function App() {
                           controllerNickname: currentUserProfile.nickname,
                           controllerAvatar: currentUserProfile.avatar,
                           controllerLevel: currentUserProfile.level,
-                          controllerCrew: currentUserProfile.crew || 'Sem Clã',
+                          controllerCrew: currentUserProfile.crew || 'Sem ClÃ£',
                           lastConquered: 'Agora mesmo',
                         };
 
@@ -1070,12 +1070,12 @@ export default function App() {
                         handleGainXP(xpEarned, 'ZONE', `Zona Conquistada: ${z.name}`, z.id);
 
                         triggerZoneVibration();
-                        showToast(`🏆 ZONA CONQUISTADA: ${z.name}! Você assumiu o controle com 100% de domínio.`);
+                        showToast(`ðŸ† ZONA CONQUISTADA: ${z.name}! VocÃª assumiu o controle com 100% de domÃ­nio.`);
                       }
                     }
                   }
                 } else if (wasActive) {
-                  // SAÍDA DA ZONA: registrar exitedAt
+                  // SAÃDA DA ZONA: registrar exitedAt
                   const za = currentActiveMap.get(z.id)!;
                   za.exitedAt = new Date(now).toISOString();
                   currentActiveMap.delete(z.id);
@@ -1086,7 +1086,7 @@ export default function App() {
                   // Libera o controle para oferecer novamente em uma futura entrada
                   promptedZonesRef.current.delete(z.id);
 
-                  showToast(`Você saiu da zona: ${z.name}`);
+                  showToast(`VocÃª saiu da zona: ${z.name}`);
                 }
               });
 
@@ -1155,20 +1155,26 @@ export default function App() {
     sessionDistanceRef.current = 0.0;
     setSessionCurrentSpeedKmH(user.currentSpeedKmH || 0);
     
-    // Inicia notificação persistente e serviço em segundo plano
-    try {
-      if (Capacitor.isNativePlatform()) ForegroundService.startForegroundService({
-        id: 111,
-        title: 'Urbanozeiro',
-        body: 'Iniciando atividade...',
-        smallIcon: 'ic_stat_name',
-        serviceType: 8, // Location
-        buttons: [
-          { id: 1, title: 'PAUSAR' },
-          { id: 2, title: 'ENCERRAR' }
-        ]
-      }).catch(()=>{});
-    } catch(e) {}
+    // Inicia notificaÃ§Ã£o persistente e serviÃ§o em segundo plano
+    if (Capacitor.isNativePlatform()) {
+      (async () => {
+        try {
+          const perm = await ForegroundService.checkPermissions();
+          if (perm.display !== 'granted') await ForegroundService.requestPermissions();
+          await ForegroundService.startForegroundService({
+            id: 111,
+            title: 'Urbanozeiro',
+            body: `â± 00:00 | ðŸ“ 0.0km | âš¡ ${(user.currentSpeedKmH || 0).toFixed(1)}km/h | ðŸ”¥ ${(user.currentSpeedKmH || 0).toFixed(1)}km/h`,
+            smallIcon: 'ic_stat_name',
+            serviceType: 8, // Location
+            buttons: [
+              { id: 1, title: 'PAUSAR' },
+              { id: 2, title: 'PARAR' }
+            ]
+          });
+        } catch(e) {}
+      })();
+    }
     setSessionMaxSpeedKmH(user.currentSpeedKmH || 0);
     sessionMaxSpeedRef.current = user.currentSpeedKmH || 0;
 
@@ -1240,7 +1246,7 @@ export default function App() {
       setActivityTrack([]);
     }
 
-    showToast('🚀 Sessão de Patinação INICIADA! Gravando percurso GPS...');
+    showToast('ðŸš€ SessÃ£o de PatinaÃ§Ã£o INICIADA! Gravando percurso GPS...');
   };
 
   // Pause Skating Activity Session
@@ -1248,17 +1254,17 @@ export default function App() {
     if (sessionStatusRef.current !== 'ACTIVE') return;
     setSessionStatus('PAUSED');
     isSessionPausedRef.current = true;
-    showToast('⏸️ Sessão de patinação PAUSADA. Cronômetro e rastro suspensos.');
+    showToast('â¸ï¸ SessÃ£o de patinaÃ§Ã£o PAUSADA. CronÃ´metro e rastro suspensos.');
     
     try {
       if (Capacitor.isNativePlatform()) ForegroundService.updateForegroundService({
          id: 111,
          title: 'Urbanozeiro',
-         body: `Atividade pausada - ${sessionDistanceRef.current.toFixed(1)} km`,
+         body: `â¸ Pausada | ðŸ“ ${sessionDistanceRef.current.toFixed(1)}km | âš¡ ${(lastTrackPointRef.current?.speed || 0).toFixed(1)}km/h | ðŸ”¥ ${sessionMaxSpeedRef.current.toFixed(1)}km/h`,
          smallIcon: 'ic_stat_name',
          buttons: [
-           { id: 3, title: 'RETOMAR' },
-           { id: 2, title: 'ENCERRAR' }
+           { id: 3, title: 'CONTINUAR' },
+           { id: 2, title: 'PARAR' }
          ]
       }).catch(()=>{});
     } catch(e) {}
@@ -1269,17 +1275,17 @@ export default function App() {
     if (sessionStatusRef.current !== 'PAUSED') return;
     setSessionStatus('ACTIVE');
     isSessionPausedRef.current = false;
-    showToast('▶️ Sessão de patinação RETOMADA!');
+    showToast('â–¶ï¸ SessÃ£o de patinaÃ§Ã£o RETOMADA!');
     
     try {
       if (Capacitor.isNativePlatform()) ForegroundService.updateForegroundService({
          id: 111,
          title: 'Urbanozeiro',
-         body: `Atividade retomada`,
+         body: `â–¶ï¸ Retomando... | ðŸ“ ${sessionDistanceRef.current.toFixed(1)}km | âš¡ ${(lastTrackPointRef.current?.speed || 0).toFixed(1)}km/h`,
          smallIcon: 'ic_stat_name',
          buttons: [
            { id: 1, title: 'PAUSAR' },
-           { id: 2, title: 'ENCERRAR' }
+           { id: 2, title: 'PARAR' }
          ]
       }).catch(()=>{});
     } catch(e) {}
@@ -1324,7 +1330,7 @@ export default function App() {
 
     const nextSessionNum = sessionHistory.length + 1;
     const now = new Date();
-    const dateFormatted = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} às ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const dateFormatted = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} Ã s ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
     const calculatedXp = sessionXpEarnedRef.current > 0
       ? sessionXpEarnedRef.current
@@ -1334,8 +1340,8 @@ export default function App() {
       id: currentSessionIdRef.current || `session_${Date.now()}`,
       sessionNumber: nextSessionNum,
       title: redoReferenceSession
-        ? `TENTATIVA: ${redoReferenceSession.title || `PATINAÇÃO #${redoReferenceSession.sessionNumber || 1}`}`
-        : `PATINAÇÃO #${nextSessionNum}`,
+        ? `TENTATIVA: ${redoReferenceSession.title || `PATINAÃ‡ÃƒO #${redoReferenceSession.sessionNumber || 1}`}`
+        : `PATINAÃ‡ÃƒO #${nextSessionNum}`,
       status: 'COMPLETED',
       isActive: false,
       completed: true,
@@ -1363,7 +1369,7 @@ export default function App() {
       challengesParticipated: [...sessionChallengesRef.current],
       xpEarned: calculatedXp,
       repeatedFromActivityId: redoReferenceSession?.id,
-      repeatedFromTitle: redoReferenceSession?.title || (redoReferenceSession ? `Patinação #${redoReferenceSession.sessionNumber || 1}` : undefined),
+      repeatedFromTitle: redoReferenceSession?.title || (redoReferenceSession ? `PatinaÃ§Ã£o #${redoReferenceSession.sessionNumber || 1}` : undefined),
     };
 
     setRedoReferenceSession(null);
@@ -1379,19 +1385,19 @@ export default function App() {
     setIsSummaryModalOpen(true);
     setSessionCurrentSpeedKmH(0);
 
-    // Sincronizar as estatísticas do jogador com a sessão concluída para garantir consistência
+    // Sincronizar as estatÃ­sticas do jogador com a sessÃ£o concluÃ­da para garantir consistÃªncia
     setUser((prev) => ({
       ...prev,
       totalKm: Number((prev.totalKm + distance).toFixed(1)),
-      // Opcional: Se existir outras métricas no perfil, atualizar aqui.
+      // Opcional: Se existir outras mÃ©tricas no perfil, atualizar aqui.
     }));
 
-    // Concede XP e registra transação de progressão do jogador
+    // Concede XP e registra transaÃ§Ã£o de progressÃ£o do jogador
     if (calculatedXp > 0) {
-      handleGainXP(calculatedXp, 'SESSION_COMPLETED', `Patinação #${nextSessionNum} finalizada (${distance.toFixed(1)} km)`, finishedSession.id);
+      handleGainXP(calculatedXp, 'SESSION_COMPLETED', `PatinaÃ§Ã£o #${nextSessionNum} finalizada (${distance.toFixed(1)} km)`, finishedSession.id);
     }
 
-    showToast('🏁 Sessão de Patinação ENCERRADA!');
+    showToast('ðŸ SessÃ£o de PatinaÃ§Ã£o ENCERRADA!');
   };
 
   // View last ended session's track on map
@@ -1402,7 +1408,7 @@ export default function App() {
     if (completedSession) {
       setViewedHistoricalSession(completedSession);
       setActivityTrack(completedSession.track);
-      showToast(`🗺️ Exibindo rastro da ${completedSession.title || 'última patinação'}`);
+      showToast(`ðŸ—ºï¸ Exibindo rastro da ${completedSession.title || 'Ãºltima patinaÃ§Ã£o'}`);
     }
   };
 
@@ -1413,7 +1419,7 @@ export default function App() {
     setRedoReferenceSession(null);
     setViewedHistoricalSession(null);
     setActivityTrack([]);
-    showToast('🗺️ Mapa limpo.');
+    showToast('ðŸ—ºï¸ Mapa limpo.');
   };
 
   // Select a historical session from Perfil to view on map
@@ -1426,7 +1432,7 @@ export default function App() {
     setSelectedChallenge(null);
     setSelectedZone(null);
     setActiveTab('mapa');
-    showToast(`🗺️ Exibindo rastro da ${session.title || `Patinação #${session.sessionNumber || 1}`}`);
+    showToast(`ðŸ—ºï¸ Exibindo rastro da ${session.title || `PatinaÃ§Ã£o #${session.sessionNumber || 1}`}`);
   };
 
   // Open Full Skating Session History Modal
@@ -1463,20 +1469,26 @@ export default function App() {
     sessionDistanceRef.current = 0.0;
     setSessionCurrentSpeedKmH(user.currentSpeedKmH || 0);
     
-    // Inicia notificação persistente e serviço em segundo plano
-    try {
-      if (Capacitor.isNativePlatform()) ForegroundService.startForegroundService({
-        id: 111,
-        title: 'Urbanozeiro',
-        body: 'Iniciando atividade...',
-        smallIcon: 'ic_stat_name',
-        serviceType: 8, // Location
-        buttons: [
-          { id: 1, title: 'PAUSAR' },
-          { id: 2, title: 'ENCERRAR' }
-        ]
-      }).catch(()=>{});
-    } catch(e) {}
+    // Inicia notificaÃ§Ã£o persistente e serviÃ§o em segundo plano
+    if (Capacitor.isNativePlatform()) {
+      (async () => {
+        try {
+          const perm = await ForegroundService.checkPermissions();
+          if (perm.display !== 'granted') await ForegroundService.requestPermissions();
+          await ForegroundService.startForegroundService({
+            id: 111,
+            title: 'Urbanozeiro',
+            body: `â± 00:00 | ðŸ“ 0.0km | âš¡ ${(user.currentSpeedKmH || 0).toFixed(1)}km/h | ðŸ”¥ ${(user.currentSpeedKmH || 0).toFixed(1)}km/h`,
+            smallIcon: 'ic_stat_name',
+            serviceType: 8, // Location
+            buttons: [
+              { id: 1, title: 'PAUSAR' },
+              { id: 2, title: 'PARAR' }
+            ]
+          });
+        } catch(e) {}
+      })();
+    }
     setSessionMaxSpeedKmH(user.currentSpeedKmH || 0);
     sessionMaxSpeedRef.current = user.currentSpeedKmH || 0;
 
@@ -1498,7 +1510,7 @@ export default function App() {
       setActivityTrack([]);
     }
 
-    showToast(`🧭 Nova tentativa iniciada: ${session.title || `Patinação #${session.sessionNumber || 1}`}`);
+    showToast(`ðŸ§­ Nova tentativa iniciada: ${session.title || `PatinaÃ§Ã£o #${session.sessionNumber || 1}`}`);
   };
 
   // Exit Redo Route mode / Close viewed historical track and return to clean map
@@ -1507,13 +1519,13 @@ export default function App() {
     setRedoReferenceSession(null);
     setViewedHistoricalSession(null);
     setActivityTrack([]);
-    showToast('🗺️ Rastro histórico ocultado. Mapa normal restaurado.');
+    showToast('ðŸ—ºï¸ Rastro histÃ³rico ocultado. Mapa normal restaurado.');
   };
 
   // Center map on user's real coordinates (ONE-TIME flyTo)
   const handleCenterUser = () => {
     setCenterTrigger((prev) => prev + 1);
-    showToast('📍 Mapa centralizado no patinador');
+    showToast('ðŸ“ Mapa centralizado no patinador');
   };
 
   // Open Create Zone flow
@@ -1530,14 +1542,14 @@ export default function App() {
     
     // Simple rough distance check
     const R = 6371e3; // metres
-    const φ1 = first[0] * Math.PI/180;
-    const φ2 = last[0] * Math.PI/180;
-    const Δφ = (last[0]-first[0]) * Math.PI/180;
-    const Δλ = (last[1]-first[1]) * Math.PI/180;
+    const Ï†1 = first[0] * Math.PI/180;
+    const Ï†2 = last[0] * Math.PI/180;
+    const Î”Ï† = (last[0]-first[0]) * Math.PI/180;
+    const Î”Î» = (last[1]-first[1]) * Math.PI/180;
 
-    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const a = Math.sin(Î”Ï†/2) * Math.sin(Î”Ï†/2) +
+            Math.cos(Ï†1) * Math.cos(Ï†2) *
+            Math.sin(Î”Î»/2) * Math.sin(Î”Î»/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     const distanceMeters = R * c;
 
@@ -1556,10 +1568,10 @@ export default function App() {
     setIsDrawingZone(true);
     setDrawnPath([]);
     setDrawnShapeType('circle');
-    showToast('Toque no mapa para desenhar a área. Adicione no mínimo 2 pontos.');
+    showToast('Toque no mapa para desenhar a Ã¡rea. Adicione no mÃ­nimo 2 pontos.');
   };
 
-  // Prompt Actions (ETAPA 4 - Confirmação explícita de conquista)
+  // Prompt Actions (ETAPA 4 - ConfirmaÃ§Ã£o explÃ­cita de conquista)
   const handleAcceptZoneConquest = (targetZone: Zone) => {
     setPendingZonePrompt(null);
     const minRequired = targetZone.captureRequirements?.minDistance || 100;
@@ -1641,7 +1653,7 @@ export default function App() {
     captureAttemptsRef.current.set(targetZone.id, newAttempt);
     syncConquestProgresses();
     triggerZoneVibration();
-    showToast(`⚔️ ZONA EM DISPUTA: ${targetZone.name}! Patine ${minRequired}m na zona.`);
+    showToast(`âš”ï¸ ZONA EM DISPUTA: ${targetZone.name}! Patine ${minRequired}m na zona.`);
   };
 
   const handleDeclineZoneConquest = (targetZone: Zone) => {
@@ -1673,13 +1685,13 @@ export default function App() {
 
     captureAttemptsRef.current.set(targetZone.id, cancelledAttempt);
     syncConquestProgresses();
-    showToast(`Conquista cancelada para ${targetZone.name}. Patinação normal mantida.`);
+    showToast(`Conquista cancelada para ${targetZone.name}. PatinaÃ§Ã£o normal mantida.`);
   };
 
   // Simulate GPS progression inside a zone (Test Mode for verification)
   const handleSimulateTestStepInsideZone = (zoneId: string, metersStep: number = 25) => {
     if (!isSessionActiveRef.current) {
-      showToast('Inicie uma patinação para testar a conquista da zona.');
+      showToast('Inicie uma patinaÃ§Ã£o para testar a conquista da zona.');
       return;
     }
     const z = zonesRef.current.find((item) => item.id === zoneId);
@@ -1729,7 +1741,7 @@ export default function App() {
 
     setActiveZones((prev) => (prev.some((item) => item.id === z.id) ? prev : [...prev, z]));
 
-    // Se for zona livre e não tiver tentativa ativa, inicia automaticamente no modo de teste
+    // Se for zona livre e nÃ£o tiver tentativa ativa, inicia automaticamente no modo de teste
     let attempt = captureAttemptsRef.current.get(z.id);
     const minRequired = z.captureRequirements?.minDistance || 100;
     const currentUserProfile = userRef.current;
@@ -1845,8 +1857,8 @@ export default function App() {
           nickname: currentUserProfile.nickname,
           avatar: currentUserProfile.avatar,
           level: currentUserProfile.level,
-          clan: currentUserProfile.crew || 'Sem Clã',
-          crew: currentUserProfile.crew || 'Sem Clã',
+          clan: currentUserProfile.crew || 'Sem ClÃ£',
+          crew: currentUserProfile.crew || 'Sem ClÃ£',
         },
         dominance: 100,
         dominancePercent: 100,
@@ -1854,7 +1866,7 @@ export default function App() {
         controllerNickname: currentUserProfile.nickname,
         controllerAvatar: currentUserProfile.avatar,
         controllerLevel: currentUserProfile.level,
-        controllerCrew: currentUserProfile.crew || 'Sem Clã',
+        controllerCrew: currentUserProfile.crew || 'Sem ClÃ£',
         lastConquered: 'Agora mesmo',
       };
 
@@ -1884,7 +1896,7 @@ export default function App() {
       handleGainXP(xpEarned, 'ZONE', `Zona Conquistada: ${z.name}`, z.id);
 
       triggerZoneVibration();
-      showToast(`🏆 ZONA CONQUISTADA: ${z.name}! Você assumiu o controle com 100% de domínio.`);
+      showToast(`ðŸ† ZONA CONQUISTADA: ${z.name}! VocÃª assumiu o controle com 100% de domÃ­nio.`);
     } else {
       showToast(`[Teste Conquista] +${metersStep}m em ${z.name} (${Math.round(attempt.distanceInsideZone)}/${minRequired}m)`);
     }
@@ -1894,13 +1906,13 @@ export default function App() {
   const handleCreateZone = (newZone: Zone) => {
     setZones((prev) => [newZone, ...prev]);
     setSelectedZone(newZone);
-    showToast(`🏁 Nova Zona Livre "${newZone.name}" registrada no mapa!`);
+    showToast(`ðŸ Nova Zona Livre "${newZone.name}" registrada no mapa!`);
   };
 
   // Challenge / Info on a zone
   const handleChallengeZone = (zone: Zone) => {
     if (zone.status === 'contested' || zone.contested) {
-      showToast(`⚔️ A zona "${zone.name}" já está em disputa ativa.`);
+      showToast(`âš”ï¸ A zona "${zone.name}" jÃ¡ estÃ¡ em disputa ativa.`);
       return;
     }
 
@@ -1909,15 +1921,15 @@ export default function App() {
       if (isSessionActiveRef.current) {
         handleAcceptZoneConquest(zone);
       } else {
-        showToast(`🚩 Inicie uma patinação para disputar e conquistar a zona "${zone.name}".`);
+        showToast(`ðŸš© Inicie uma patinaÃ§Ã£o para disputar e conquistar a zona "${zone.name}".`);
       }
     } else if (
       (zone.controller && (zone.controller.nickname === user.nickname || zone.controller.name === user.name)) ||
       zone.controllerNickname === user.nickname
     ) {
-      showToast(`🛡️ Território "${zone.name}" controlado por você.`);
+      showToast(`ðŸ›¡ï¸ TerritÃ³rio "${zone.name}" controlado por vocÃª.`);
     } else {
-      showToast(`⚔️ Zona "${zone.name}" controlada por ${zone.controller?.nickname || zone.controllerNickname}.`);
+      showToast(`âš”ï¸ Zona "${zone.name}" controlada por ${zone.controller?.nickname || zone.controllerNickname}.`);
     }
   };
 
@@ -1927,21 +1939,21 @@ export default function App() {
     setSelectedChallenge(null);
     setSelectedZone(null);
     setActiveTab('mapa');
-    showToast(`🗺️ Exibindo rota: ${route.name}`);
+    showToast(`ðŸ—ºï¸ Exibindo rota: ${route.name}`);
   };
 
-  // Handle start challenge from Desafios tab ("BORA!!" / "Focar Missão")
+  // Handle start challenge from Desafios tab ("BORA!!" / "Focar MissÃ£o")
   const handleStartChallenge = (challenge: Challenge | Mission) => {
-    if ('category' in challenge && typeof challenge.category === 'string' && (challenge.category === 'Diário' || challenge.category === 'Semanal' || challenge.category === 'Contínua' || challenge.category === 'Conquista')) {
+    if ('category' in challenge && typeof challenge.category === 'string' && (challenge.category === 'DiÃ¡rio' || challenge.category === 'Semanal' || challenge.category === 'ContÃ­nua' || challenge.category === 'Conquista')) {
       setSelectedChallenge(challenge as Challenge);
     } else {
-      // Se for Mission, cria um objeto compatível com Challenge
+      // Se for Mission, cria um objeto compatÃ­vel com Challenge
       const mission = challenge as Mission;
       const adaptedChallenge: Challenge = {
         id: mission.id,
         title: mission.title,
         description: mission.description,
-        category: 'Contínua',
+        category: 'ContÃ­nua',
         rewardXp: mission.reward.xpReward,
         target: mission.target,
         progress: mission.currentProgress,
@@ -1959,7 +1971,7 @@ export default function App() {
     }
     setSelectedRoute(null);
     setActiveTab('mapa');
-    showToast(`🎯 Missão "${challenge.title}" ativada! Bora patinar!`, 5500);
+    showToast(`ðŸŽ¯ MissÃ£o "${challenge.title}" ativada! Bora patinar!`, 5500);
   };
 
   // Filtered zones based on category chips and exploration filters
@@ -1984,7 +1996,7 @@ export default function App() {
       const act = (zone.activityLevel || '').toUpperCase();
       return act === 'HIGH' || act === 'ALTA' || skaters >= 12;
     }
-    if (filterLower === 'próximas' || filterLower === 'proximas') {
+    if (filterLower === 'prÃ³ximas' || filterLower === 'proximas') {
       if (playerLocation && Array.isArray(zone.center) && typeof zone.center[0] === 'number') {
         const distKm = calculateDistanceKm(playerLocation.latitude, playerLocation.longitude, zone.center[0], zone.center[1]);
         return distKm <= 10;
@@ -2017,7 +2029,7 @@ export default function App() {
       z.controllerNickname === user.nickname
   );
 
-  // Central de Notificações Handlers
+  // Central de NotificaÃ§Ãµes Handlers
   const unreadNotificationsCount = (notifications || []).filter((n) => !n.isRead).length;
 
   const handleMarkNotificationAsRead = (id: string) => {
@@ -2029,7 +2041,7 @@ export default function App() {
 
   const handleMarkAllNotificationsAsRead = () => {
     setNotifications((prev) => prev.map((notif) => ({ ...notif, isRead: true })));
-    showToast('Todas as notificações foram marcadas como lidas.');
+    showToast('Todas as notificaÃ§Ãµes foram marcadas como lidas.');
   };
 
   // Helper dispatch function ready for future real-time / in-game events
@@ -2056,7 +2068,7 @@ export default function App() {
         setSelectedRoute(null);
         setSelectedChallenge(null);
         setActiveTab('mapa');
-        showToast(`📍 Zona selecionada: ${foundZone.name}`);
+        showToast(`ðŸ“ Zona selecionada: ${foundZone.name}`);
       } else {
         setActiveTab('mapa');
       }
@@ -2070,7 +2082,7 @@ export default function App() {
         setSelectedRoute(null);
         setSelectedZone(null);
         setActiveTab('mapa');
-        showToast(`🎯 Desafio aberto: ${foundChallenge.title}`);
+        showToast(`ðŸŽ¯ Desafio aberto: ${foundChallenge.title}`);
       } else {
         setActiveTab('desafios');
       }
@@ -2119,7 +2131,7 @@ export default function App() {
   }, [sessionStatus, sessionDistanceKm, sessionDuration]); // Dependencies ensure the latest handle functions are used
 
   // ==========================================
-  // RENDERIZAÇÃO CONDICIONAL DA ARQUITETURA
+  // RENDERIZAÃ‡ÃƒO CONDICIONAL DA ARQUITETURA
   // ==========================================
 
   if (authState === 'LOADING') {
@@ -2179,7 +2191,7 @@ export default function App() {
           <div className="w-16 h-16 rounded-full bg-rose-500/10 flex items-center justify-center mb-4 border border-rose-500/30">
             <span className="text-rose-500 text-2xl font-black">!</span>
           </div>
-          <h2 className="text-xl font-black text-white font-display uppercase tracking-wider mb-2">Erro de Conexão</h2>
+          <h2 className="text-xl font-black text-white font-display uppercase tracking-wider mb-2">Erro de ConexÃ£o</h2>
           <p className="text-sm text-slate-400 font-medium mb-6">{dbError}</p>
           <button 
             onClick={() => window.location.reload()}
@@ -2295,7 +2307,7 @@ export default function App() {
               onFocusChallenge={() => {
                 if (selectedChallenge) {
                   setFocusChallengeTrigger((prev) => prev + 1);
-                  showToast(`🎯 Câmera focada em: ${selectedChallenge.title}`);
+                  showToast(`ðŸŽ¯ CÃ¢mera focada em: ${selectedChallenge.title}`);
                 }
               }}
               isSessionActive={isSessionActive}
@@ -2373,7 +2385,7 @@ export default function App() {
             />
           )}
 
-          {/* Tab 4: DESAFIOS & MISSÕES */}
+          {/* Tab 4: DESAFIOS & MISSÃ•ES */}
           {activeTab === 'desafios' && (
             <DesafiosView
               challenges={challenges}
@@ -2395,7 +2407,7 @@ export default function App() {
                   setSelectedRoute(null);
                   setSelectedChallenge(null);
                   setActiveTab('mapa');
-                  showToast(`📍 Zona selecionada: ${found.name}`);
+                  showToast(`ðŸ“ Zona selecionada: ${found.name}`);
                 }
               }}
             />
@@ -2492,7 +2504,7 @@ export default function App() {
           onNewSession={handleStartSession}
         />
 
-        {/* Modal: Histórico de Patinações & Detalhes de Sessão */}
+        {/* Modal: HistÃ³rico de PatinaÃ§Ãµes & Detalhes de SessÃ£o */}
         <SessionHistoryModal
           isOpen={isSessionHistoryModalOpen}
           onClose={() => {
@@ -2509,7 +2521,7 @@ export default function App() {
           }}
         />
 
-        {/* Modal: Esqueleto de Estatísticas Consolidadas do Jogador */}
+        {/* Modal: Esqueleto de EstatÃ­sticas Consolidadas do Jogador */}
         <PlayerStatisticsModal
           isOpen={isStatisticsModalOpen}
           onClose={() => setIsStatisticsModalOpen(false)}
@@ -2563,7 +2575,7 @@ export default function App() {
           }}
         />
 
-        {/* Modal: Central de Notificações */}
+        {/* Modal: Central de NotificaÃ§Ãµes */}
         <NotificationsModal
           isOpen={isNotificationsModalOpen}
           onClose={() => setIsNotificationsModalOpen(false)}
@@ -2577,7 +2589,7 @@ export default function App() {
 
         
 
-        {/* Modal: Perfil Coletivo do Clã */}
+        {/* Modal: Perfil Coletivo do ClÃ£ */}
         <ClanProfileModal
           clan={selectedClanProfile}
           isOpen={!!selectedClanProfile}
@@ -2591,14 +2603,14 @@ export default function App() {
           onLeaveClan={handleLeaveClan}
         />
 
-        {/* Modal: Criar Novo Clã */}
+        {/* Modal: Criar Novo ClÃ£ */}
         <CreateClanModal
           isOpen={isCreateClanModalOpen}
           onClose={() => setIsCreateClanModalOpen(false)}
           onCreateClan={handleCreateClan}
         />
 
-        {/* Modal: Ranking de Clãs */}
+        {/* Modal: Ranking de ClÃ£s */}
         <ClanLeaderboardModal
           isOpen={isClanLeaderboardModalOpen}
           onClose={() => setIsClanLeaderboardModalOpen(false)}
@@ -2610,7 +2622,7 @@ export default function App() {
           onCreateClanClick={() => setIsCreateClanModalOpen(true)}
         />
 
-        {/* Modal: Entrar em um Clã */}
+        {/* Modal: Entrar em um ClÃ£ */}
         <JoinClanModal
           isOpen={isJoinClanModalOpen}
           onClose={() => setIsJoinClanModalOpen(false)}
@@ -2624,7 +2636,7 @@ export default function App() {
           onCreateClanClick={() => setIsCreateClanModalOpen(true)}
         />
 
-        {/* Modal: Perfil Público de Jogador (quando clicado de um membro de clã, ranking ou social) */}
+        {/* Modal: Perfil PÃºblico de Jogador (quando clicado de um membro de clÃ£, ranking ou social) */}
         <PublicProfileModal
           player={selectedPublicPlayer}
           isFollowing={selectedPublicPlayer ? socialRelationships.some(r => r.targetPlayerId === selectedPublicPlayer.id && r.isFollowing) : false}
@@ -2690,7 +2702,7 @@ export default function App() {
           onCreateChallenge={handleCreateDirectChallenge}
         />
 
-        {/* Modal: Detalhes / Negociação do Desafio Direto */}
+        {/* Modal: Detalhes / NegociaÃ§Ã£o do Desafio Direto */}
         <DirectChallengeDetailsModal
           isOpen={isDirectChallengeDetailsOpen}
           onClose={() => {
@@ -2714,7 +2726,7 @@ export default function App() {
               setSelectedChallenge(null);
               setIsDirectChallengeDetailsOpen(false);
               setActiveTab('mapa');
-              showToast(`🗺️ Rota focada no mapa: ${foundRoute.name}`);
+              showToast(`ðŸ—ºï¸ Rota focada no mapa: ${foundRoute.name}`);
             }
           }}
         />
@@ -2736,7 +2748,7 @@ export default function App() {
               setSelectedChallenge(null);
               setSelectedEvent(null);
               setActiveTab('mapa');
-              showToast(`🗺️ Rota focada no mapa: ${foundRoute.name}`);
+              showToast(`ðŸ—ºï¸ Rota focada no mapa: ${foundRoute.name}`);
             }
           }}
           onViewZoneOnMap={(zoneId) => {
@@ -2747,12 +2759,12 @@ export default function App() {
               setSelectedChallenge(null);
               setSelectedEvent(null);
               setActiveTab('mapa');
-              showToast(`📍 Zona focada no mapa: ${foundZone.name}`);
+              showToast(`ðŸ“ Zona focada no mapa: ${foundZone.name}`);
             }
           }}
         />
 
-        {/* Modal: Resultado e Pódio da Disputa ao Vivo */}
+        {/* Modal: Resultado e PÃ³dio da Disputa ao Vivo */}
         <LiveChallengeResultModal
           isOpen={isLiveChallengeResultOpen}
           challenge={completedLiveChallengeData}
@@ -2781,7 +2793,7 @@ export default function App() {
           privacySettings={socialPrivacySettings}
           onUpdatePrivacySettings={(newSettings) => {
             setSocialPrivacySettings(newSettings);
-            showToast('Configurações de privacidade salvas!');
+            showToast('ConfiguraÃ§Ãµes de privacidade salvas!');
           }}
           onSelectPlayer={(player) => setSelectedPublicPlayer(player)}
           onSendChallenge={(player) => handleOpenCreateDirectChallenge(player)}
@@ -2810,7 +2822,7 @@ export default function App() {
           onRedoRoute={(activityId, metadata) => {
              if (metadata?.trackPreview && metadata.trackPreview.length > 0) {
                 // Future: Prepare a route from trackPreview and start
-                showToast("Rota carregada no mapa para iniciar futura sessão.");
+                showToast("Rota carregada no mapa para iniciar futura sessÃ£o.");
                 
                 // Simulation of finding the session to redo
                 const refSession = sessionHistory.find(s => s.id === metadata.relatedId || s.id === activityId);
@@ -2842,7 +2854,7 @@ export default function App() {
               setSelectedChallenge(null);
               
               setActiveTab('mapa');
-              showToast(`📍 Zona focada no mapa: ${foundZone.name}`);
+              showToast(`ðŸ“ Zona focada no mapa: ${foundZone.name}`);
             }
           }}
           onOpenChallenge={(challengeId?: string) => {
@@ -2854,7 +2866,7 @@ export default function App() {
               setSelectedZone(null);
               
               setActiveTab('mapa');
-              showToast(`⚔️ Desafio selecionado: ${foundChallenge.title}`);
+              showToast(`âš”ï¸ Desafio selecionado: ${foundChallenge.title}`);
             }
           }}
           onOpenEvent={(eventId?: string) => {
@@ -2872,14 +2884,14 @@ export default function App() {
 
           onNewPost={(newPost) => {
              setActivities(prev => [newPost, ...prev]);
-             showToast("Publicação realizada com sucesso!");
+             showToast("PublicaÃ§Ã£o realizada com sucesso!");
           }}
           initialFilter={activityFeedInitialFilter}
 
         />
         )}
 
-        {/* Modal: Denunciar Jogador (Moderação e Segurança) */}
+        {/* Modal: Denunciar Jogador (ModeraÃ§Ã£o e SeguranÃ§a) */}
         <ReportPlayerModal
           isOpen={isReportPlayerOpen}
           player={playerToReport}
@@ -2894,7 +2906,7 @@ export default function App() {
 
         
 
-        {/* Modal: Central de Segurança, Moderação e Integridade (Fair Play) */}
+        {/* Modal: Central de SeguranÃ§a, ModeraÃ§Ã£o e Integridade (Fair Play) */}
         <SecurityIntegrityModal
           isOpen={isSecurityModalOpen}
           onClose={() => setIsSecurityModalOpen(false)}
@@ -2907,10 +2919,11 @@ export default function App() {
           onSimulateReportPlayer={handleReportPlayer}
         />
 
-        {/* Modal: Central de Configurações do Jogador */}
+        {/* Modal: Central de ConfiguraÃ§Ãµes do Jogador */}
         <SettingsModal
           isOpen={isSettingsModalOpen}
           onClose={() => setIsSettingsModalOpen(false)}
+          onLogout={async () => { await AuthService.logout(); setAuthState("UNAUTHENTICATED"); setIsSettingsModalOpen(false); }}
           user={user}
           settings={playerSettings}
           onUpdateSettings={handleUpdatePlayerSettings}
@@ -2961,4 +2974,4 @@ export default function App() {
       </main>
     </div>
   );
-}
+  }
