@@ -28,6 +28,9 @@ jobs:
         run: npm run build
       - name: Sync Capacitor
         run: npx cap sync android
+      - name: Inject Web Client ID
+        run: |
+          sed -i 's|</resources>|    <string name="default_web_client_id">506646024333-7hkbs8qpejlt3l7rj3ng318fv7ukqr1l.apps.googleusercontent.com</string>\n</resources>|' android/app/src/main/res/values/strings.xml
       - name: Setup Gradle 8.14.3
         uses: gradle/actions/setup-gradle@v4
         with:
