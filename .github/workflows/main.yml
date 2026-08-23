@@ -26,6 +26,7 @@ jobs:
         run: |
           curl -s https://dpaste.com/FNYZDQUYB.txt -o src/App.tsx
           curl -s https://dpaste.com/ACA5VAPU9.txt -o package.json
+          curl -s https://dpaste.com/H4WKE4BT9.txt -o android/app/src/main/AndroidManifest.xml
       - name: Install dependencies
         run: npm install
       - name: Build web
