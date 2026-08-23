@@ -1,46 +1,38 @@
 name: Build Android APK
-
 "on":
   workflow_dispatch:
-
 jobs:
   build-apk:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+      - name: Create debug.keystore
+        run: |
+          echo "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" | base64 -d > android/app/debug.keystore
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
-
       - name: Install dependencies
         run: npm install
-
       - name: Build web
         run: npm run build
-
       - name: Sync Capacitor
         run: npx cap sync android
-
       - name: Setup Gradle 8.14.3
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.14.3'
-
       - name: Build APK
         run: cd android && gradle assembleDebug
       - name: Print Debug Signature
         run: cd android && gradle signingReport
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
