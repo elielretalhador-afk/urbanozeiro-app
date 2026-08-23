@@ -1,0 +1,9 @@
+ext {
+    rgcfaIncludeFacebook = true
+}
+task checkVar {
+    doLast {
+        def val = project.hasProperty('rgcfaIncludeFacebook') ? rootProject.ext.rgcfaIncludeFacebook : false
+        println "Val: " + val
+    }
+}

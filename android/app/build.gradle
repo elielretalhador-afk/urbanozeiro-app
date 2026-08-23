@@ -40,6 +40,13 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+
+    // Force include dependencies for Firebase Authentication plugin
+    implementation "com.google.android.gms:play-services-auth:21.0.0"
+    implementation "androidx.credentials:credentials:1.2.1"
+    implementation "androidx.credentials:credentials-play-services-auth:1.2.1"
+    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.0"
+    implementation "com.facebook.android:facebook-login:17.0.0"
 }
 
 apply from: 'capacitor.build.gradle'
@@ -48,7 +55,9 @@ try {
     def servicesJSON = file('google-services.json')
     if (servicesJSON.text) {
         apply plugin: 'com.google.gms.google-services'
+    } else {
+        throw new GradleException("google-services.json is empty!")
     }
 } catch(Exception e) {
-    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+    throw new GradleException("google-services.json is MISSING! Please ensure it is exported and committed to GitHub. " + e.getMessage())
 }

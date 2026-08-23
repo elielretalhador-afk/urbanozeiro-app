@@ -1,0 +1,8 @@
+ext {
+    myVar = true
+}
+task checkVar {
+    doLast {
+        println "hasProperty: " + project.hasProperty('myVar')
+    }
+}
