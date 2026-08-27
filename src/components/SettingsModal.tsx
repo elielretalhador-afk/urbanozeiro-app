@@ -40,6 +40,7 @@ import {
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onLogout: () => void;
   user: UserProfile;
   settings: PlayerSettings;
   onUpdateSettings: (newSettings: PlayerSettings) => void;
@@ -52,6 +53,7 @@ interface SettingsModalProps {
 export const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
+  onLogout,
   user,
   settings,
   onUpdateSettings,
@@ -259,9 +261,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </p>
                 <button
                   type="button"
-                  onClick={() =>
-                    triggerFeedback('Sessão segura mantida localmente no dispositivo.')
-                  }
+                  onClick={onLogout}
                   className="w-full py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-300 text-xs font-bold font-mono-stat uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />

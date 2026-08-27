@@ -1,8 +1,0 @@
-ext {
-    myVar = true
-}
-task checkVar {
-    doLast {
-        println "myVar: " + (project.hasProperty('myVar') ? rootProject.ext.myVar : false)
-    }
-}

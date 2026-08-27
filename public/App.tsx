@@ -1542,14 +1542,14 @@ export default function App() {
     
     // Simple rough distance check
     const R = 6371e3; // metres
-    const lat1 = first[0] * Math.PI/180;
-    const lat2 = last[0] * Math.PI/180;
-    const dLat = (last[0]-first[0]) * Math.PI/180;
-    const dLon = (last[1]-first[1]) * Math.PI/180;
+    const φ1 = first[0] * Math.PI/180;
+    const φ2 = last[0] * Math.PI/180;
+    const Δφ = (last[0]-first[0]) * Math.PI/180;
+    const Δλ = (last[1]-first[1]) * Math.PI/180;
 
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1) * Math.cos(lat2) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     const distanceMeters = R * c;
 
