@@ -253,3 +253,8 @@
   backdrop-filter: blur(12px);
 }
 
+
+/* CSS filter to turn standard OpenStreetMap tiles into a Dark Mode map */
+.map-tiles-dark-filter {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
