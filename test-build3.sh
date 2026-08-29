@@ -1,74 +1,15 @@
-name: Build Android APK
-"on":
-  workflow_dispatch:
-jobs:
-  build-apk:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
 
-      - name: Fix Greek Characters in App.tsx (Robust Mode)
-        run: |
-          node -e "
-            const fs = require('fs');
-            const path = 'src/App.tsx';
-            if (fs.existsSync(path)) {
-              let lines = fs.readFileSync(path, 'utf8').split(/\r?\n/);
-              for (let i = 0; i < lines.length; i++) {
-                if (lines[i].includes('// Simple rough distance check')) {
-                  lines[i+2] = '    const lat1 = first[0] * Math.PI/180;';
-                  lines[i+3] = '    const lat2 = last[0] * Math.PI/180;';
-                  lines[i+4] = '    const dLat = (last[0]-first[0]) * Math.PI/180;';
-                  lines[i+5] = '    const dLon = (last[1]-first[1]) * Math.PI/180;';
-                  lines[i+7] = '    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +';
-                  lines[i+8] = '            Math.cos(lat1) * Math.cos(lat2) *';
-                  lines[i+9] = '            Math.sin(dLon/2) * Math.sin(dLon/2);';
-                }
-              }
-              fs.writeFileSync(path, lines.join('\n'));
-              console.log('App.tsx cleaned successfully.');
-            }
-          "
+rm -rf android
+npm run build
+npx cap add android
+npx cap sync android
 
-      - name: Install dependencies
-        run: npm install
-        
-      - name: Build web
-        run: npm run build
-        
-      - name: Add Android Platform
-        run: |
-          npx cap add android || echo "Platform already exists"
-          # Ensure a completely fresh Capacitor environment
-          rm -rf android
-          npm install
-          npm run build
-          npx cap add android || true
-          npx cap sync android
-        
-      - name: Generate Debug Keystore
-        run: |
-          mkdir -p android/app
-          keytool -genkey -v -keystore android/app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
-          
-      - name: Create google-services.json
-        run: |
-          echo "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiNTA2NjQ2MDI0MzMzIiwKICAgICJwcm9qZWN0X2lkIjogImdlbi1sYW5nLWNsaWVudC0wNDk1MzU0NDgxIiwKICAgICJzdG9yYWdlX2J1Y2tldCI6ICJnZW4tbGFuZy1jbGllbnQtMDQ5NTM1NDQ4MS5maXJlYmFzZXN0b3JhZ2UuYXBwIgogIH0sCiAgImNsaWVudCI6IFsKICAgIHsKICAgICAgImNsaWVudF9pbmZvIjogewogICAgICAgICJtb2JpbGVzZGtfYXBwX2lkIjogIjE6NTA2NjQ2MDI0MzMzOmFuZHJvaWQ6ZGNkMjNiZDY5ODIxYzI5NGFkNTJjNCIsCiAgICAgICAgImFuZHJvaWRfY2xpZW50X2luZm8iOiB7CiAgICAgICAgICAicGFja2FnZV9uYW1lIjogImNvbS51cmJhbm96ZWlyby5hcHAiCiAgICAgICAgfQogICAgICB9LAogICAgICAib2F1dGhfY2xpZW50IjogWwogICAgICAgIHsKICAgICAgICAgICJjbGllbnRfaWQiOiAiNTA2NjQ2MDI0MzMzLW8xcXFibGRzNmYwNmk2a2NvcTgwbG9oZGJnMzZlbzVkLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwKICAgICAgICAgICJjbGllbnRfdHlwZSI6IDEsCiAgICAgICAgICAiYW5kcm9pZF9pbmZvIjogewogICAgICAgICAgICAicGFja2FnZV9uYW1lIjogImNvbS51cmJhbm96ZWlyby5hcHAiLAogICAgICAgICAgICAiY2VydGlmaWNhdGVfaGFzaCI6ICJmMDYyOGEyYzMyNzgxNDA4ZmRkOGI4NTNlM2I4MjM2MGE5MTMwM2QxIgogICAgICAgICAgfQogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgImNsaWVudF9pZCI6ICI1MDY2NDYwMjQzMzMtN2hrYnM4cXBlamx0M2w3cmozbmczMThmdjd1a3FyMWwuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLAogICAgICAgICAgImNsaWVudF90eXBlIjogMwogICAgICAgIH0KICAgICAgXSwKICAgICAgImFwaV9rZXkiOiBbCiAgICAgICAgewogICAgICAgICAgImN1cnJlbnRfa2V5IjogIkFJemFTeUJTYnZoQl9HMWJGM1ZBUHNIU010aUlvcDlnN1NuTm9zRSIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJzZXJ2aWNlcyI6IHsKICAgICAgICAiYXBwaW52aXRlX3NlcnZpY2UiOiB7CiAgICAgICAgICAib3RoZXJfcGxhdGZvcm1fb2F1dGhfY2xpZW50IjogWwogICAgICAgICAgICB7CiAgICAgICAgICAgICAgImNsaWVudF9pZCI6ICI1MDY2NDYwMjQzMzMtN2hrYnM4cXBlamx0M2w3cmozbmczMThmdjd1a3FyMWwuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLAogICAgICAgICAgICAgICJjbGllbnRfdHlwZSI6IDMKICAgICAgICAgICAgfQogICAgICAgICAgXQogICAgICAgIH0KICAgICAgfQogICAgfQogIF0sCiAgImNvbmZpZ3VyYXRpb25fdmVyc2lvbiI6ICIxIgp9Cg==" | base64 -d > android/app/google-services.json
-              
-      - name: Fix Android Files Directly
-        run: |
+mkdir -p android/app
+keytool -genkey -v -keystore android/app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+
+# (I will just reuse the android files creation logic that is inside main.yml)
           cat << 'INNER_EOF' > android/app/src/main/res/values/strings.xml
           <?xml version='1.0' encoding='utf-8'?>
           <resources>
@@ -82,6 +23,26 @@ jobs:
           </resources>
           INNER_EOF
           
+          cat << 'INNER_EOF' > android/variables.gradle
+          ext {
+              minSdkVersion = 24
+              compileSdkVersion = 35
+              targetSdkVersion = 35
+              androidxActivityVersion = '1.11.0'
+              androidxAppCompatVersion = '1.7.1'
+              androidxCoordinatorLayoutVersion = '1.3.0'
+              androidxCoreVersion = '1.17.0'
+              androidxFragmentVersion = '1.8.9'
+              coreSplashScreenVersion = '1.2.0'
+              androidxWebkitVersion = '1.14.0'
+              junitVersion = '4.13.2'
+              androidxJunitVersion = '1.3.0'
+              androidxEspressoCoreVersion = '3.7.0'
+              cordovaAndroidVersion = '14.0.1'
+              rgcfaIncludeGoogle = true
+              rgcfaIncludeFacebook = true
+          }
+          INNER_EOF
           
           cat << 'INNER_EOF' > android/app/build.gradle
           apply plugin: 'com.android.application'
@@ -205,19 +166,5 @@ jobs:
           </manifest>
           INNER_EOF
           
-      - name: Make gradlew executable
-        run: cd android && chmod +x gradlew
-        
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.14.3'
-          
-      - name: Build APK
-        run: cd android && ./gradlew assembleDebug --stacktrace
-        
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: urbanozeiro-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+cd android && chmod +x gradlew && ./gradlew assembleDebug --stacktrace
