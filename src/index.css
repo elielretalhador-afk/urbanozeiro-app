@@ -256,3 +256,11 @@
 
 
 
+
+/* CSS filter to turn standard OpenStreetMap tiles into a Dark Mode map */
+/* Optimized for mobile GPUs: applying to the pane instead of individual tiles */
+.leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  transform: translateZ(0);
+  will-change: filter;
+}
