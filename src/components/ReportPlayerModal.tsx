@@ -68,7 +68,7 @@ export const ReportPlayerModal: React.FC<ReportPlayerModalProps> = ({
   return (
     <div
       id="modal-report-player"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80  animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div

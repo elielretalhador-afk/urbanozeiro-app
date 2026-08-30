@@ -124,7 +124,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
     (isQueryEmpty ? searchResults.suggestions.popularRoutes.length > 0 : searchResults.routes.length > 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85  animate-in fade-in duration-200">
       <div
         id="search-discovery-modal"
         className="w-full max-w-lg max-h-[92vh] flex flex-col rounded-3xl bg-[#080d14] border-2 border-emerald-500/40 shadow-[0_15px_60px_rgba(0,255,102,0.25)] overflow-hidden text-white font-sans relative"

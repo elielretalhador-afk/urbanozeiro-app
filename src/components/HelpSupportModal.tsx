@@ -61,7 +61,7 @@ export const HelpSupportModal: React.FC<HelpSupportModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-[#080d14]/90 backdrop-blur-md" onClick={onClose} />
+      <div className="absolute inset-0 bg-[#080d14]/90 " onClick={onClose} />
       
       <div className="relative w-full max-w-2xl h-[85vh] bg-[#0d141d] rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col">
         {/* Header */}

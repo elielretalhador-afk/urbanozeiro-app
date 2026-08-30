@@ -54,7 +54,7 @@ export const FollowListModal: React.FC<FollowListModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85  animate-in fade-in duration-200">
       <div className="w-full max-w-sm h-[85vh] max-h-[600px] rounded-3xl bg-[#090e15] border-2 border-emerald-500/40 shadow-[0_0_50px_rgba(0,255,102,0.25)] flex flex-col relative overflow-hidden text-left">
         {/* Glow */}
         <div className="absolute -top-16 -left-16 w-44 h-44 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />

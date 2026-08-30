@@ -143,7 +143,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
   return (
     <div
       id="modal-achievements-center"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85  animate-in fade-in duration-200"
     >
       <div className="w-full max-w-lg h-[92vh] max-h-[740px] rounded-3xl bg-[#0a0f15] border-2 border-emerald-500/40 shadow-[0_0_50px_rgba(0,255,102,0.25)] flex flex-col relative overflow-hidden">
         {/* Glow Decorators */}

@@ -62,7 +62,8 @@
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background: #080b0e !important;
+  background-color: transparent !important;
+  isolation: isolate;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
@@ -108,7 +109,7 @@
   font-size: 9px !important;
   font-weight: 700;
   text-transform: uppercase;
-  backdrop-filter: blur(6px);
+  
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -243,18 +244,15 @@
   background: linear-gradient(180deg, rgba(17, 24, 39, 0.95) 0%, rgba(10, 15, 22, 0.98) 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
+  
 }
 
 .game-panel-highlight {
   background: linear-gradient(180deg, rgba(16, 30, 24, 0.95) 0%, rgba(8, 16, 13, 0.98) 100%);
   border: 1.5px solid rgba(0, 255, 102, 0.35);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(0, 255, 102, 0.2);
-  backdrop-filter: blur(12px);
+  
 }
 
 
-/* CSS filter to turn standard OpenStreetMap tiles into a Dark Mode map */
-.map-tiles-dark-filter {
-  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
-}
+

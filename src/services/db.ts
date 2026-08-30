@@ -1,10 +1,13 @@
+import { db } from "../lib/firebase";
+import { collection, getDocs, doc, runTransaction, setDoc } from "firebase/firestore";
 import { get as idbGet, set as idbSet } from 'idb-keyval';
 import { CacheManager } from './cache';
 import { PaginatedResult } from '../types';
 import { 
   UserProfile, 
   Zone, 
-  ActivitySession, 
+  ActivitySession,
+  ZoneOperation, 
   AppNotification, 
   Achievement,
   LiveChallenge,
@@ -32,6 +35,7 @@ import { INITIAL_ACTIVITIES } from '../data/activityData';
 const KEYS = {
   USER: 'urb_db_user',
   ZONES: 'urb_db_zones',
+  ZONE_OUTBOX: 'urb_db_zone_outbox',
   SESSIONS: 'urb_db_sessions',
   NOTIFICATIONS: 'urb_db_notifications',
   ACHIEVEMENTS: 'urb_db_achievements',
@@ -86,6 +90,8 @@ const saveIdb = async <T>(key: string, data: T): Promise<void> => {
 };
 
 
+let isSyncing = false;
+
 export const DatabaseService = {
   // Inicialização pesada / Sincronização inicial
   async initializeApp(): Promise<{
@@ -129,7 +135,8 @@ export const DatabaseService = {
     // ============================================================================
   // SINCRONIZAÇÃO OFFLINE-FIRST (FILA DE ATIVIDADES)
   // ============================================================================
-  async queueSessionForSync(session: ActivitySession, activity: PlayerPublicActivity): Promise<void> {
+  async queueSessionForSync(session: ActivitySession,
+activity: PlayerPublicActivity): Promise<void> {
     // 1. Marca como pendente
     session.syncStatus = 'pending';
     activity.syncStatus = 'pending';
@@ -150,44 +157,107 @@ export const DatabaseService = {
       return;
     }
 
+    if (isSyncing) {
+      console.log('[SyncQueue] Sincronização já em andamento. Ignorando nova chamada (Mutex ativo).');
+      return;
+    }
+    isSyncing = true;
+
     try {
-      const sessions = await loadIdb<ActivitySession[]>(KEYS.SESSIONS, INITIAL_SESSION_HISTORY);
-      const activities = await loadIdb<PlayerPublicActivity[]>(KEYS.ACTIVITIES, INITIAL_ACTIVITIES as any);
+      const initialSessions = await loadIdb<ActivitySession[]>(KEYS.SESSIONS, []);
+      const initialActivities = await loadIdb<PlayerPublicActivity[]>(KEYS.ACTIVITIES, []);
+      const initialZoneOutbox = await loadIdb<ZoneOperation[]>(KEYS.ZONE_OUTBOX, []);
 
-      let sessionsUpdated = false;
-      let activitiesUpdated = false;
+      const pendingSessions = initialSessions.filter(s => s.syncStatus === 'pending' || s.syncStatus === 'error');
+      const pendingActivities = initialActivities.filter(a => a.syncStatus === 'pending' || a.syncStatus === 'error');
+      const pendingZones = initialZoneOutbox.filter(z => z.syncStatus === 'pending' || z.syncStatus === 'error');
 
-      // Identifica itens na fila
-      const pendingSessions = sessions.filter(s => s.syncStatus === 'pending');
-      const pendingActivities = activities.filter(a => a.syncStatus === 'pending');
-
-      if (pendingSessions.length === 0 && pendingActivities.length === 0) {
+      if (pendingSessions.length === 0 && pendingActivities.length === 0 && pendingZones.length === 0) {
         return; // Fila vazia
       }
 
-      console.log(`[SyncQueue] Enviando ${pendingSessions.length} sessões e ${pendingActivities.length} atividades para o Firestore...`);
+      console.log(`[SyncQueue] Enviando ${pendingSessions.length} sessões, ${pendingActivities.length} atividades e ${pendingZones.length} zonas para o Firestore...`);
 
-      // 4. Simula o Request ao Backend/Firestore
-      // Evita duplicatas pela estrutura do backend (idempotência pelo ID)
-      await delay(1200); 
+      const successfulSessionIds = new Set<string>();
+      const failedSessionIds = new Set<string>();
+      const successfulActivityIds = new Set<string>();
+      const failedActivityIds = new Set<string>();
+      const successfulZoneIds = new Set<string>();
+      const failedZoneIds = new Set<string>();
 
-      // 5. Confirmação de Sucesso
       for (const s of pendingSessions) {
-        s.syncStatus = 'synced';
-        sessionsUpdated = true;
+        try {
+          const sessionRef = doc(db, 'sessions', s.id);
+          await setDoc(sessionRef, s);
+          successfulSessionIds.add(s.id);
+        } catch (error) {
+          console.error(`[SyncQueue] Falha ao enviar sessão ${s.id}:`, error);
+          failedSessionIds.add(s.id);
+        }
       }
+
       for (const a of pendingActivities) {
-        a.syncStatus = 'synced';
-        activitiesUpdated = true;
+        try {
+          const activityRef = doc(db, 'activities', a.id);
+          await setDoc(activityRef, a);
+          successfulActivityIds.add(a.id);
+        } catch (error) {
+          console.error(`[SyncQueue] Falha ao enviar atividade ${a.id}:`, error);
+          failedActivityIds.add(a.id);
+        }
       }
 
-      // 6. Atualiza estado local removendo da fila de pendentes
-      if (sessionsUpdated) await saveIdb(KEYS.SESSIONS, sessions);
-      if (activitiesUpdated) await saveIdb(KEYS.ACTIVITIES, activities);
+      for (const op of pendingZones) {
+        try {
+          // Utiliza a transaction para processar a conquista garantindo regras de timeline e idempotência
+          await this.conquerZoneTransaction(op.zoneId, op);
+          successfulZoneIds.add(op.operationId);
+        } catch (error) {
+          console.error(`[SyncQueue] Falha ao enviar zona ${op.operationId}:`, error);
+          failedZoneIds.add(op.operationId);
+        }
+      }
 
-      console.log('[SyncQueue] Sincronização concluída com sucesso!');
-    } catch (e) {
-      console.error('[SyncQueue] Falha na rede, mantendo atividades na fila local:', e);
+      // Re-load and update state to prevent stale writes
+      if (successfulSessionIds.size > 0 || failedSessionIds.size > 0) {
+        const currentSessions = await loadIdb<ActivitySession[]>(KEYS.SESSIONS, []);
+        const updatedSessions = currentSessions.map(s => {
+          if (successfulSessionIds.has(s.id)) return { ...s, syncStatus: 'synced' as const };
+          if (failedSessionIds.has(s.id)) return { ...s, syncStatus: 'error' as const };
+          return s;
+        });
+        await saveIdb(KEYS.SESSIONS, updatedSessions);
+      }
+
+      if (successfulActivityIds.size > 0 || failedActivityIds.size > 0) {
+        const currentActivities = await loadIdb<PlayerPublicActivity[]>(KEYS.ACTIVITIES, []);
+        const updatedActivities = currentActivities.map(a => {
+          if (successfulActivityIds.has(a.id)) return { ...a, syncStatus: 'synced' as const };
+          if (failedActivityIds.has(a.id)) return { ...a, syncStatus: 'error' as const };
+          return a;
+        });
+        await saveIdb(KEYS.ACTIVITIES, updatedActivities);
+      }
+
+      if (successfulZoneIds.size > 0 || failedZoneIds.size > 0) {
+        const currentZones = await loadIdb<ZoneOperation[]>(KEYS.ZONE_OUTBOX, []);
+        const updatedZones = currentZones.map(z => {
+          if (successfulZoneIds.has(z.operationId)) return { ...z, syncStatus: 'synced' as const };
+          if (failedZoneIds.has(z.operationId)) return { ...z, syncStatus: 'error' as const, retryCount: (z.retryCount || 0) + 1 };
+          return z;
+        });
+        await saveIdb(KEYS.ZONE_OUTBOX, updatedZones);
+      }
+
+      // Invalidate zone cache so the next request pulls the consolidated data from Firestore
+      if (successfulZoneIds.size > 0) {
+        this.invalidateZonesCache();
+      }
+
+    } catch (error) {
+      console.error('[SyncQueue] Erro crítico no loop de sincronização:', error);
+    } finally {
+      isSyncing = false;
     }
   },
   
@@ -207,26 +277,98 @@ export const DatabaseService = {
    * Obtém zonas por viewport do mapa (simulando Geohash query).
    * Utiliza cache agressivo para evitar releituras desnecessárias ao arrastar o mapa.
    */
-  async getZonesInRegion(bounds: any): Promise<Zone[]> {
-    // Simulando leitura pesada
-    await delay(300);
-    
-    // Na vida real: query Firestore onde geo_hash está dentro dos bounds.
-    // Aqui usamos o mock inteiro como base, filtrando apenas as visíveis se a estrutura suportar
-    // Para simplificar a estrutura mock, nós tentamos usar cache global.
-    
+    async getZonesInRegion(bounds: any): Promise<Zone[]> {
     const cacheKey = 'urb_zones_all_cached';
     let cachedZones = CacheManager.get<Zone[]>(cacheKey);
     
-    if (!cachedZones) {
-      cachedZones = await loadIdb<Zone[]>(KEYS.ZONES, INITIAL_ZONES);
-      // Cache válido por 10 minutos (pois são zonas base, que só mudam por ação explícita)
-      CacheManager.set(cacheKey, cachedZones); 
+    if (navigator.onLine) {
+      try {
+        const zonesSnap = await getDocs(collection(db, 'zones'));
+        const zones: Zone[] = [];
+        zonesSnap.forEach(doc => {
+          zones.push({ id: doc.id, ...doc.data() } as Zone);
+        });
+        
+        CacheManager.set(cacheKey, zones);
+        await saveIdb(KEYS.ZONES, zones); // Persist official zones to IDB
+        return zones;
+      } catch (error) {
+        console.warn('Error fetching zones from Firestore:', error);
+      }
     }
     
-    // Simula filtragem por bounding box (Neste mock, apenas retorna todas as do mock que couberem)
-    // Em produção, isso reduz de milhares de leituras para apenas 10-20.
-    return cachedZones;
+    if (cachedZones) {
+      return cachedZones;
+    }
+    
+    // If offline and no memory cache, load from IndexedDB. Do NOT use INITIAL_ZONES fallback for real users.
+    const storedZones = await loadIdb<Zone[]>(KEYS.ZONES, []);
+    CacheManager.set(cacheKey, storedZones);
+    return storedZones;
+  },
+
+  async queueZoneOperation(operation: ZoneOperation): Promise<void> {
+    const outbox = await loadIdb<ZoneOperation[]>(KEYS.ZONE_OUTBOX, []);
+    outbox.push(operation);
+    await saveIdb(KEYS.ZONE_OUTBOX, outbox);
+
+    if (navigator.onLine) {
+      this.processSyncQueue().catch(console.error);
+    }
+  },
+
+  async conquerZoneTransaction(zoneId: string, operation: ZoneOperation): Promise<Zone> {
+    const zoneRef = doc(db, 'zones', zoneId);
+    return await runTransaction(db, async (transaction) => {
+      const zoneDoc = await transaction.get(zoneRef);
+      if (!zoneDoc.exists()) {
+        throw new Error("Zona não existe no banco oficial.");
+      }
+      
+      const currentZone = zoneDoc.data() as Zone;
+      
+      // Idempotency check
+      const currentHistory = currentZone.conquestHistory || [];
+      if (currentHistory.some(h => h.operationId === operation.operationId)) {
+        return currentZone; // Already processed
+      }
+
+      const newEntry = operation.payload.conquestHistoryEntry;
+      // Add the new entry to history
+      const newHistory = [newEntry, ...currentHistory];
+      
+      const updatedData: Partial<Zone> = {
+        conquestHistory: newHistory,
+      };
+
+      // Concurrency check: Does this operation's createdAt beat the lastConquered time?
+      const lastConqueredTimestamp = currentZone.lastConquered ? new Date(currentZone.lastConquered).getTime() : 0;
+      
+      // If the zone is free, OR the operation is newer than the last conquer, update controller
+      if (currentZone.status === 'free' || operation.createdAt >= lastConqueredTimestamp) {
+        updatedData.status = 'controlled';
+        updatedData.controller = operation.payload.controller;
+        updatedData.dominance = 100;
+        updatedData.activeDispute = null;
+        updatedData.contested = false;
+        
+        // Flattened fields for easy access in views (if they are used)
+        if (operation.payload.controller) {
+          updatedData.controllerName = operation.payload.controller.name;
+          updatedData.controllerNickname = operation.payload.controller.nickname;
+          updatedData.controllerAvatar = operation.payload.controller.avatar;
+          updatedData.controllerLevel = operation.payload.controller.level;
+          updatedData.controllerCrew = operation.payload.controller.crew;
+        }
+        updatedData.lastConquered = new Date(operation.createdAt).toISOString();
+      }
+
+      // Merge manually, respecting rules
+      const mergedZone = { ...currentZone, ...updatedData };
+      
+      transaction.update(zoneRef, updatedData);
+      return mergedZone;
+    });
   },
 
   /**

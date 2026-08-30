@@ -33,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
   const xpPercent = Math.min(100, Math.max(0, Math.round((currentXP / nextLevelXP) * 100)));
 
   return (
-    <header className="relative z-30 flex items-center justify-between px-3 py-2 bg-[#080d14]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.85)]">
+    <header className="relative z-30 flex items-center justify-between px-3 py-2 bg-[#080d14]/95  border-b border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.85)]">
       {/* Top Subtle Neon Edge Line */}
       <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent pointer-events-none" />
 

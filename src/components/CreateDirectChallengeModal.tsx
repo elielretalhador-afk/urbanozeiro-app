@@ -325,7 +325,7 @@ export const CreateDirectChallengeModal: React.FC<CreateDirectChallengeModalProp
   return (
     <div
       id="modal-create-direct-challenge"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85  animate-in fade-in duration-200"
     >
       <div
         className="w-full max-w-lg rounded-3xl bg-[#090e15] border-2 border-emerald-500/60 shadow-[0_0_50px_rgba(0,255,102,0.3)] flex flex-col max-h-[92vh] overflow-hidden text-left relative"

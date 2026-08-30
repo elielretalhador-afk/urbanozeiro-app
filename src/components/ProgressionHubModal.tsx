@@ -151,7 +151,7 @@ export const ProgressionHubModal: React.FC<ProgressionHubModalProps> = ({
   return (
     <div
       id="modal-progression-hub"
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85  animate-in fade-in duration-200"
     >
       <div className="w-full max-w-3xl h-[94vh] max-h-[880px] rounded-3xl bg-gradient-to-b from-[#101924] to-[#070b10] border-2 border-emerald-500/50 shadow-2xl flex flex-col overflow-hidden relative">
         {/* Top Glow */}
@@ -986,7 +986,7 @@ export const ProgressionHubModal: React.FC<ProgressionHubModalProps> = ({
 
       {/* Item Detail Modal */}
       {selectedItemDetail && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80  animate-in fade-in duration-150">
           <div className="w-full max-w-sm rounded-3xl bg-[#0e1622] border-2 border-emerald-400 shadow-2xl p-5 space-y-4 relative">
             <button
               type="button"

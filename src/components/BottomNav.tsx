@@ -17,7 +17,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab, on
   ];
 
   return (
-    <nav className="relative z-40 bg-[#080d14]/98 border-t border-white/10 px-2 py-1.5 backdrop-blur-xl shadow-[0_-8px_30px_rgba(0,0,0,0.9)]">
+    <nav className="relative z-40 bg-[#080d14]/98 border-t border-white/10 px-2 py-1.5  shadow-[0_-8px_30px_rgba(0,0,0,0.9)]">
       {/* Top subtle highlight */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent pointer-events-none" />
 

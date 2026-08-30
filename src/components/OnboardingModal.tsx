@@ -142,7 +142,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   return (
     <div className="fixed inset-0 z-[100] pointer-events-none">
       {view === 'welcome' || !targetRect ? (
-        <div className="absolute inset-0 bg-[#080d14]/90 backdrop-blur-md pointer-events-auto" />
+        <div className="absolute inset-0 bg-[#080d14]/90  pointer-events-auto" />
       ) : (
         <div
           className="absolute z-[105] pointer-events-auto transition-all duration-500 ease-out cursor-pointer"

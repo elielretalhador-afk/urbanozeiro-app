@@ -95,11 +95,11 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
       attributionControl: false,
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      className: 'map-tiles-dark-filter',
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      /* className removed to fix GPU artifact */
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       maxZoom: 19,
-      subdomains: 'abcd',
+      subdomains: 'abc',
     }).addTo(map);
 
     // Glow polyline
@@ -250,7 +250,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
     });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85  animate-in fade-in duration-200">
       <div
         id="session-history-modal-container"
         className="relative w-full max-w-2xl max-h-[92vh] rounded-3xl bg-gradient-to-b from-[#0e1622] via-[#090d14] to-[#06090e] border-2 border-[#00ff66]/50 shadow-[0_0_50px_rgba(0,255,102,0.25)] flex flex-col overflow-hidden text-white"
@@ -359,14 +359,14 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
 
                 {/* Map Floating Overlay Badges */}
                 <div className="absolute top-2.5 left-2.5 z-10 flex items-center gap-1.5 flex-wrap">
-                  <div className="px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md border border-[#00ff66]/50 text-[10px] font-mono-stat font-bold text-[#00ff66] flex items-center gap-1 shadow-md">
+                  <div className="px-2.5 py-1 rounded-lg bg-black/80  border border-[#00ff66]/50 text-[10px] font-mono-stat font-bold text-[#00ff66] flex items-center gap-1 shadow-md">
                     <MapPin className="w-3 h-3" />
                     <span>
                       {(selectedSession.gpsPoints?.length || selectedSession.track?.length || 0)} PONTOS GPS
                     </span>
                   </div>
                   {selectedSession.routeName && (
-                    <div className="px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md border border-cyan-400/50 text-[10px] font-mono-stat font-bold text-cyan-300 flex items-center gap-1 shadow-md">
+                    <div className="px-2.5 py-1 rounded-lg bg-black/80  border border-cyan-400/50 text-[10px] font-mono-stat font-bold text-cyan-300 flex items-center gap-1 shadow-md">
                       <Activity className="w-3 h-3" />
                       <span>{selectedSession.routeName}</span>
                     </div>
@@ -380,7 +380,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                       onSelectHistoricalSession(selectedSession);
                       onClose();
                     }}
-                    className="px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 hover:border-[#00ff66] text-white hover:text-[#00ff66] text-[11px] font-mono-stat font-bold active:scale-95 transition-all flex items-center gap-1.5 shadow-lg cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-black/80  border border-white/20 hover:border-[#00ff66] text-white hover:text-[#00ff66] text-[11px] font-mono-stat font-bold active:scale-95 transition-all flex items-center gap-1.5 shadow-lg cursor-pointer"
                   >
                     <Maximize2 className="w-3.5 h-3.5" />
                     <span>Expandir no Mapa Principal</span>

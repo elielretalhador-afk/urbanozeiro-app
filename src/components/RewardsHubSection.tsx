@@ -255,7 +255,7 @@ export const RewardsHubSection: React.FC<RewardsHubSectionProps> = ({
                     >
                       <span>{item.icon}</span>
                       {!item.isUnlocked && (
-                        <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px] rounded-2xl flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black/60 [1px] rounded-2xl flex items-center justify-center">
                           <Lock className="w-5 h-5 text-amber-400" />
                         </div>
                       )}

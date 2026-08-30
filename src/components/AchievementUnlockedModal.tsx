@@ -39,7 +39,7 @@ export const AchievementUnlockedModal: React.FC<AchievementUnlockedModalProps> =
   return (
     <div
       id="modal-achievement-unlocked"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in zoom-in-95 duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85  animate-in fade-in zoom-in-95 duration-200"
     >
       <div className="w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#101b26] to-[#070c12] border-2 border-emerald-400/80 shadow-[0_0_60px_rgba(0,255,102,0.35)] p-6 relative overflow-hidden text-center">
         {/* Glowing backdrop elements */}

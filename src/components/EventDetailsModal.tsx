@@ -92,7 +92,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
   const fillPercent = Math.min(100, Math.round((event.currentParticipants / event.maxParticipants) * 100));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80  animate-fadeIn">
       <div className="relative w-full max-w-2xl max-h-[92vh] flex flex-col bg-[#0b121c] border border-white/15 rounded-3xl overflow-hidden shadow-[0_10px_50px_rgba(0,0,0,0.8)]">
         
         {/* Header com Banner & Fechar */}

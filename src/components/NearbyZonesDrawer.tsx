@@ -135,7 +135,7 @@ export const NearbyZonesDrawer: React.FC<NearbyZonesDrawerProps> = ({
 
   return (
     <div className="absolute inset-x-0 bottom-0 z-40 px-3 pb-3 pointer-events-none flex justify-center">
-      <div className="pointer-events-auto w-full max-w-md bg-[#080d14]/98 border-2 border-emerald-500/60 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl animate-in slide-in-from-bottom duration-300 max-h-[78vh] flex flex-col overflow-hidden">
+      <div className="pointer-events-auto w-full max-w-md bg-[#080d14]/98 border-2 border-emerald-500/60 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.95)]  animate-in slide-in-from-bottom duration-300 max-h-[78vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="p-3.5 pb-2.5 bg-[#0a1017] border-b-2 border-white/10 flex items-center justify-between gap-2 shrink-0">
           <div className="flex items-center gap-2 min-w-0">

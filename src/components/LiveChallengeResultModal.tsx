@@ -40,7 +40,7 @@ export const LiveChallengeResultModal: React.FC<LiveChallengeResultModalProps> =
   return (
     <div
       id="modal-live-challenge-result"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85  animate-fade-in"
     >
       <div className="relative w-full max-w-md bg-[#0a0f16] border-2 border-emerald-400/80 rounded-3xl p-5 sm:p-6 shadow-[0_0_50px_rgba(0,255,102,0.35)] overflow-hidden">
         {/* Glow de fundo */}

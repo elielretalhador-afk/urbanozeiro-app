@@ -193,7 +193,7 @@ export const CreateZoneModal: React.FC<CreateZoneModalProps> = ({
   const hasErrors = submitted && Object.keys(errors).length > 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85  animate-in fade-in duration-200">
       <div className="w-full max-w-lg bg-[#0a0f15] border-2 border-emerald-500/50 rounded-3xl p-5 shadow-[0_25px_60px_rgba(0,0,0,0.95)] max-h-[90vh] overflow-y-auto no-scrollbar">
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-3 border-b-2 border-white/10">

@@ -448,6 +448,15 @@ export default function App() {
   const [isDbReady, setIsDbReady] = useState<boolean>(true);
   const [dbError, setDbError] = useState<any>(null);
   
+  useEffect(() => {
+    const handleOnline = () => {
+      DatabaseService.processSyncQueue().catch(console.error);
+    };
+    window.addEventListener('online', handleOnline);
+    handleOnline(); // Tenta no mount
+    return () => window.removeEventListener('online', handleOnline);
+  }, []);
+
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [activeZones, setActiveZones] = useState<any[]>([]);
   const [conquestProgresses, setConquestProgresses] = useState<any[]>([]);
@@ -1020,35 +1029,61 @@ export default function App() {
                           trackPoints: attempt.trackPoints,
                         };
 
+                        const operationId = 'op_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                        const conquestHistoryEntryWithOp = { ...conquestHistoryEntry, operationId };
+                        
+                        const controllerData = {
+                          id: currentUserProfile.id || 'usr_me',
+                          name: currentUserProfile.name,
+                          nickname: currentUserProfile.nickname,
+                          avatar: currentUserProfile.avatar,
+                          level: currentUserProfile.level,
+                          clan: currentUserProfile.crew || 'Sem Clã',
+                          crew: currentUserProfile.crew || 'Sem Clã',
+                        };
+
+                        const zoneOperation = {
+                          operationId,
+                          zoneId: z.id,
+                          type: 'CONQUEST' as const,
+                          playerId: currentUserProfile.id || 'usr_me',
+                          payload: {
+                            controller: controllerData,
+                            conquestHistoryEntry: conquestHistoryEntryWithOp
+                          },
+                          createdAt: Date.now(),
+                          syncStatus: 'pending' as const,
+                          retryCount: 0
+                        };
+
                         const conqueredZone: Zone = {
                           ...z,
                           status: 'controlled',
                           activeDispute: null,
-                          conquestHistory: [conquestHistoryEntry, ...pastHistory],
-                          controller: {
-                            id: currentUserProfile.id || 'usr_me',
-                            name: currentUserProfile.name,
-                            nickname: currentUserProfile.nickname,
-                            avatar: currentUserProfile.avatar,
-                            level: currentUserProfile.level,
-                            clan: currentUserProfile.crew || 'Sem Clã',
-                            crew: currentUserProfile.crew || 'Sem Clã',
-                          },
+                          conquestHistory: [conquestHistoryEntryWithOp, ...pastHistory],
+                          controller: controllerData,
                           dominance: 100,
                           dominancePercent: 100,
-                          controllerName: currentUserProfile.name,
-                          controllerNickname: currentUserProfile.nickname,
-                          controllerAvatar: currentUserProfile.avatar,
-                          controllerLevel: currentUserProfile.level,
-                          controllerCrew: currentUserProfile.crew || 'Sem Clã',
-                          lastConquered: 'Agora mesmo',
+                          controllerName: controllerData.name,
+                          controllerNickname: controllerData.nickname,
+                          controllerAvatar: controllerData.avatar,
+                          controllerLevel: controllerData.level,
+                          controllerCrew: controllerData.crew,
+                          lastConquered: new Date().toISOString(),
                         };
 
                         z.status = 'controlled';
                         z.activeDispute = null;
                         z.dominance = 100;
+
+                        // Atualização otimista
                         setZones((prev) => prev.map((item) => (item.id === z.id ? conqueredZone : item)));
                         setSelectedZone((prev) => (prev?.id === z.id ? conqueredZone : prev));
+
+                        // Fire & Forget Database Transaction
+                        DatabaseService.queueZoneOperation(zoneOperation).catch(e => {
+                          console.error("Falha ao salvar conquista na Outbox:", e);
+                        });
 
                         setConquestResultModalData({
                           zone: conqueredZone,
@@ -1845,36 +1880,59 @@ export default function App() {
         trackPoints: attempt.trackPoints,
       };
 
+      const operationId = 'op_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      const conquestHistoryEntryWithOp = { ...conquestHistoryEntry, operationId };
+                        
+      const controllerData = {
+        id: currentUserProfile.id || 'usr_me',
+        name: currentUserProfile.name,
+        nickname: currentUserProfile.nickname,
+        avatar: currentUserProfile.avatar,
+        level: currentUserProfile.level,
+        clan: currentUserProfile.crew || 'Sem Clã',
+        crew: currentUserProfile.crew || 'Sem Clã',
+      };
+
+      const zoneOperation = {
+        operationId,
+        zoneId: z.id,
+        type: 'CONQUEST' as const,
+        playerId: currentUserProfile.id || 'usr_me',
+        payload: {
+          controller: controllerData,
+          conquestHistoryEntry: conquestHistoryEntryWithOp
+        },
+        createdAt: Date.now(),
+        syncStatus: 'pending' as const,
+        retryCount: 0
+      };
+
       const conqueredZone: Zone = {
         ...z,
         status: 'controlled',
-        contested: false,
         activeDispute: null,
-        conquestHistory: [conquestHistoryEntry, ...pastHistory],
-        controller: {
-          id: currentUserProfile.id || 'usr_me',
-          name: currentUserProfile.name,
-          nickname: currentUserProfile.nickname,
-          avatar: currentUserProfile.avatar,
-          level: currentUserProfile.level,
-          clan: currentUserProfile.crew || 'Sem Clã',
-          crew: currentUserProfile.crew || 'Sem Clã',
-        },
+        conquestHistory: [conquestHistoryEntryWithOp, ...pastHistory],
+        controller: controllerData,
         dominance: 100,
         dominancePercent: 100,
-        controllerName: currentUserProfile.name,
-        controllerNickname: currentUserProfile.nickname,
-        controllerAvatar: currentUserProfile.avatar,
-        controllerLevel: currentUserProfile.level,
-        controllerCrew: currentUserProfile.crew || 'Sem Clã',
-        lastConquered: 'Agora mesmo',
+        controllerName: controllerData.name,
+        controllerNickname: controllerData.nickname,
+        controllerAvatar: controllerData.avatar,
+        controllerLevel: controllerData.level,
+        controllerCrew: controllerData.crew,
+        lastConquered: new Date().toISOString(),
       };
 
       z.status = 'controlled';
       z.activeDispute = null;
       z.dominance = 100;
+
       setZones((prev) => prev.map((item) => (item.id === z.id ? conqueredZone : item)));
       setSelectedZone((prev) => (prev?.id === z.id ? conqueredZone : prev));
+
+      DatabaseService.queueZoneOperation(zoneOperation).catch(e => {
+        console.error("Falha ao salvar conquista simulada na Outbox:", e);
+      });
 
       setConquestResultModalData({
         zone: conqueredZone,
@@ -2265,7 +2323,7 @@ export default function App() {
             
             {/* Drawing Zone Overlay */}
             {isDrawingZone && (
-              <div className="absolute top-20 inset-x-4 z-40 flex flex-col gap-2 bg-[#0d141d]/95 p-3 rounded-2xl border border-emerald-500 shadow-[0_0_20px_rgba(0,255,102,0.3)] backdrop-blur-md">
+              <div className="absolute top-20 inset-x-4 z-40 flex flex-col gap-2 bg-[#0d141d]/95 p-3 rounded-2xl border border-emerald-500 shadow-[0_0_20px_rgba(0,255,102,0.3)] ">
                 <div className="flex justify-between items-center">
                   <span className="text-emerald-400 text-xs font-bold font-mono-stat uppercase">Modo de Desenho</span>
                   <span className="text-slate-300 text-xs font-mono-stat">{drawnPath.length} pontos</span>
@@ -2459,7 +2517,7 @@ export default function App() {
 
           {/* Interactive Toast Notification */}
           {toastMessage && (
-            <div className="absolute top-24 inset-x-4 z-50 flex items-center gap-2.5 px-4 py-3 bg-[#0a0f15]/95 border-2 border-emerald-400 text-white text-xs font-bold rounded-2xl shadow-[0_10px_35px_rgba(0,255,102,0.4)] backdrop-blur-md animate-in slide-in-from-top duration-200 font-mono-stat uppercase tracking-wide">
+            <div className="absolute top-24 inset-x-4 z-50 flex items-center gap-2.5 px-4 py-3 bg-[#0a0f15]/95 border-2 border-emerald-400 text-white text-xs font-bold rounded-2xl shadow-[0_10px_35px_rgba(0,255,102,0.4)]  animate-in slide-in-from-top duration-200 font-mono-stat uppercase tracking-wide">
               <Zap className="w-4 h-4 text-emerald-400 shrink-0 stroke-[2.5]" />
               <span>{toastMessage}</span>
             </div>

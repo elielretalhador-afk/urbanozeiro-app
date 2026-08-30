@@ -381,7 +381,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
       {/* Lateral Filters Drawer */}
       {isFiltersOpen && (
         <div className="fixed inset-0 z-[150] flex">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsFiltersOpen(false)} />
+          <div className="absolute inset-0 bg-black/60 " onClick={() => setIsFiltersOpen(false)} />
           <div className="relative w-64 bg-[#091119] h-full flex flex-col border-r border-white/10 animate-in slide-in-from-left-8">
             <div className="p-5 border-b border-white/10 flex items-center justify-between">
               <h3 className="text-sm font-bold text-white font-display uppercase tracking-wider">Filtros do Feed</h3>

@@ -1,3 +1,5 @@
+export const DEFAULT_ZONE_RADIUS_METERS = 40;
+
 export type TabType = 'mapa' | 'feed' | 'ranking' | 'desafios' | 'perfil';
 
 export type ZoneType = 'street' | 'speed' | 'free_skate' | 'slalom';
@@ -77,7 +79,8 @@ export interface Zone {
 
   // Helper/backward compatibility fields
   activeDispute?: ZoneDisputeInfo | null;
-  conquestHistory?: Array<{
+    conquestHistory?: Array<{
+    operationId?: string;
     playerId: string;
     playerName: string;
     playerNickname?: string;
@@ -587,6 +590,20 @@ export interface ActivityTrackPoint {
   speed?: number; // km/h
   altitude?: number;
   accuracy?: number;
+}
+
+export interface ZoneOperation {
+  operationId: string;
+  zoneId: string;
+  type: 'CONQUEST';
+  playerId: string;
+  payload: {
+    controller: ZoneController;
+    conquestHistoryEntry: any; // Ideally we can define this better, but `any` matches the ad-hoc usage
+  };
+  createdAt: number;
+  syncStatus: 'pending' | 'error' | 'synced';
+  retryCount: number;
 }
 
 export interface ZoneActivity {

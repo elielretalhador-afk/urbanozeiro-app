@@ -44,7 +44,7 @@ export const ActivitySummaryModal: React.FC<ActivitySummaryModalProps> = ({
   const visitedCount = session.zonesVisited?.length ?? session.zoneActivities?.length ?? 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80  animate-in fade-in duration-200">
       <div
         id="activity-summary-card"
         className="relative w-full max-w-sm rounded-3xl bg-[#090d12] border-2 border-[#00ff66] shadow-[0_0_50px_rgba(0,255,102,0.35)] p-6 overflow-hidden text-white max-h-[90vh] overflow-y-auto"

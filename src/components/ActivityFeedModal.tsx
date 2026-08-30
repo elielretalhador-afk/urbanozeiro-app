@@ -157,7 +157,7 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
   return (
     <div
       id="activity-feed-modal"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85  animate-fade-in"
     >
       <div className="relative w-full max-w-xl max-h-[92vh] flex flex-col bg-[#070b10] border-2 border-emerald-500/40 rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.9)] overflow-hidden text-white">
         {/* Header */}

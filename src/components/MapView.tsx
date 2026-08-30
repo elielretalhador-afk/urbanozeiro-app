@@ -302,10 +302,10 @@ export const MapView: React.FC<MapViewProps> = ({
       });
 
       // CartoDB Dark Matter tiles for ultra-slick dark urban aesthetic
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        className: 'map-tiles-dark-filter',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        subdomains: 'abcd',
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        /* className removed to fix GPU artifact */
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abc',
         maxZoom: 19,
       }).addTo(map);
 
@@ -425,7 +425,7 @@ export const MapView: React.FC<MapViewProps> = ({
         html: `
           <div class="group relative flex flex-col items-center cursor-pointer transform transition-transform hover:scale-110 select-none">
             <!-- Zone Name & Status Tag Pill -->
-            <div class="px-2 py-0.5 mb-1 rounded-md bg-[#090d14]/95 border shadow-lg backdrop-blur-md flex items-center gap-1.5"
+            <div class="px-2 py-0.5 mb-1 rounded-md bg-[#090d14]/95 border shadow-lg flex items-center gap-1.5"
                  style="border-color: ${effectiveBorderColor}90;">
               <!-- Activity Indicator Pulse / Glow -->
               <span class="relative flex h-2 w-2">
@@ -1563,7 +1563,7 @@ export const MapView: React.FC<MapViewProps> = ({
       
       {/* Zone creation map overlay hint */}
       {isCreatingZone && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 bg-[#0d141d]/95 border border-emerald-400 rounded-full shadow-[0_0_20px_rgba(0,255,102,0.4)] backdrop-blur-md flex items-center gap-2 animate-bounce">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 bg-[#0d141d]/95 border border-emerald-400 rounded-full shadow-[0_0_20px_rgba(0,255,102,0.4)] flex items-center gap-2 animate-bounce">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
           <p className="text-xs font-bold text-emerald-300">
             Toque no mapa para posicionar a nova zona

@@ -25,7 +25,7 @@ export const LevelUpModal: React.FC<LevelUpModalProps> = ({
   return (
     <div
       id="modal-level-up"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in zoom-in-95 duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85  animate-in fade-in zoom-in-95 duration-200"
     >
       <div className="w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#101e28] to-[#070c12] border-2 border-emerald-400/90 shadow-[0_0_70px_rgba(0,255,102,0.4)] p-6 relative overflow-hidden text-center">
         {/* Glow effects */}
