@@ -1,27 +1,27 @@
-import sys
-
 with open('firestore.rules', 'r') as f:
     content = f.read()
 
-rules_to_add = """
-    match /users/{userId}/wallet/main {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if false; // Server-authoritative ONLY
-    }
-    match /users/{userId}/walletTransactions/{transactionId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if false; // Server-authoritative ONLY
-    }
-    match /users/{userId}/chests/{chestId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if false; // Server-authoritative ONLY
-    }
-"""
+# Add subcollection rules under match /users/{userId}
+target = """    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;"""
 
-# Insert before the last closing brace
-last_brace_idx = content.rfind('}')
-if last_brace_idx != -1:
-    content = content[:last_brace_idx] + rules_to_add + content[last_brace_idx:]
+replacement = """    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
 
+      match /devices/{deviceId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      match /notificationPrefs/{prefId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }"""
+
+if "match /devices/{deviceId}" not in content:
+    content = content.replace(target, replacement)
+    
 with open('firestore.rules', 'w') as f:
     f.write(content)

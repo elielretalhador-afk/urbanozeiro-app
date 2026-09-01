@@ -5,7 +5,7 @@ import { UserProfile, Zone, ZoneType } from '../types';
 interface CreateZoneModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateZone: (newZone: Zone) => void;
+  onCreateZone: (newZone: Zone) => Promise<void> | void;
   currentUser: UserProfile;
   userCoords?: [number, number] | null;
   pickedCoords: [number, number] | null;
@@ -35,6 +35,7 @@ export const CreateZoneModal: React.FC<CreateZoneModalProps> = ({
 
   // Validation / Error tracking state
   const [submitted, setSubmitted] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [errors, setErrors] = useState<{
     name?: string;
     type?: string;
@@ -118,14 +119,17 @@ export const CreateZoneModal: React.FC<CreateZoneModalProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isProcessing) return;
     setSubmitted(true);
 
     const isValid = validateForm();
     if (!isValid) {
       return;
     }
+    
+    setIsProcessing(true);
 
     // Precise coordinates: use picked point if chosen on map, otherwise exact player GPS coords
     const safeBaseLat =
@@ -186,8 +190,14 @@ export const CreateZoneModal: React.FC<CreateZoneModalProps> = ({
       lastConquered: '',
     };
 
-    onCreateZone(newZone);
-    onClose();
+try {
+      await onCreateZone(newZone);
+      onClose();
+    } catch (e) {
+      // Error handled by parent
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const hasErrors = submitted && Object.keys(errors).length > 0;
@@ -513,10 +523,11 @@ export const CreateZoneModal: React.FC<CreateZoneModalProps> = ({
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-3.5 bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-xl shadow-[0_0_25px_rgba(252,232,3,0.5)] transition-all flex items-center justify-center gap-2 font-mono-stat cursor-pointer active:scale-98"
+              disabled={isProcessing}
+              className="w-full disabled:opacity-50 disabled:cursor-not-allowed  py-3.5 bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-xl shadow-[0_0_25px_rgba(252,232,3,0.5)] transition-all flex items-center justify-center gap-2 font-mono-stat cursor-pointer active:scale-98"
             >
               <Sparkles className="w-4 h-4 stroke-[3]" />
-              CRIAR E REGISTRAR ZONA NO MAPA
+              {isProcessing ? "PROCESSANDO..." : "CRIAR E REGISTRAR ZONA NO MAPA"}
             </button>
           </div>
         </form>

@@ -1,3 +1,4 @@
+import { TelemetryService } from './services/telemetry';
 import { EconomyService } from './services/economyService';
 import { auth, db, functions } from './lib/firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
@@ -76,6 +77,7 @@ import { ProgressionHubModal } from './components/ProgressionHubModal';
 import { AuthScreen } from "./components/AuthScreen";
 import { AuthService } from "./services/auth";
 import { SocialService } from "./services/social";
+import { NotificationService } from "./services/notificationService";
 import { ClanService } from "./services/clan";
 import { FeedService } from "./services/feed";
 import { DatabaseService } from "./services/db";
@@ -284,6 +286,17 @@ const SprintOverlay: React.FC<{ attempt: any }> = ({ attempt }) => {
 };
 
 export default function App() {
+  React.useEffect(() => {
+    TelemetryService.logEvent({ eventName: 'app_started', category: 'APP' });
+  }, []);
+  const [authState, setAuthState] = useState<'LOADING' | 'AUTHENTICATED' | 'UNAUTHENTICATED' | 'ERROR'>('LOADING');
+  const [minSplashTimeElapsed, setMinSplashTimeElapsed] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMinSplashTimeElapsed(true);
+    }, 4500);
+    return () => clearTimeout(timer);
+  }, []);
   const [activeTab, setActiveTab] = useState<TabType>('mapa');
   const [user, setUser] = useState<UserProfile>(() => {
     try {
@@ -304,18 +317,20 @@ export default function App() {
           if (prev.authId === firebaseUser.uid && prev.id === firebaseUser.uid) return prev;
           const updated = { ...prev, authId: firebaseUser.uid, id: firebaseUser.uid };
           localStorage.setItem('urbanozeiro_user', JSON.stringify(updated));
+          TelemetryService.logEvent({ eventName: 'auth_success', category: 'AUTH', details: { uid: firebaseUser.uid } });
           return updated;
         });
         // Dispara fila de sincronização agora que temos o Firebase Auth
         DatabaseService.processSyncQueue().catch(console.error);
         // Atualiza as zonas no mapa
         DatabaseService.getZonesInRegion(null).then(z => setZones(z));
-      } else {
-        // If they are not in firebase but have a local token, clear it to force re-login
-        if (localStorage.getItem('urbanozeiro_auth_token')) {
-            localStorage.removeItem('urbanozeiro_auth_token');
-            setAuthState('UNAUTHENTICATED');
+} else {
+        // User is logged out
+        setAuthState('UNAUTHENTICATED');
+        if (localStorage.getItem('urbanozeiro_user')) {
+            localStorage.removeItem('urbanozeiro_user');
         }
+        setUser(prev => ({ ...prev, authId: undefined, id: 'usr_me' }));
       }
     });
     return () => unsubscribe();
@@ -329,10 +344,18 @@ export default function App() {
   useEffect(() => {
     let unsubscribeNotifs: (() => void) | undefined;
     
-    if (user && user.id) {
+    if (user && user.authId && authState === 'AUTHENTICATED') {
       loadSocialData();
       FeedService.seedMockActivitiesIfEmpty(user);
-      loadInitialFeed(user.id);
+
+      loadInitialFeed(user.authId as string);
+      
+      // Init Push Notifications
+      NotificationService.initPushNotifications(user.authId as string);
+      NotificationService.getPreferences(user.authId as string).then(prefs => {
+        setPlayerSettings((prev: any) => ({ ...prev, notifications: { ...prev.notifications, ...prefs } }));
+      });
+
       
       unsubscribeNotifs = SocialService.subscribeToNotifications(user.authId || user.id, (notifs) => {
         const mappedNotifs = notifs.map(n => ({
@@ -354,7 +377,7 @@ export default function App() {
     return () => {
       if (unsubscribeNotifs) unsubscribeNotifs();
     };
-  }, [user.id]);
+  }, [user.authId, authState]);
 
   useEffect(() => {
     userRef.current = user;
@@ -365,12 +388,27 @@ export default function App() {
     }
   }, [user]);
 
+    useEffect(() => {
+    if (user?.authId && authState === 'AUTHENTICATED') {
+      const unsub = EconomyService.subscribeToProfileCosmetics(user.authId, (cosmetics: any) => {
+        if (cosmetics) {
+          setUser(prev => ({ ...prev, profileCosmetics: cosmetics }));
+        }
+      });
+      return () => unsub();
+    }
+  }, [user.authId, authState]);
+
   const [userCoords, setUserCoords] = useState<[number, number] | null>(null);
   const [playerLocation, setPlayerLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   
   
+
+
   // =========================================================================
   // ESTADO DE ZONAS (OTIMIZADO PARA PREVENÇÃO DE READS)
+
+
   // =========================================================================
   const [zones, setZones] = useState<Zone[]>([]);
   
@@ -406,14 +444,19 @@ export default function App() {
   const [drawnShapeType, setDrawnShapeType] = useState<'circle' | 'segment' | 'zone'>('circle');
   const [pickedCoords, setPickedCoords] = useState<[number, number] | null>(null);
   const [centerTrigger, setCenterTrigger] = useState(0);
+  const [isProcessingOperation, setIsProcessingOperation] = useState(false);
   const [focusChallengeTrigger, setFocusChallengeTrigger] = useState(0);
   const [activeFilter, setActiveFilter] = useState('Todas');
   const [isNearbyZonesDrawerOpen, setIsNearbyZonesDrawerOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isGpsActive, setIsGpsActive] = useState<boolean>(false);
 
+
+
   // =========================================================================
   // ETAPA 7: SESSÃO REAL DE PATINAÇÃO (Active Skating Activity Session Engine)
+
+
   // =========================================================================
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>('IDLE');
   const isSessionActive = sessionStatus === 'ACTIVE' || sessionStatus === 'PAUSED';
@@ -477,8 +520,12 @@ export default function App() {
   const [redoReferenceSession, setRedoReferenceSession] = useState<ActivitySession | null>(null);
   const [isRedoMode, setIsRedoMode] = useState<boolean>(false);
   
+
+
   // =========================================================================
   // HISTÓRICO DE SESSÕES (OTIMIZADO PARA PREVENÇÃO DE READS)
+
+
   // =========================================================================
   const [sessionHistory, setSessionHistory] = useState<ActivitySession[]>([]);
 
@@ -505,8 +552,12 @@ export default function App() {
 
   // Sincronismo mantido internamente pelo db.ts.
 
+
+
   // =========================================================================
   // RECONSTRUÇÃO DE ESTADOS DA UI (PARTE 4 - REFS E FUNÇÕES DE ZONAS)
+
+
   // =========================================================================
   const activeZoneActivitiesRef = useRef<Map<string, any>>(new Map());
   const currentSessionIdRef = useRef<string | null>(null);
@@ -546,14 +597,17 @@ export default function App() {
   const loadMoreActivities = async () => {};
 
 
+
+
   // =========================================================================
   // RECONSTRUÇÃO DE ESTADOS DA UI (PARTE 3)
+
+
   // =========================================================================
   const [isNotificationsModalOpen, setIsNotificationsModalOpen] = useState(false);
   const [challenges, setChallenges] = useState<any[]>([]);
   const [directChallenges, setDirectChallenges] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
-  const [authState, setAuthState] = useState<any>('LOADING');
   useEffect(() => {
     AuthService.getCurrentUser().then(session => {
       setAuthState(session ? 'AUTHENTICATED' : 'UNAUTHENTICATED');
@@ -630,8 +684,12 @@ export default function App() {
   // Helper overrides (ignoring the duplicated function signatures below)
 
 
+
+
   // =========================================================================
   // RECONSTRUÇÃO DE ESTADOS DA UI (PARTE 2)
+
+
   // =========================================================================
   const [selectedClanProfile, setSelectedClanProfile] = useState<any>(null);
   const [isClanLeaderboardModalOpen, setIsClanLeaderboardModalOpen] = useState(false);
@@ -675,6 +733,8 @@ export default function App() {
     }
   };
   const handleCreateClan = async (data: any) => {
+    if (isProcessingOperation) return;
+    setIsProcessingOperation(true);
     try {
       if (user) {
         await ClanService.createClan(data.name, data.icon || '⚡', user.authId || user.id, user.name || user.nickname);
@@ -684,6 +744,9 @@ export default function App() {
       }
     } catch (e: any) {
       showToast(e.message || 'Erro ao criar clã.');
+      throw e;
+    } finally {
+      setIsProcessingOperation(false);
     }
   };
   const handleJoinClan = (clanId: string) => { showToast('Solicitação para entrar no clã enviada.'); setIsJoinClanModalOpen(false); };
@@ -707,8 +770,12 @@ export default function App() {
 
 
 
+
+
   // =========================================================================
   // RECONSTRUÇÃO DE ESTADOS DA UI (MODALS)
+
+
   // =========================================================================
   const [isLevelUpModalOpen, setIsLevelUpModalOpen] = useState(false);
   const [levelUpModalData, setLevelUpModalData] = useState<any>(null);
@@ -718,13 +785,13 @@ export default function App() {
   const [chatTargetUser, setChatTargetUser] = useState<any>(null);
 
   const loadSocialData = async () => {
-    if (user && user.id) {
-      const players = await SocialService.getAllPlayers(user.id);
+    if (user && user.authId && authState === 'AUTHENTICATED') {
+      const players = await SocialService.getAllPlayers(user.authId);
       setSocialPlayers(players);
       try {
         const allClans = await ClanService.getAllClans();
         setClans(allClans);
-        const myClan = await ClanService.getMyClan(user.authId || user.id);
+        const myClan = await ClanService.getMyClan(user.authId);
         setUserClan(myClan);
       } catch(e) {
         console.error("Erro ao carregar clãs", e);
@@ -759,13 +826,13 @@ export default function App() {
   });
   
   useEffect(() => {
-    if (user?.id) {
-       const unsub = EconomyService.subscribeToWallet(user.id, (w) => {
+    if (user?.authId && authState === 'AUTHENTICATED') {
+       const unsub = EconomyService.subscribeToWallet(user.authId, (w) => {
            if (w) setWallet(w);
        });
        return () => unsub();
     }
-  }, [user?.id]);
+  }, [user?.authId, authState]);
 
 
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
@@ -778,7 +845,35 @@ export default function App() {
   const [isEquipmentModalOpen, setIsEquipmentModalOpen] = useState(false);
   const [playerSettings, setPlayerSettings] = useState<any>(DEFAULT_PLAYER_SETTINGS);
 
-  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(() => {
+    return localStorage.getItem('urbanozeiro_onboardingCompleted') !== 'true';
+  });
+
+  useEffect(() => {
+    const handleNotificationAction = (e: any) => {
+      const data = e.detail;
+      if (!data) return;
+      
+      // Deep Linking based on payload
+      if (data.type === 'zone_lost') {
+        setActiveTab('mapa');
+        if (data.entityId) {
+          // Focus zone on map if needed
+          const event = new CustomEvent('focus-zone', { detail: data.entityId });
+          window.dispatchEvent(event);
+        }
+      } else if (data.type === 'clan_invite') {
+        setActiveTab('perfil');
+        // Might need a sub-tab
+      } else if (data.type === 'season_finished') {
+        setActiveTab('desafios'); // Or rankings
+      }
+    };
+
+    window.addEventListener('app_notification_action', handleNotificationAction);
+    return () => window.removeEventListener('app_notification_action', handleNotificationAction);
+  }, []);
+
   const [tutorialState, setTutorialState] = useState<any>({ currentStep: 0, isCompleted: false, isSkipped: false });
 
   const [isHelpSupportModalOpen, setIsHelpSupportModalOpen] = useState(false);
@@ -794,7 +889,7 @@ export default function App() {
   const handleSendFriendRequest = async (id: string) => {
     try {
       if (user) {
-        await SocialService.sendFriendRequest(user.id, id);
+        await SocialService.sendFriendRequest(user.authId as string, id);
         showToast('Pedido de amizade enviado com sucesso.');
         loadSocialData(); // Refresh UI
       }
@@ -805,7 +900,7 @@ export default function App() {
   const handleAcceptFriendRequest = async (id: string) => {
     try {
       if (user) {
-        await SocialService.acceptFriendRequest(id, user.id);
+        await SocialService.acceptFriendRequest(id, user.authId as string);
         showToast('Solicitação aceita!');
         loadSocialData();
       }
@@ -816,7 +911,7 @@ export default function App() {
   const handleDeclineFriendRequest = async (id: string) => { 
     try {
       if (user) {
-        await SocialService.rejectFriendRequest(id, user.id);
+        await SocialService.rejectFriendRequest(id, user.authId as string);
         showToast('Solicitação recusada!');
         loadSocialData();
       }
@@ -825,7 +920,7 @@ export default function App() {
   const handleCancelFriendRequest = async (id: string) => { 
     try {
       if (user) {
-        await SocialService.rejectFriendRequest(user.id, id);
+        await SocialService.rejectFriendRequest(user.authId as string, id);
         showToast('Solicitação cancelada.');
         loadSocialData();
       }
@@ -882,12 +977,34 @@ export default function App() {
   const handleSimulateDuplicateRewardCheck = () => { showToast('Verificação de recompensa duplicada.'); };
   const handleReportPlayer = (id: string) => { setIsReportPlayerOpen(true); setPlayerToReport({ id }); };
   
-  const handleUpdatePlayerSettings = (settings: any) => { setPlayerSettings(settings); showToast('Configurações atualizadas!'); };
+  const handleUpdatePlayerSettings = (settings: any) => { 
+    setPlayerSettings(settings); 
+    showToast('Configurações atualizadas!'); 
+    if (user && user.id && settings.notifications) {
+      NotificationService.updatePreferences(user.id, settings.notifications);
+    }
+  };
   const handleOpenSocialHub = (tab: any) => { 
     setActiveSocialTab(tab === 'amigos' ? 'friends' : tab); 
     setActiveTab('feed'); 
   };
-  const handleUpdateTutorial = (state: any) => { setTutorialState(state); };
+  const handleUpdateTutorial = (state: any) => { 
+    setTutorialState(state);
+    if (state.isSkipped || state.isCompleted) {
+      localStorage.setItem('urbanozeiro_onboardingCompleted', 'true');
+    }
+  };
+  
+  const handleOnboardingAction = (action: 'explore_map' | 'start_activity' | 'go_hub') => {
+    if (action === 'explore_map') {
+      setActiveTab('mapa');
+    } else if (action === 'start_activity') {
+      setActiveTab('mapa');
+      handleStartSession();
+    } else if (action === 'go_hub') {
+      setActiveTab('perfil');
+    }
+  };
 
 
 
@@ -994,6 +1111,7 @@ export default function App() {
       }
 
       try {
+        TelemetryService.logEvent({ eventName: 'gps_permission_granted', category: 'GPS' });
         watchIdStr = await Geolocation.watchPosition(
           { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
           (pos, err) => {
@@ -1533,6 +1651,8 @@ export default function App() {
 
   // Start Skating Activity Session
   const handleStartSession = () => {
+    if (sessionStatusRef.current === 'ACTIVE' || sessionStatusRef.current === 'PAUSED') return;
+    TelemetryService.logEvent({ eventName: 'activity_started', category: 'ACTIVITY' });
     const now = Date.now();
     const sessionId = `session_${now}`;
     currentSessionIdRef.current = sessionId;
@@ -1674,6 +1794,7 @@ export default function App() {
   const handlePauseSession = () => {
     if (sessionStatusRef.current !== 'ACTIVE') return;
     setSessionStatus('PAUSED');
+    TelemetryService.logEvent({ eventName: 'activity_paused', category: 'ACTIVITY' });
     isSessionPausedRef.current = true;
     showToast('⏸️ Sessão de patinação PAUSADA. Cronômetro e rastro suspensos.');
     
@@ -1717,6 +1838,7 @@ export default function App() {
     if (sessionStatusRef.current === 'IDLE' || sessionStatusRef.current === 'COMPLETED') return;
 
     setSessionStatus('COMPLETED');
+    TelemetryService.logEvent({ eventName: 'activity_finished', category: 'ACTIVITY', details: { distance: sessionDistanceKm } });
     isSessionActiveRef.current = false;
     isSessionPausedRef.current = false;
     setPendingZonePrompt(null);
@@ -2706,13 +2828,39 @@ export default function App() {
     );
   }
 
-  if (!isDbReady) {
+  if (!isDbReady || !minSplashTimeElapsed) {
     return (
       <div className="flex justify-center w-full h-full bg-[#05070a]">
-        <main className="relative flex flex-col items-center justify-center w-full h-full max-w-md md:max-w-lg bg-[#080B0E] border-x border-slate-800/40">
-          <div className="w-16 h-16 rounded-full border-4 border-yellow-400/20 border-t-yellow-400 animate-spin mb-4" />
-          <h2 className="text-xl font-black text-white font-display uppercase tracking-wider mb-2">Sincronizando</h2>
-          <p className="text-sm text-slate-400 font-medium">Carregando dados do jogador...</p>
+        <main className="relative flex flex-col items-center justify-center w-full h-full max-w-md md:max-w-lg bg-[#080B0E] border-x border-slate-800/40 overflow-hidden">
+          {/* Cyberpunk grid background */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20"></div>
+          
+          {/* Glow effects */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#fce803] rounded-full blur-[100px] opacity-10"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-fuchsia-600 rounded-full blur-[80px] opacity-20"></div>
+          <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500 rounded-full blur-[80px] opacity-20"></div>
+
+          <div className="relative z-10 flex flex-col items-center justify-center p-6 text-center w-full">
+            <div className="w-48 h-48 mb-8 relative">
+              <img src="/logo-rw-dark.png" alt="THE ROLLING WARS" className="w-full h-full object-contain drop-shadow-[0_0_25px_rgba(252,232,3,0.6)] animate-pulse" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              {/* Fallback if image not found */}
+              <div className="absolute inset-0 flex items-center justify-center -z-10">
+                <span className="text-4xl">⚡</span>
+              </div>
+            </div>
+            
+            <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-fuchsia-500 to-cyan-400 font-display uppercase tracking-widest mb-4 filter drop-shadow-[0_0_10px_rgba(252,232,3,0.3)]">
+              THE ROLLING WARS
+            </h1>
+            
+            <div className="w-48 h-1 bg-slate-800 rounded-full overflow-hidden mb-4 border border-white/5">
+              <div className="h-full bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-yellow-400 w-full origin-left animate-pulse"></div>
+            </div>
+            
+            <p className="text-xs text-slate-400 font-mono-stat uppercase tracking-widest animate-pulse">
+              Verificando integridade da conta...
+            </p>
+          </div>
         </main>
       </div>
     );
@@ -3412,6 +3560,7 @@ export default function App() {
           onClose={() => setIsOnboardingOpen(false)}
           tutorialState={tutorialState}
           onUpdateTutorial={handleUpdateTutorial}
+          onAction={handleOnboardingAction}
         />
 
         {/* Modal: Central de Ajuda e Suporte */}
@@ -3442,8 +3591,24 @@ export default function App() {
              <SprintOverlay attempt={activeSegmentAttemptState} />
           </div>
         )}
+        
+        {/* Modal: Virtual Wallet / Economy Hub */}
+        <VirtualWalletModal
+          isOpen={isWalletModalOpen}
+          onClose={() => setIsWalletModalOpen(false)}
+          wallet={wallet}
+        />
+
         {/* Bottom Fixed Navigation Bar */}
         <BottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
+
+        {pendingZonePrompt && (
+          <ZoneEntryPromptModal
+            zone={pendingZonePrompt}
+            onAccept={handleAcceptZoneConquest}
+            onDecline={(z) => setPendingZonePrompt(null)}
+          />
+        )}
       </main>
     </div>
   );

@@ -6,8 +6,8 @@ echo "ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiNTA2NjQ2MDI0Mz
 cat << 'INNER_EOF' > android/app/src/main/res/values/strings.xml
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Urbanozeiro</string>
-    <string name="title_activity_main">Urbanozeiro</string>
+    <string name="app_name">THE ROLLING WARS</string>
+    <string name="title_activity_main">THE ROLLING WARS</string>
     <string name="package_name">com.urbanozeiro.app</string>
     <string name="custom_url_scheme">com.urbanozeiro.app</string>
     <string name="default_web_client_id">506646024333-7hkbs8qpejlt3l7rj3ng318fv7ukqr1l.apps.googleusercontent.com</string>

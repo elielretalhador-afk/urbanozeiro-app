@@ -161,6 +161,7 @@ export interface UserProfile {
   activeTitleId?: string;
   progression?: PlayerProgression;
   equippedCosmetics?: EquippedCosmetics;
+  profileCosmetics?: ProfileCosmetics;
   totalXP?: number;
   unlockedAchievementsCount?: number;
   unlockedMedalsCount?: number;
@@ -208,7 +209,7 @@ export interface SkateRoute {
 }
 
 // ==========================================
-// SISTEMA DE MISSÕES (URBANOZEIRO)
+// SISTEMA DE MISSÕES (THE ROLLING WARS)
 // ==========================================
 export type MissionType =
   | 'DISTANCE'
@@ -817,7 +818,7 @@ export interface AppNotification {
 }
 
 // ==========================================
-// CONQUISTAS, MEDALHAS E TÍTULOS (URBANOZEIRO)
+// CONQUISTAS, MEDALHAS E TÍTULOS (THE ROLLING WARS)
 // ==========================================
 export type AchievementCategory =
   | 'ATIVIDADE'
@@ -939,7 +940,7 @@ export interface PlayerTitle {
 }
 
 // ==========================================
-// SISTEMA DE CLÃS (URBANOZEIRO)
+// SISTEMA DE CLÃS (THE ROLLING WARS)
 // ==========================================
 export type ClanRole = 'lider' | 'vice_lider' | 'veterano' | 'membro' | 'recruta';
 
@@ -1198,7 +1199,7 @@ export interface DirectChallenge {
 }
 
 // ==========================================
-// ESTRUTURA DE EVENTOS E TORNEIOS (URBANOZEIRO)
+// ESTRUTURA DE EVENTOS E TORNEIOS (THE ROLLING WARS)
 // ==========================================
 
 export type EventType =
@@ -1379,7 +1380,7 @@ export interface UrbanozeiroEvent {
 export type Event = UrbanozeiroEvent;
 
 // ==========================================
-// SISTEMA DE PROGRESSÃO DO JOGADOR (URBANOZEIRO)
+// SISTEMA DE PROGRESSÃO DO JOGADOR (THE ROLLING WARS)
 // ==========================================
 
 export type RewardType =
@@ -1675,7 +1676,7 @@ export interface PlayerProgression {
 }
 
 // ==========================================
-// SISTEMA SOCIAL DE JOGADORES (URBANOZEIRO)
+// SISTEMA SOCIAL DE JOGADORES (THE ROLLING WARS)
 // ==========================================
 
 export type PlayerRelationshipType = 'FOLLOW' | 'FRIEND' | 'BLOCK' | 'REQUEST';
@@ -1781,7 +1782,7 @@ export interface PlayerPublicActivity {
 }
 
 // ==========================================
-// ECONOMIA VIRTUAL INTERNA DO JOGO (URBANOZEIRO VIRTUAL ECONOMY)
+// ECONOMIA VIRTUAL INTERNA DO JOGO (THE ROLLING WARS VIRTUAL ECONOMY)
 // ==========================================
 
 export type CurrencyTransactionType =
@@ -1981,7 +1982,7 @@ export interface Activity {
 }
 
 // ==========================================
-// SISTEMA DE ESTATÍSTICAS DO JOGADOR (URBANOZEIRO)
+// SISTEMA DE ESTATÍSTICAS DO JOGADOR (THE ROLLING WARS)
 // ==========================================
 export type StatPeriod = 'TOTAL' | 'HOJE' | 'SEMANA' | 'MES' | 'TEMPORADA';
 
@@ -2062,7 +2063,7 @@ export interface PlayerFullStatistics {
 }
 
 // ==========================================
-// SISTEMA DE BUSCA E DESCOBERTA (URBANOZEIRO)
+// SISTEMA DE BUSCA E DESCOBERTA (THE ROLLING WARS)
 // ==========================================
 export type SearchFilterType = 'TODOS' | 'JOGADORES' | 'ZONAS' | 'ROTAS';
 
@@ -2148,7 +2149,7 @@ export interface SearchResultsAggregated {
 }
 
 // ==========================================
-// SISTEMA DE CONFIGURAÇÕES DO JOGADOR (URBANOZEIRO)
+// SISTEMA DE CONFIGURAÇÕES DO JOGADOR (THE ROLLING WARS)
 // ==========================================
 export type SettingsCategory =
   | 'CONTA'
@@ -2351,3 +2352,46 @@ export interface Chest {
   rewards?: ChestReward[];
 }
 
+
+export type CosmeticCategory = 'avatar_frame' | 'avatar_effect' | 'profile_badge' | 'trail_cosmetic' | 'clan_emblem' | 'title';
+export type CosmeticRarity = 'common' | 'rare' | 'epic' | 'legendary';
+
+export interface ShopItem {
+  id: string;
+  name: string;
+  description: string;
+  category: CosmeticCategory;
+  price: number;
+  rarity: CosmeticRarity;
+  seasonId?: string;
+  isActive: boolean;
+  visualKey: string;
+}
+
+export interface InventoryItem {
+  itemId: string;
+  acquiredAt: string;
+  source: string;
+  seasonId?: string;
+  purchaseId?: string;
+}
+
+export interface OfficialTitle {
+  id: string;
+  name: string;
+  description: string;
+  rarity: CosmeticRarity;
+  seasonId?: string;
+  requirementType: string;
+  requirementValue: number;
+  isActive: boolean;
+}
+
+export interface ProfileCosmetics {
+  avatar_frame?: string;
+  avatar_effect?: string;
+  profile_badge?: string;
+  trail_cosmetic?: string;
+  clan_emblem?: string;
+  title?: string;
+}

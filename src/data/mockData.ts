@@ -1929,7 +1929,7 @@ export const INITIAL_NOTIFICATIONS: AppNotification[] = [
 ];
 
 // ==========================================
-// TÍTULOS DO JOGADOR (URBANOZEIRO)
+// TÍTULOS DO JOGADOR (THE ROLLING WARS)
 // ==========================================
 export const MOCK_TITLES: PlayerTitle[] = [
   {
@@ -2047,7 +2047,7 @@ export const MOCK_TITLES: PlayerTitle[] = [
 ];
 
 // ==========================================
-// MEDALHAS DO JOGADOR (URBANOZEIRO)
+// MEDALHAS DO JOGADOR (THE ROLLING WARS)
 // ==========================================
 export const MOCK_MEDALS: PlayerMedal[] = [
   {
@@ -2156,7 +2156,7 @@ export const MOCK_MEDALS: PlayerMedal[] = [
 ];
 
 // ==========================================
-// CONQUISTAS PESSOAIS (URBANOZEIRO)
+// CONQUISTAS PESSOAIS (THE ROLLING WARS)
 // ==========================================
 export const INITIAL_ACHIEVEMENTS: Achievement[] = [
   {
@@ -2441,7 +2441,7 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
 ];
 
 // ==========================================
-// DADOS SIMULADOS DE CLÃS (URBANOZEIRO)
+// DADOS SIMULADOS DE CLÃS (THE ROLLING WARS)
 // ==========================================
 export const INITIAL_CLANS: Clan[] = [
   {
@@ -3322,7 +3322,7 @@ export const INITIAL_DIRECT_CHALLENGES: DirectChallenge[] = [
 ];
 
 // ==========================================
-// HISTÓRICO INICIAL DE SESSÕES (URBANOZEIRO)
+// HISTÓRICO INICIAL DE SESSÕES (THE ROLLING WARS)
 // ==========================================
 export const INITIAL_SESSION_HISTORY: SkateSession[] = [
   {
@@ -3533,7 +3533,7 @@ export const MOCK_LIVE_CHALLENGE: LiveChallenge = {
 };
 
 // ==========================================
-// MOCK DATA: EVENTOS E TORNEIOS (URBANOZEIRO)
+// MOCK DATA: EVENTOS E TORNEIOS (THE ROLLING WARS)
 // ==========================================
 
 export const INITIAL_EVENTS: UrbanozeiroEvent[] = [

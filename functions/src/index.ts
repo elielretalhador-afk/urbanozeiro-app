@@ -1,4 +1,5 @@
 import * as functions from 'firebase-functions/v2';
+import { checkPreferencesAndSendPush } from './notifications';
 import * as admin from 'firebase-admin';
 import { auditTrack, TrackPoint } from './antiCheat/trackAudit';
 import { getDistanceToPath } from './utils/segmentMath';
@@ -272,7 +273,7 @@ export const onZoneConquestCreated = functions.firestore.onDocumentCreated(
     }
 
     // 3. Server-Side Transaction
-    await db.runTransaction(async (transaction: any) => {
+    const txResult = await db.runTransaction(async (transaction: any) => {
         // ALWAYS update the history ref status first
         transaction.update(snapshot.ref, {
             antiCheatStatus: antiCheatStatus,
@@ -355,6 +356,12 @@ export const onZoneConquestCreated = functions.firestore.onDocumentCreated(
                                 transaction.update(enemyClanRef, {
                                     zonesControlledCount: Math.max(0, (eClanData.zonesControlledCount || 1) - 1)
                                 });
+                                // Schedule notification
+                                (transaction as any)._pushNotification = {
+                                    enemyClanData: eClanData,
+                                    zoneName: currentZone.name,
+                                    zoneId: zoneId
+                                };
                             }
                         }
                         
@@ -425,7 +432,24 @@ export const onZoneConquestCreated = functions.firestore.onDocumentCreated(
 
             transaction.update(zoneRef, updatedZoneData);
         }
+        return (transaction as any)._pushNotification;
     });
+
+    if (txResult && txResult.enemyClanData) {
+       const eClanData = txResult.enemyClanData;
+       if (eClanData.memberIds && Array.isArray(eClanData.memberIds)) {
+         for (const memberId of eClanData.memberIds) {
+           await checkPreferencesAndSendPush(
+             memberId,
+             'notifyZoneConquest',
+             '⚔️ Seu território foi tomado',
+             `O clã adversário conquistou a zona ${txResult.zoneName}.`,
+             { type: 'zone_lost', entityId: txResult.zoneId }
+           );
+         }
+       }
+    }
+
 
     if (antiCheatStatus === 'approved') {
        await autoAwardSeasonPoints('ZONE_CONQUEST', event.params.operationId, event.params.zoneId, historyData.playerId, playerClanId);
@@ -610,9 +634,9 @@ export const finalizeSeason = functions.https.onCall(async (request: any) => {
 import { v4 as uuidv4 } from 'uuid';
 
 export const debugGrantCoins = functions.https.onCall(async (request: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const context = { auth: request.auth };
     if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
+    if (context.auth.token.email !== 'admin@therollingwars.com') throw new functions.https.HttpsError('permission-denied', 'Admins only.');
     
     const amount = request.data.amount || 100;
     const userId = context.auth.uid;
@@ -776,3 +800,179 @@ async function grantEconomyReward(userId: string, transactionType: string, sourc
         });
     });
 }
+
+
+export const purchaseShopItem = functions.https.onCall(async (request: any) => {
+    const context = { auth: request.auth };
+    if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
+    
+    const itemId = request.data.itemId;
+    if (!itemId) throw new functions.https.HttpsError('invalid-argument', 'Item ID required.');
+    
+    const userId = context.auth.uid;
+    
+    try {
+        const result = await db.runTransaction(async (transaction: any) => {
+            const itemRef = db.collection('shopItems').doc(itemId);
+            const itemSnap = await transaction.get(itemRef);
+            
+            if (!itemSnap.exists) {
+                throw new Error('Item not found');
+            }
+            
+            const itemData = itemSnap.data() || {};
+            if (!itemData.isActive) {
+                throw new Error('Item is not available');
+            }
+            
+            const price = itemData.price || 0;
+            
+            const inventoryRef = db.collection('users').doc(userId).collection('inventory').doc(itemId);
+            const inventorySnap = await transaction.get(inventoryRef);
+            if (inventorySnap.exists) {
+                throw new Error('User already owns this item');
+            }
+            
+            const walletRef = db.collection('users').doc(userId).collection('wallet').doc('main');
+            const walletSnap = await transaction.get(walletRef);
+            
+            let currentBalance = 0;
+            let currentSpent = 0;
+            if (walletSnap.exists) {
+                const w = walletSnap.data() || {};
+                currentBalance = w.balance || 0;
+                currentSpent = w.totalSpent || 0;
+            }
+            
+            if (currentBalance < price) {
+                throw new Error('Insufficient balance');
+            }
+            
+            const newBalance = currentBalance - price;
+            const newSpent = currentSpent + price;
+            
+            transaction.update(walletRef, {
+                balance: newBalance,
+                totalSpent: newSpent,
+                updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+            
+            const txId = require('uuid').v4();
+            const txRef = db.collection('users').doc(userId).collection('walletTransactions').doc(txId);
+            transaction.set(txRef, {
+                id: txId,
+                playerId: userId,
+                type: 'shop_purchase',
+                amount: -price,
+                balanceAfter: newBalance,
+                source: 'shop',
+                sourceId: itemId,
+                description: `Compra na loja: ${itemData.name}`,
+                timestamp: new Date().toISOString(),
+                createdAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+            
+            transaction.set(inventoryRef, {
+                itemId: itemId,
+                acquiredAt: admin.firestore.FieldValue.serverTimestamp(),
+                source: 'shop_purchase',
+                seasonId: itemData.seasonId || null,
+                purchaseId: txId
+            });
+            
+            return { success: true, newBalance };
+        });
+        
+        return result;
+    } catch (e: any) {
+        console.error('Error purchasing item:', e);
+        return { success: false, error: e.message };
+    }
+});
+
+export const equipCosmetic = functions.https.onCall(async (request: any) => {
+    const context = { auth: request.auth };
+    if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
+    
+    const itemId = request.data.itemId;
+    const category = request.data.category; // expect 'avatar_frame', 'title', etc
+    
+    if (!itemId || !category) throw new functions.https.HttpsError('invalid-argument', 'Item ID and Category required.');
+    
+    const userId = context.auth.uid;
+    
+    try {
+        const result = await db.runTransaction(async (transaction: any) => {
+            const inventoryRef = db.collection('users').doc(userId).collection('inventory').doc(itemId);
+            const inventorySnap = await transaction.get(inventoryRef);
+            
+            if (!inventorySnap.exists) {
+                throw new Error('User does not own this item');
+            }
+            
+            // Validate category against shop/officialTitles? Let's just trust for now since they own it.
+            // Ideally we check if the item is indeed of that category.
+            
+            const cosmeticsRef = db.collection('users').doc(userId).collection('profile').doc('cosmetics');
+            const cosmeticsSnap = await transaction.get(cosmeticsRef);
+            
+            const updateData: any = {};
+            updateData[category] = itemId;
+            updateData.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+            
+            if (cosmeticsSnap.exists) {
+                transaction.update(cosmeticsRef, updateData);
+            } else {
+                transaction.set(cosmeticsRef, updateData);
+            }
+            
+            return { success: true };
+        });
+        
+        return result;
+    } catch (e: any) {
+        console.error('Error equipping cosmetic:', e);
+        return { success: false, error: e.message };
+    }
+});
+
+export const seedShop = functions.https.onCall(async (request: any) => {
+    const context = { auth: request.auth };
+    if (!context.auth || context.auth.token.email !== 'admin@therollingwars.com') {
+       throw new functions.https.HttpsError('permission-denied', 'Admins only.');
+    }
+    try {
+        const items = [
+            { id: 'frame_gold', name: 'Moldura de Ouro', description: 'Uma moldura reluzente.', category: 'avatar_frame', price: 500, rarity: 'rare', isActive: true, visualKey: 'gold_frame' },
+            { id: 'title_veteran', name: 'Veterano', description: 'Para jogadores experientes.', category: 'title', price: 1000, rarity: 'epic', isActive: true, visualKey: 'title_veteran' },
+            { id: 'badge_star', name: 'Estrela', description: 'Uma insígnia brilhante.', category: 'profile_badge', price: 200, rarity: 'common', isActive: true, visualKey: 'badge_star' }
+        ];
+        
+        for (const item of items) {
+            await db.collection('shopItems').doc(item.id).set(item);
+        }
+        
+        return { success: true };
+    } catch (e: any) {
+        return { success: false, error: e.message };
+    }
+});
+
+export const onClanInviteCreated = functions.firestore.onDocumentCreated(
+  'clanInvites/{inviteId}',
+  async (event: any) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
+    const inviteData = snapshot.data();
+    
+    if (inviteData.userId && inviteData.clanName) {
+        await checkPreferencesAndSendPush(
+          inviteData.userId,
+          'notifySocialActivities',
+          '🤝 Novo Convite de Clã',
+          `Você foi convidado para o clã ${inviteData.clanName}.`,
+          { type: 'clan_invite', entityId: inviteData.clanId }
+        );
+    }
+  }
+);

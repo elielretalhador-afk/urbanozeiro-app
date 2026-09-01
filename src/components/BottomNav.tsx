@@ -13,7 +13,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab, on
     { id: 'mapa' as TabType, label: 'MAPA', icon: Map },
     { id: 'feed' as any, label: 'SOCIAL', icon: Users },
     { id: 'ranking' as TabType, label: 'RANKING', icon: Trophy },
-    { id: 'perfil' as TabType, label: 'PERFIL', icon: User },
+    { id: 'perfil' as TabType, label: 'HUB', icon: User },
   ];
 
   return (

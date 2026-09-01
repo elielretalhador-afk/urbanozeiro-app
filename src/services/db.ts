@@ -1,3 +1,4 @@
+import { TelemetryService } from './telemetry';
 import { db, auth } from "../lib/firebase";
 import { collection, getDocs, doc, runTransaction, setDoc } from "firebase/firestore";
 import { get as idbGet, set as idbSet } from 'idb-keyval';
@@ -222,7 +223,8 @@ activity: PlayerPublicActivity): Promise<void> {
           await setDoc(sessionRef, cleanSession);
           successfulSessionIds.add(s.id);
         } catch (error) {
-          console.error(`[SyncQueue] Falha ao enviar sessão ${s.id}:`, error); throw error;
+          console.error(`[SyncQueue] Falha ao enviar sessão ${s.id}:`, error);
+          TelemetryService.logEvent({ eventName: 'outbox_sync_failure', category: 'SYNC', details: { type: 'session', id: s.id }, error });
           failedSessionIds.add(s.id);
         }
       }
@@ -235,7 +237,8 @@ activity: PlayerPublicActivity): Promise<void> {
           await setDoc(activityRef, cleanActivity);
           successfulActivityIds.add(a.id);
         } catch (error) {
-          console.error(`[SyncQueue] Falha ao enviar atividade ${a.id}:`, error); throw error;
+          console.error(`[SyncQueue] Falha ao enviar atividade ${a.id}:`, error);
+          TelemetryService.logEvent({ eventName: 'outbox_sync_failure', category: 'SYNC', details: { type: 'activity', id: a.id }, error });
           failedActivityIds.add(a.id);
         }
       }
@@ -251,7 +254,8 @@ activity: PlayerPublicActivity): Promise<void> {
           await this.conquerZoneTransaction(op.zoneId, op);
           successfulZoneIds.add(op.operationId);
         } catch (error) {
-          console.error(`[SyncQueue] Falha ao enviar zona ${op.operationId}:`, error); throw error;
+          console.error(`[SyncQueue] Falha ao enviar zona ${op.operationId}:`, error);
+          TelemetryService.logEvent({ eventName: 'outbox_sync_failure', category: 'SYNC', details: { type: 'zone', id: op.operationId }, error });
           failedZoneIds.add(op.operationId);
         }
       }
@@ -269,7 +273,8 @@ activity: PlayerPublicActivity): Promise<void> {
             }));
           }
         } catch (error) {
-          console.error(`[SyncQueue] Falha ao enviar segmento ${op.operationId}:`, error); throw error;
+          console.error(`[SyncQueue] Falha ao enviar segmento ${op.operationId}:`, error);
+          TelemetryService.logEvent({ eventName: 'outbox_sync_failure', category: 'SYNC', details: { type: 'segment', id: op.operationId }, error });
           failedSegmentIds.add(op.operationId);
         }
       }
@@ -341,9 +346,19 @@ activity: PlayerPublicActivity): Promise<void> {
       if (successfulZoneIds.size > 0) {
         this.invalidateZonesCache();
       }
-
+      TelemetryService.logEvent({
+        eventName: 'outbox_sync_success',
+        category: 'SYNC',
+        details: {
+          sessions: successfulSessionIds.size,
+          activities: successfulActivityIds.size,
+          zones: successfulZoneIds.size,
+          segments: successfulSegmentIds.size
+        }
+      });
     } catch (error) {
       console.error('[SyncQueue] Erro crítico no loop de sincronização:', error);
+      TelemetryService.logEvent({ eventName: 'outbox_sync_failure', category: 'SYNC', details: { type: 'critical_loop_error' }, error });
     } finally {
       isSyncing = false;
     }

@@ -2,7 +2,7 @@ import { CurrencyTransaction, CurrencySource, VirtualWallet, WalletOperationResu
 
 /**
  * =========================================================================
- * ESQUELETO DA ECONOMIA VIRTUAL INTERNA DO URBANOZEIRO
+ * ESQUELETO DA ECONOMIA VIRTUAL INTERNA DO THE ROLLING WARS
  * =========================================================================
  * 
  * Regras Fundamentais:

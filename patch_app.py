@@ -1,46 +1,39 @@
+import re
+
 with open('src/App.tsx', 'r') as f:
-    c = f.read()
+    content = f.read()
 
-filter_watch = """                ) {
-                  return;
-                }
+import_str = "import { TelemetryService } from './services/telemetry';\n"
+if "import { TelemetryService }" not in content:
+    content = import_str + content
 
-                // Filtro Espacial Otimizado (Bounding Box de ~2.2km) para evitar Haversine desnecessário
-                if (
-                  Math.abs(latitude - z.center[0]) > 0.02 ||
-                  Math.abs(longitude - z.center[1]) > 0.02
-                ) {
-                  return;
-                }
+# Log app start
+content = content.replace("export default function App() {",
+"""export default function App() {
+  React.useEffect(() => {
+    TelemetryService.logEvent({ eventName: 'app_started', category: 'APP' });
+  }, []);""")
 
-                const distMeters = calculateDistanceKm(latitude, longitude, z.center[0], z.center[1]) * 1000;"""
+# Log Auth success
+content = content.replace("localStorage.setItem('urbanozeiro_user', JSON.stringify(updated));",
+"""localStorage.setItem('urbanozeiro_user', JSON.stringify(updated));
+          TelemetryService.logEvent({ eventName: 'auth_success', category: 'AUTH', details: { uid: firebaseUser.uid } });""")
 
-c = c.replace(
-"""                ) {
-                  return;
-                }
-                const distMeters = calculateDistanceKm(latitude, longitude, z.center[0], z.center[1]) * 1000;""", filter_watch)
+# Log GPS status
+content = content.replace("alert('O The Rolling Wars precisa de permissão de GPS para funcionar. Acesse as configurações e permita o uso de localização.');",
+"""alert('O The Rolling Wars precisa de permissão de GPS para funcionar. Acesse as configurações e permita o uso de localização.');
+            TelemetryService.logEvent({ eventName: 'gps_permission_denied', category: 'GPS' });""")
 
-filter_start = """        ) {
-          return;
-        }
+# Log GPS Watch start
+content = content.replace("watchIdStr = await Geolocation.watchPosition(",
+"""TelemetryService.logEvent({ eventName: 'gps_permission_granted', category: 'GPS' });
+        watchIdStr = await Geolocation.watchPosition(""")
 
-        // Filtro Espacial Otimizado (Bounding Box de ~2.2km) para evitar Haversine desnecessário
-        if (
-          Math.abs(initialCoords.latitude - z.center[0]) > 0.02 ||
-          Math.abs(initialCoords.longitude - z.center[1]) > 0.02
-        ) {
-          return;
-        }
-
-        const distMeters = calculateDistanceKm(initialCoords.latitude, initialCoords.longitude, z.center[0], z.center[1]) * 1000;"""
-
-c = c.replace(
-"""        ) {
-          return;
-        }
-        const distMeters = calculateDistanceKm(initialCoords.latitude, initialCoords.longitude, z.center[0], z.center[1]) * 1000;""", filter_start)
+# Log GPS recovered / unavailable
+content = content.replace("setIsGpsActive(true);",
+"""setIsGpsActive(true);
+          TelemetryService.logEvent({ eventName: 'gps_recovered', category: 'GPS' });""")
 
 
 with open('src/App.tsx', 'w') as f:
-    f.write(c)
+    f.write(content)

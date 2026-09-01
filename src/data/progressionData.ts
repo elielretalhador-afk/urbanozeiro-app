@@ -1194,6 +1194,12 @@ export function getEquippedFrameStyle(frameId?: string): {
   badgeClass: string;
 } {
   switch (frameId) {
+    case 'frame_gold':
+      return {
+        borderClass: 'border-2 border-yellow-400',
+        glowClass: 'shadow-[0_0_20px_rgba(252,232,3,0.5)] ring-2 ring-yellow-400/50 ring-offset-2 ring-offset-black',
+        badgeClass: 'bg-yellow-400 text-black',
+      };
     case 'inv_frm_01': // Neon Pulse
       return {
         borderClass: 'border-2 border-yellow-400',

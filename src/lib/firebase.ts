@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, initializeFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { getMessaging, isSupported } from 'firebase/messaging';
 import { getStorage } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
 
@@ -22,3 +23,10 @@ export const storage = getStorage(app);
 
 
 export const functions = getFunctions(app, 'us-central1');
+
+export let messaging: any = null;
+isSupported().then(supported => {
+  if (supported) {
+    messaging = getMessaging(app);
+  }
+});

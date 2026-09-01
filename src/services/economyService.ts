@@ -1,7 +1,7 @@
 import { db, functions } from '../lib/firebase';
 import { collection, doc, getDoc, onSnapshot, query, getDocs, orderBy } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
-import { VirtualWallet, Chest, CurrencyTransaction } from '../types';
+import { VirtualWallet, Chest, CurrencyTransaction, ShopItem, InventoryItem, ProfileCosmetics } from '../types';
 
 export class EconomyService {
   static async getWallet(userId: string): Promise<VirtualWallet | null> {
@@ -70,5 +70,63 @@ export class EconomyService {
       } catch (e) {
           return { success: false };
       }
+  }
+
+  static subscribeToShopItems(callback: (items: ShopItem[]) => void) {
+    const q = query(collection(db, 'shopItems'), orderBy('price', 'asc'));
+    return onSnapshot(q, (snap) => {
+      const items = snap.docs.map((d) => d.data() as ShopItem);
+      callback(items);
+    });
+  }
+
+  static subscribeToInventory(userId: string, callback: (items: InventoryItem[]) => void) {
+    const q = query(collection(db, 'users', userId, 'inventory'));
+    return onSnapshot(q, (snap) => {
+      const items = snap.docs.map((d) => d.data() as InventoryItem);
+      callback(items);
+    });
+  }
+
+  static subscribeToProfileCosmetics(userId: string, callback: (equipped: ProfileCosmetics | null) => void) {
+    const docRef = doc(db, 'users', userId, 'profile', 'cosmetics');
+    return onSnapshot(docRef, (snap) => {
+      if (snap.exists()) {
+        callback(snap.data() as ProfileCosmetics);
+      } else {
+        callback(null);
+      }
+    });
+  }
+
+  static async purchaseShopItem(itemId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const purchaseFn = httpsCallable(functions, 'purchaseShopItem');
+      const result = await purchaseFn({ itemId });
+      return result.data as any;
+    } catch (e: any) {
+      console.error('Error purchasing item:', e);
+      return { success: false, error: e.message };
+    }
+  }
+
+  static async equipCosmetic(itemId: string, category: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const equipFn = httpsCallable(functions, 'equipCosmetic');
+      const result = await equipFn({ itemId, category });
+      return result.data as any;
+    } catch (e: any) {
+      console.error('Error equipping cosmetic:', e);
+      return { success: false, error: e.message };
+    }
+  }
+  
+  static async seedShop(): Promise<void> {
+    try {
+      const seedFn = httpsCallable(functions, 'seedShop');
+      await seedFn();
+    } catch (e) {
+      console.error('Error seeding shop:', e);
+    }
   }
 }

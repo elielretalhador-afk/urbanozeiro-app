@@ -10,7 +10,7 @@ import {
 
 /**
  * =========================================================================
- * ESQUELETO DE SEGURANÇA, MODERAÇÃO E INTEGRIDADE DO JOGO (URBANOZEIRO)
+ * ESQUELETO DE SEGURANÇA, MODERAÇÃO E INTEGRIDADE DO JOGO (THE ROLLING WARS)
  * =========================================================================
  * 
  * DIRETRIZES FUNDAMENTAIS DE SEGURANÇA & FAIR PLAY:
