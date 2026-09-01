@@ -1,5 +1,5 @@
 {
-  "name": "Urbanozeiro",
+  "name": "The Rolling Wars",
   "description": "Aplicativo de patins baseado em localização e gamificação. Patine. Conquiste. Desafie.",
   "requestFramePermissions": ["geolocation"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

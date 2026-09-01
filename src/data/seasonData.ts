@@ -5,7 +5,7 @@ export const MOCK_SEASONS: Season[] = [
     id: 'season_01',
     name: 'Primeiro Rolê',
     description:
-      'A temporada inaugural do Urbanozeiro. Explore as vias da metrópole, conquiste territórios e dispute o topo do ranking sazonal.',
+      'A temporada inaugural do THE ROLLING WARS. Explore as vias da metrópole, conquiste territórios e dispute o topo do ranking sazonal.',
     number: 1,
     status: 'ACTIVE',
     startAt: '2026-01-01T00:00:00Z',
@@ -13,7 +13,7 @@ export const MOCK_SEASONS: Season[] = [
     theme: 'Asfalto Noturno & Conquista',
     banner: 'https://images.unsplash.com/photo-1547447134-cd3f5c716030?w=800&auto=format&fit=crop&q=80',
     icon: '🏆',
-    seasonColor: '#00ff66',
+    seasonColor: '#fce803',
     accentColor: '#38bdf8',
     totalParticipants: 1420,
     timeRemainingLabel: 'Termina em 12 dias',
@@ -493,9 +493,9 @@ export function getSeasonStatusBadge(status: SeasonStatus): {
     case 'ACTIVE':
       return {
         label: 'ATIVA',
-        bg: 'bg-emerald-500/20',
-        text: 'text-emerald-300',
-        border: 'border-emerald-400/40',
+        bg: 'bg-yellow-500/20',
+        text: 'text-yellow-300',
+        border: 'border-yellow-400/40',
       };
     case 'ENDING_SOON':
       return {

@@ -55,9 +55,9 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
       case 'zona':
         return <MapPin className="w-4 h-4 text-cyan-400" />;
       case 'conquista':
-        return <Trophy className="w-4 h-4 text-emerald-400" />;
+        return <Trophy className="w-4 h-4 text-yellow-400" />;
       case 'disputa':
-        return <Swords className="w-4 h-4 text-amber-400" />;
+        return <Swords className="w-4 h-4 text-white" />;
       case 'ranking':
         return <Crown className="w-4 h-4 text-amber-300" />;
       case 'desafio':
@@ -68,6 +68,16 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
         return <Users className="w-4 h-4 text-purple-400" />;
       case 'evento':
         return <Calendar className="w-4 h-4 text-blue-400" />;
+      case 'friend_request':
+        return <Users className="w-4 h-4 text-[#fce803]" />;
+      case 'friend_accept':
+        return <CheckCircle2 className="w-4 h-4 text-[#fce803]" />;
+      case 'new_record':
+        return <Trophy className="w-4 h-4 text-[#fce803] fill-[#fce803]/30" />;
+      case 'record_beaten':
+        return <Flame className="w-4 h-4 text-orange-500" />;
+      case 'social_activity':
+        return <Users className="w-4 h-4 text-[#1d4ed8]" />;
       case 'sistema':
       default:
         return <Info className="w-4 h-4 text-slate-300" />;
@@ -79,7 +89,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
       case 'zona':
         return 'bg-cyan-500/20 text-cyan-300 border-cyan-400/40';
       case 'conquista':
-        return 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40';
+        return 'bg-yellow-500/20 text-yellow-300 border-yellow-400/40';
       case 'disputa':
         return 'bg-amber-500/20 text-amber-300 border-amber-400/40';
       case 'ranking':
@@ -92,6 +102,14 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
         return 'bg-purple-500/20 text-purple-300 border-purple-400/40';
       case 'evento':
         return 'bg-blue-500/20 text-blue-300 border-blue-400/40';
+      case 'friend_request':
+      case 'friend_accept':
+      case 'new_record':
+        return 'bg-[#fce803]/10 text-[#fce803] border-[#fce803]/30';
+      case 'record_beaten':
+        return 'bg-orange-500/20 text-orange-300 border-orange-400/40';
+      case 'social_activity':
+        return 'bg-[#1d4ed8]/20 text-white border-[#1d4ed8]/30';
       case 'sistema':
       default:
         return 'bg-slate-700/40 text-slate-300 border-slate-600/40';
@@ -116,6 +134,16 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
         return 'CLÃ';
       case 'evento':
         return 'EVENTO';
+      case 'friend_request':
+        return 'SOCIAL';
+      case 'friend_accept':
+        return 'SOCIAL';
+      case 'new_record':
+        return 'RECORDE';
+      case 'record_beaten':
+        return 'RECORDE PERDIDO';
+      case 'social_activity':
+        return 'SOCIAL';
       case 'sistema':
       default:
         return 'SISTEMA';
@@ -136,20 +164,20 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
       id="modal-notifications"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85  animate-in fade-in duration-200"
     >
-      <div className="w-full max-w-md h-[90vh] max-h-[640px] rounded-3xl bg-[#0a0f15] border-2 border-emerald-500/40 shadow-[0_0_50px_rgba(0,255,102,0.25)] flex flex-col relative overflow-hidden">
+      <div className="w-full max-w-md h-[90vh] max-h-[640px] rounded-3xl bg-[#1d4ed8] border-2 border-yellow-500/40 shadow-[0_0_50px_rgba(252,232,3,0.25)] flex flex-col relative overflow-hidden">
         {/* Top Glow Decorator */}
-        <div className="absolute -top-12 -left-12 w-36 h-36 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
+        <div className="absolute -top-12 -left-12 w-36 h-36 rounded-full bg-yellow-500/15 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-12 -right-12 w-36 h-36 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none" />
 
         {/* Modal Header */}
         <div className="p-4 pb-3 border-b border-white/10 flex items-center justify-between gap-2 shrink-0 bg-[#0c121a]">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-emerald-400/15 border border-emerald-400/40 flex items-center justify-center text-emerald-400 shadow-sm relative">
+            <div className="w-9 h-9 rounded-xl bg-yellow-400/15 border border-yellow-400/40 flex items-center justify-center text-yellow-400 shadow-sm relative">
               <Bell className="w-5 h-5" />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 border border-black" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-yellow-400 border border-black" />
                 </span>
               )}
             </div>
@@ -159,7 +187,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                   CENTRAL DE NOTIFICAÇÕES
                 </h2>
                 {unreadCount > 0 && (
-                  <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-emerald-400 text-black font-mono-stat">
+                  <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-yellow-400 text-black font-mono-stat">
                     {unreadCount} nova{unreadCount > 1 ? 's' : ''}
                   </span>
                 )}
@@ -189,7 +217,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
               onClick={() => setFilter('todas')}
               className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase font-mono-stat transition-all ${
                 filter === 'todas'
-                  ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.3)]'
+                  ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.3)]'
                   : 'bg-white/5 text-slate-400 hover:text-white'
               }`}
             >
@@ -200,7 +228,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
               onClick={() => setFilter('nao_lidas')}
               className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase font-mono-stat transition-all ${
                 filter === 'nao_lidas'
-                  ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.3)]'
+                  ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.3)]'
                   : 'bg-white/5 text-slate-400 hover:text-white'
               }`}
             >
@@ -211,7 +239,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
               onClick={() => setFilter('zonas')}
               className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase font-mono-stat transition-all ${
                 filter === 'zonas'
-                  ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.3)]'
+                  ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.3)]'
                   : 'bg-white/5 text-slate-400 hover:text-white'
               }`}
             >
@@ -222,7 +250,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
               onClick={() => setFilter('conquistas')}
               className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase font-mono-stat transition-all ${
                 filter === 'conquistas'
-                  ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.3)]'
+                  ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.3)]'
                   : 'bg-white/5 text-slate-400 hover:text-white'
               }`}
             >
@@ -238,7 +266,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
               className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[9px] font-bold text-slate-300 hover:text-white font-mono-stat uppercase transition-all shrink-0 cursor-pointer"
               title="Marcar todas como lidas"
             >
-              <CheckCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <CheckCheck className="w-3.5 h-3.5 text-yellow-400" />
               <span className="hidden xs:inline">Marcar lidas</span>
             </button>
           )}
@@ -256,7 +284,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
               </p>
               <p className="text-[11px] text-slate-500 mt-1 max-w-[220px]">
                 {filter === 'nao_lidas'
-                  ? 'Você está em dia com todos os alertas do Urbanozeiro!'
+                  ? 'Você está em dia com todos os alertas do THE ROLLING WARS!'
                   : 'Alertas de zonas, desafios e conquistas aparecerão aqui.'}
               </p>
             </div>
@@ -273,14 +301,14 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                   className={`group relative p-3 rounded-2xl border transition-all cursor-pointer text-left ${
                     notif.isRead
                       ? 'bg-[#0a0e14]/70 border-white/5 hover:border-white/20 hover:bg-[#0e141c]'
-                      : 'bg-[#0f1722] border-emerald-500/40 shadow-[0_0_15px_rgba(0,255,102,0.15)] hover:border-emerald-400'
+                      : 'bg-[#0f1722] border-yellow-500/40 shadow-[0_0_15px_rgba(252,232,3,0.15)] hover:border-yellow-400'
                   }`}
                 >
                   {/* Unread Accent Dot */}
                   {!notif.isRead && (
                     <span className="absolute top-3.5 right-3 flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-400" />
                     </span>
                   )}
 
@@ -290,7 +318,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                       className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 mt-0.5 ${
                         notif.isRead
                           ? 'bg-white/5 border-white/10 text-slate-400'
-                          : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-sm'
+                          : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400 shadow-sm'
                       }`}
                     >
                       {getNotificationIcon(notif.type)}
@@ -323,7 +351,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
 
                       {/* Interactive Action Prompt if available */}
                       {notif.actionType && (
-                        <div className="mt-2 flex items-center gap-1 text-[10px] font-bold text-emerald-400 font-mono-stat uppercase group-hover:text-emerald-300">
+                        <div className="mt-2 flex items-center gap-1 text-[10px] font-bold text-yellow-400 font-mono-stat uppercase group-hover:text-yellow-300">
                           <span>
                             {notif.actionType === 'open_zone' && 'Visualizar Zona'}
                             {notif.actionType === 'open_ranking' && 'Abrir Ranking'}
@@ -346,8 +374,8 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
         {/* Modal Footer Info */}
         <div className="p-3 bg-[#080c10] border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400 font-mono-stat shrink-0">
           <div className="flex items-center gap-1.5">
-            <Shield className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Sistema Urbanozeiro Realtime</span>
+            <Shield className="w-3.5 h-3.5 text-yellow-400" />
+            <span>Sistema THE ROLLING WARS Realtime</span>
           </div>
           <span className="text-[9px] text-slate-500">v1.2</span>
         </div>

@@ -11,7 +11,7 @@ export const RotasView: React.FC<RotasViewProps> = ({ routes, onSelectRouteOnMap
   const getDifficultyBadge = (diff: SkateRoute['difficulty']) => {
     switch (diff) {
       case 'Iniciante':
-        return 'bg-emerald-400/20 text-emerald-400 border border-emerald-400/50';
+        return 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/50';
       case 'Intermediário':
         return 'bg-cyan-400/20 text-cyan-400 border border-cyan-400/50';
       case 'Avançado':
@@ -25,7 +25,7 @@ export const RotasView: React.FC<RotasViewProps> = ({ routes, onSelectRouteOnMap
     <div className="h-full w-full overflow-y-auto overscroll-contain px-4 py-4 pb-36 bg-[#080b0e]">
       {/* Header */}
       <div className="mb-4">
-        <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider font-mono-stat">
+        <div className="flex items-center gap-2 text-yellow-400 text-xs font-bold uppercase tracking-wider font-mono-stat">
           <Compass className="w-4 h-4" />
           ROTAS E CIRCUITOS URBANOS
         </div>
@@ -43,7 +43,7 @@ export const RotasView: React.FC<RotasViewProps> = ({ routes, onSelectRouteOnMap
           <div
             key={route.id}
             id={`route-card-${route.id}`}
-            className="p-4 rounded-2xl bg-[#0d141d] border-2 border-white/10 hover:border-emerald-500/50 transition-all shadow-md group cursor-pointer active:scale-[0.99]"
+            className="p-4 rounded-2xl bg-[#0d141d] border-2 border-white/10 hover:border-yellow-500/50 transition-all shadow-md group cursor-pointer active:scale-[0.99]"
             onClick={() => onSelectRouteOnMap(route)}
           >
             <div className="flex items-start justify-between gap-2">
@@ -56,7 +56,7 @@ export const RotasView: React.FC<RotasViewProps> = ({ routes, onSelectRouteOnMap
                     ASFALTO {route.asphaltQuality}
                   </span>
                 </div>
-                <h3 className="text-base font-bold text-white uppercase font-display group-hover:text-emerald-400 transition-colors">
+                <h3 className="text-base font-bold text-white uppercase font-display group-hover:text-yellow-400 transition-colors">
                   {route.name}
                 </h3>
               </div>
@@ -70,13 +70,13 @@ export const RotasView: React.FC<RotasViewProps> = ({ routes, onSelectRouteOnMap
             </div>
 
             <div className="flex items-center gap-1.5 text-xs text-slate-300 font-medium mt-2">
-              <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <MapPin className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
               <span className="truncate">{route.location}</span>
             </div>
 
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10 text-xs text-slate-300">
               <div className="flex items-center gap-4">
-                <span className="font-bold text-emerald-400 font-mono-stat">
+                <span className="font-bold text-yellow-400 font-mono-stat">
                   {route.distanceKm} KM
                 </span>
                 <span className="flex items-center gap-1 text-slate-400 font-medium font-mono-stat">
@@ -86,7 +86,7 @@ export const RotasView: React.FC<RotasViewProps> = ({ routes, onSelectRouteOnMap
 
               <button
                 type="button"
-                className="flex items-center gap-1 text-xs font-bold uppercase text-emerald-400 group-hover:translate-x-1 transition-transform font-mono-stat"
+                className="flex items-center gap-1 text-xs font-bold uppercase text-yellow-400 group-hover:translate-x-1 transition-transform font-mono-stat"
               >
                 VER NO MAPA <ChevronRight className="w-4 h-4 stroke-[2.5]" />
               </button>

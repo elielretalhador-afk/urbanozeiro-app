@@ -135,19 +135,19 @@ export const NearbyZonesDrawer: React.FC<NearbyZonesDrawerProps> = ({
 
   return (
     <div className="absolute inset-x-0 bottom-0 z-40 px-3 pb-3 pointer-events-none flex justify-center">
-      <div className="pointer-events-auto w-full max-w-md bg-[#080d14]/98 border-2 border-emerald-500/60 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.95)]  animate-in slide-in-from-bottom duration-300 max-h-[78vh] flex flex-col overflow-hidden">
+      <div className="pointer-events-auto w-full max-w-md bg-[#080d14]/98 border-2 border-yellow-500/60 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.95)]  animate-in slide-in-from-bottom duration-300 max-h-[78vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="p-3.5 pb-2.5 bg-[#0a1017] border-b-2 border-white/10 flex items-center justify-between gap-2 shrink-0">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-400 shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-yellow-500/20 border border-yellow-400/50 flex items-center justify-center text-yellow-400 shrink-0">
               <Compass className="w-4 h-4 stroke-[2.5]" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-black uppercase text-emerald-400 font-mono-stat tracking-wider">
+                <span className="text-[10px] font-black uppercase text-yellow-400 font-mono-stat tracking-wider">
                   EXPLORAÇÃO URBANA
                 </span>
-                <span className="px-1.5 py-0.2 rounded text-[8px] font-black bg-emerald-950 text-emerald-300 border border-emerald-500/40 font-mono-stat">
+                <span className="px-1.5 py-0.2 rounded text-[8px] font-black bg-blue-950 text-yellow-300 border border-yellow-500/40 font-mono-stat">
                   {filteredZones.length} {filteredZones.length === 1 ? 'ZONA' : 'ZONAS'}
                 </span>
               </div>
@@ -176,7 +176,7 @@ export const NearbyZonesDrawer: React.FC<NearbyZonesDrawerProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar zona por nome, tipo ou jogador..."
-              className="w-full pl-9 pr-8 py-2 bg-[#05080c] border border-white/15 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition-colors font-mono-stat"
+              className="w-full pl-9 pr-8 py-2 bg-[#05080c] border border-white/15 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-yellow-400 transition-colors font-mono-stat"
             />
             {searchQuery && (
               <button
@@ -201,8 +201,8 @@ export const NearbyZonesDrawer: React.FC<NearbyZonesDrawerProps> = ({
                 onClick={() => onSelectFilter(f.id)}
                 className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase font-mono-stat tracking-wider whitespace-nowrap transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-emerald-400 text-black border border-emerald-400 shadow-[0_0_12px_rgba(0,255,102,0.3)] scale-102'
-                    : 'bg-[#0f1722] text-slate-300 border border-white/10 hover:border-emerald-500/40 hover:text-white'
+                    ? 'bg-yellow-400 text-black border border-yellow-400 shadow-[0_0_12px_rgba(252,232,3,0.3)] scale-102'
+                    : 'bg-[#0f1722] text-slate-300 border border-white/10 hover:border-yellow-500/40 hover:text-white'
                 }`}
               >
                 {f.label}
@@ -223,7 +223,7 @@ export const NearbyZonesDrawer: React.FC<NearbyZonesDrawerProps> = ({
                   setSearchQuery('');
                   onSelectFilter('Todas');
                 }}
-                className="mt-2 text-[10px] text-emerald-400 underline font-black"
+                className="mt-2 text-[10px] text-yellow-400 underline font-black"
               >
                 Limpar filtros de busca
               </button>
@@ -255,7 +255,7 @@ export const NearbyZonesDrawer: React.FC<NearbyZonesDrawerProps> = ({
                     onSelectZone(zone);
                     onClose();
                   }}
-                  className="group p-3 rounded-2xl bg-[#0d141d]/90 hover:bg-[#121c28] border-2 border-white/10 hover:border-emerald-500/60 transition-all cursor-pointer shadow-md flex items-center justify-between gap-2.5 active:scale-99"
+                  className="group p-3 rounded-2xl bg-[#0d141d]/90 hover:bg-[#121c28] border-2 border-white/10 hover:border-yellow-500/60 transition-all cursor-pointer shadow-md flex items-center justify-between gap-2.5 active:scale-99"
                 >
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
                     {/* Status Color Badge / Avatar */}
@@ -264,9 +264,9 @@ export const NearbyZonesDrawer: React.FC<NearbyZonesDrawerProps> = ({
                       style={{ borderColor: isContested ? '#f59e0b' : zoneColor }}
                     >
                       {isContested ? (
-                        <Swords className="w-5 h-5 text-amber-400 animate-pulse" />
+                        <Swords className="w-5 h-5 text-white animate-pulse" />
                       ) : isFree ? (
-                        <Flag className="w-5 h-5 text-emerald-400" />
+                        <Flag className="w-5 h-5 text-yellow-400" />
                       ) : zone.controller?.avatar || zone.controllerAvatar ? (
                         <img
                           src={zone.controller?.avatar || zone.controllerAvatar}
@@ -289,7 +289,7 @@ export const NearbyZonesDrawer: React.FC<NearbyZonesDrawerProps> = ({
                       <div className="flex items-center gap-1.5 flex-wrap">
                         {/* Status Label */}
                         {isFree ? (
-                          <span className="text-[8px] font-black uppercase text-emerald-300 bg-emerald-950/90 px-1.5 py-0.2 rounded border border-emerald-500/40 font-mono-stat">
+                          <span className="text-[8px] font-black uppercase text-yellow-300 bg-blue-950/90 px-1.5 py-0.2 rounded border border-yellow-500/40 font-mono-stat">
                             LIVRE
                           </span>
                         ) : isContested ? (
@@ -318,12 +318,12 @@ export const NearbyZonesDrawer: React.FC<NearbyZonesDrawerProps> = ({
                         )}
                       </div>
 
-                      <h3 className="text-xs sm:text-sm font-black text-white uppercase font-display truncate mt-0.5 group-hover:text-emerald-300 transition-colors">
+                      <h3 className="text-xs sm:text-sm font-black text-white uppercase font-display truncate mt-0.5 group-hover:text-yellow-300 transition-colors">
                         {zone.name}
                       </h3>
 
                       <div className="flex items-center gap-2 text-[10px] text-slate-400 font-mono-stat mt-0.5">
-                        <span className="flex items-center gap-1 text-emerald-400 font-bold">
+                        <span className="flex items-center gap-1 text-yellow-400 font-bold">
                           <Users className="w-3 h-3" /> {skatersCountValue} no local
                         </span>
                         <span>•</span>
@@ -335,7 +335,7 @@ export const NearbyZonesDrawer: React.FC<NearbyZonesDrawerProps> = ({
                   {/* Distance & Action */}
                   <div className="flex flex-col items-end shrink-0 pl-1">
                     {distanceStr && (
-                      <span className="text-[11px] font-black text-emerald-400 font-mono-stat bg-emerald-950/60 px-2 py-0.5 rounded-lg border border-emerald-500/30 flex items-center gap-1">
+                      <span className="text-[11px] font-black text-yellow-400 font-mono-stat bg-blue-950/60 px-2 py-0.5 rounded-lg border border-yellow-500/30 flex items-center gap-1">
                         <Navigation className="w-2.5 h-2.5" />
                         {distanceStr}
                       </span>

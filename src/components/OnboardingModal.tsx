@@ -21,10 +21,10 @@ const TUTORIAL_STEPS = [
   {
     id: 2,
     title: 'Comece a patinar.',
-    description: 'Toque no botão INICIAR PATINAÇÃO para começar a rastrear sua sessão via GPS.',
+    description: 'Toque no botão INICIAR para começar a rastrear sua sessão via GPS.',
     icon: Play,
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-400/10'
+    color: 'text-yellow-400',
+    bg: 'bg-yellow-400/10'
   },
   {
     id: 3,
@@ -47,7 +47,7 @@ const TUTORIAL_STEPS = [
     title: 'Desafie.',
     description: 'Desafie outros jogadores para corridas ou participe de eventos da comunidade.',
     icon: Swords,
-    color: 'text-rose-400',
+    color: 'text-white',
     bg: 'bg-rose-400/10'
   },
   {
@@ -153,13 +153,13 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             height: targetRect.height + 16,
             borderRadius: '24px',
             boxShadow: '0 0 0 9999px rgba(8, 13, 20, 0.85)',
-            border: '2px dashed #00ff66',
+            border: '2px dashed #fce803',
           }}
           onClick={handleNextStep}
         >
           {/* Pulse Indicator & CTA */}
-          <div className="absolute inset-0 rounded-[22px] animate-ping opacity-20 border-2 border-emerald-400 pointer-events-none" />
-          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-emerald-400 text-xs font-black uppercase font-mono-stat drop-shadow-md animate-pulse">
+          <div className="absolute inset-0 rounded-[22px] animate-ping opacity-20 border-2 border-yellow-400 pointer-events-none" />
+          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-yellow-400 text-xs font-black uppercase font-mono-stat drop-shadow-md animate-pulse">
             Toque aqui
           </div>
         </div>
@@ -184,7 +184,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#121a24]">
             <h2 className="text-lg font-black text-white font-display uppercase tracking-tight">
-              {view === 'welcome' ? 'Urbanozeiro' : 'Tutorial Interativo'}
+              {view === 'welcome' ? 'THE ROLLING WARS' : 'Tutorial Interativo'}
             </h2>
             <button
               onClick={handleSkip}
@@ -200,15 +200,15 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             
             {view === 'welcome' ? (
               <div className="flex flex-col items-center justify-center text-center py-6 space-y-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-3xl p-1 shadow-[0_0_30px_rgba(0,255,102,0.3)]">
+                <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-cyan-500 rounded-3xl p-1 shadow-[0_0_30px_rgba(252,232,3,0.3)]">
                   <div className="w-full h-full bg-[#0d141d] rounded-[22px] flex items-center justify-center">
-                    <Play className="w-10 h-10 text-emerald-400 fill-emerald-400/20" />
+                    <Play className="w-10 h-10 text-yellow-400 fill-yellow-400/20" />
                   </div>
                 </div>
                 
                 <div className="space-y-2">
                   <h3 className="text-3xl font-black text-white font-display uppercase tracking-tight">
-                    Bem-vindo ao Urbanozeiro.
+                    Bem-vindo ao THE ROLLING WARS.
                   </h3>
                   <p className="text-slate-400 font-medium">
                     A cidade é sua pista. O asfalto é seu território.
@@ -217,7 +217,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
                 <div className="w-full space-y-3 py-4">
                   <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
-                    <Play className="w-6 h-6 text-emerald-400" />
+                    <Play className="w-6 h-6 text-yellow-400" />
                     <div className="text-left">
                       <div className="text-white font-bold font-display uppercase">Patine.</div>
                       <div className="text-xs text-slate-400">Rastreie suas sessões com GPS.</div>
@@ -231,7 +231,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     </div>
                   </div>
                   <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
-                    <Swords className="w-6 h-6 text-rose-400" />
+                    <Swords className="w-6 h-6 text-white" />
                     <div className="text-left">
                       <div className="text-white font-bold font-display uppercase">Desafie.</div>
                       <div className="text-xs text-slate-400">Enfrente outros jogadores.</div>
@@ -248,8 +248,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     <div 
                       key={step.id}
                       className={`h-1.5 flex-1 mx-1 rounded-full ${
-                        step.id < tutorialState.currentStep ? 'bg-emerald-400' :
-                        step.id === tutorialState.currentStep ? 'bg-emerald-400/50' :
+                        step.id < tutorialState.currentStep ? 'bg-yellow-400' :
+                        step.id === tutorialState.currentStep ? 'bg-yellow-400/50' :
                         'bg-white/10'
                       }`}
                     />
@@ -277,7 +277,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
                       {/* Info on interactivity */}
                       {targetRect && (
-                        <div className="text-xs text-emerald-400/80 font-mono-stat flex items-center gap-2 mt-4 animate-pulse">
+                        <div className="text-xs text-yellow-400/80 font-mono-stat flex items-center gap-2 mt-4 animate-pulse">
                           <ArrowRight className="w-4 h-4" />
                           Toque na área destacada para continuar
                         </div>
@@ -292,7 +292,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           </div>
 
           {/* Footer Actions */}
-          <div className="p-4 border-t border-white/5 bg-[#0a0f16] flex flex-col gap-3">
+          <div className="p-4 border-t border-white/5 bg-[#1d4ed8] flex flex-col gap-3">
             {view === 'welcome' ? (
               <>
                 <button
@@ -302,7 +302,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                       onUpdateTutorial({ ...tutorialState, currentStep: 1 });
                     }
                   }}
-                  className="w-full py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-black font-display uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-2xl bg-yellow-500 hover:bg-yellow-400 text-black font-black font-display uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
                 >
                   Continuar
                   <ArrowRight className="w-5 h-5" />

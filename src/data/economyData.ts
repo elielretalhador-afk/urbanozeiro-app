@@ -23,7 +23,7 @@ export const INITIAL_TRANSACTIONS: CurrencyTransaction[] = [
     amount: 1000,
     balanceAfter: 1000,
     source: 'INITIAL_BONUS',
-    description: 'Bônus de Boas-Vindas Fundadores Urbanozeiro',
+    description: 'Bônus de Boas-Vindas Fundadores THE ROLLING WARS',
     timestamp: '2026-08-01T10:00:00.000Z',
     metadata: { reason: 'welcome_package' },
   },

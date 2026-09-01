@@ -432,7 +432,7 @@ export const INITIAL_REWARDS_CATALOG: LevelRewardItem[] = [
       type: 'LEVEL',
       threshold: 1,
       label: 'Desbloqueado no Nível 1',
-      description: 'Título inicial do Urbanozeiro.',
+      description: 'Título inicial do THE ROLLING WARS.',
     },
   },
   {
@@ -646,10 +646,10 @@ export function getRarityBadgeStyle(rarity: ItemRarity): {
     case 'comum':
     default:
       return {
-        bgClass: 'bg-emerald-500/15',
-        borderClass: 'border-emerald-400/40',
-        textClass: 'text-emerald-300',
-        glowClass: 'shadow-[0_0_8px_rgba(0,255,102,0.2)]',
+        bgClass: 'bg-yellow-500/15',
+        borderClass: 'border-yellow-400/40',
+        textClass: 'text-yellow-300',
+        glowClass: 'shadow-[0_0_8px_rgba(252,232,3,0.2)]',
       };
   }
 }

@@ -126,7 +126,7 @@ export const DirectChallengesHub: React.FC<DirectChallengesHubProps> = ({
         );
       case 'confirmado':
         return (
-          <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-[9px] font-black uppercase font-mono-stat">
+          <span className="px-2 py-0.5 rounded-full bg-yellow-500/20 border border-yellow-400/50 text-yellow-300 text-[9px] font-black uppercase font-mono-stat">
             🟢 CONFIRMADO
           </span>
         );
@@ -163,7 +163,7 @@ export const DirectChallengesHub: React.FC<DirectChallengesHubProps> = ({
           onClick={() => setActiveSubTab('recebidos')}
           className={`py-2 px-2 rounded-xl text-xs font-bold uppercase font-mono-stat tracking-wider transition-all relative flex items-center justify-center gap-1.5 cursor-pointer ${
             activeSubTab === 'recebidos'
-              ? 'bg-emerald-400 text-black font-black shadow-[0_0_12px_rgba(0,255,102,0.4)]'
+              ? 'bg-yellow-400 text-black font-black shadow-[0_0_12px_rgba(252,232,3,0.4)]'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -171,7 +171,7 @@ export const DirectChallengesHub: React.FC<DirectChallengesHubProps> = ({
           {pendingReceivedCount > 0 && (
             <span
               className={`px-1.5 py-0.2 rounded-full text-[9px] font-black font-mono-stat ${
-                activeSubTab === 'recebidos' ? 'bg-black text-emerald-400' : 'bg-emerald-400 text-black'
+                activeSubTab === 'recebidos' ? 'bg-black text-yellow-400' : 'bg-yellow-400 text-black'
               }`}
             >
               {pendingReceivedCount}
@@ -185,7 +185,7 @@ export const DirectChallengesHub: React.FC<DirectChallengesHubProps> = ({
           onClick={() => setActiveSubTab('enviados')}
           className={`py-2 px-2 rounded-xl text-xs font-bold uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             activeSubTab === 'enviados'
-              ? 'bg-emerald-400 text-black font-black shadow-[0_0_12px_rgba(0,255,102,0.4)]'
+              ? 'bg-yellow-400 text-black font-black shadow-[0_0_12px_rgba(252,232,3,0.4)]'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -201,7 +201,7 @@ export const DirectChallengesHub: React.FC<DirectChallengesHubProps> = ({
           onClick={() => setActiveSubTab('confirmados')}
           className={`py-2 px-2 rounded-xl text-xs font-bold uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             activeSubTab === 'confirmados'
-              ? 'bg-emerald-400 text-black font-black shadow-[0_0_12px_rgba(0,255,102,0.4)]'
+              ? 'bg-yellow-400 text-black font-black shadow-[0_0_12px_rgba(252,232,3,0.4)]'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -217,7 +217,7 @@ export const DirectChallengesHub: React.FC<DirectChallengesHubProps> = ({
           onClick={() => setActiveSubTab('historico')}
           className={`py-2 px-2 rounded-xl text-xs font-bold uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             activeSubTab === 'historico'
-              ? 'bg-emerald-400 text-black font-black shadow-[0_0_12px_rgba(0,255,102,0.4)]'
+              ? 'bg-yellow-400 text-black font-black shadow-[0_0_12px_rgba(252,232,3,0.4)]'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -276,11 +276,11 @@ export const DirectChallengesHub: React.FC<DirectChallengesHubProps> = ({
                 key={item.id}
                 id={`direct-challenge-card-${item.id}`}
                 onClick={() => onSelectChallenge(item)}
-                className={`p-4 rounded-2xl bg-[#0d141e] border-2 transition-all cursor-pointer hover:border-emerald-500/50 hover:shadow-lg flex flex-col justify-between gap-3 ${
+                className={`p-4 rounded-2xl bg-[#0d141e] border-2 transition-all cursor-pointer hover:border-yellow-500/50 hover:shadow-lg flex flex-col justify-between gap-3 ${
                   needsMyResponse
                     ? 'border-cyan-400/50 bg-gradient-to-r from-[#0c1622] to-[#0d141e] shadow-[0_0_15px_rgba(6,182,212,0.15)]'
                     : item.status === 'confirmado'
-                    ? 'border-emerald-500/40'
+                    ? 'border-yellow-500/40'
                     : 'border-white/10'
                 }`}
               >
@@ -305,7 +305,7 @@ export const DirectChallengesHub: React.FC<DirectChallengesHubProps> = ({
                         <img
                           src={isChallenger ? item.challengedAvatar : item.challengerAvatar}
                           alt="Adversário"
-                          className="w-10 h-10 rounded-xl object-cover border-2 border-emerald-400"
+                          className="w-10 h-10 rounded-xl object-cover border-2 border-yellow-400"
                         />
                       )}
                     </div>
@@ -317,7 +317,7 @@ export const DirectChallengesHub: React.FC<DirectChallengesHubProps> = ({
                           className={`px-1.5 py-0.2 rounded text-[9px] font-black uppercase font-mono-stat ${
                             mode === 'x2'
                               ? 'bg-purple-500/20 border border-purple-400/40 text-purple-300'
-                              : 'bg-emerald-500/20 border border-emerald-400/40 text-emerald-400'
+                              : 'bg-yellow-500/20 border border-yellow-400/40 text-yellow-400'
                           }`}
                         >
                           🎯 {mode.toUpperCase()}
@@ -393,14 +393,14 @@ export const DirectChallengesHub: React.FC<DirectChallengesHubProps> = ({
                           e.stopPropagation();
                           onStartLiveChallenge(item.id);
                         }}
-                        className="px-2.5 py-1 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-black text-[10px] font-black uppercase font-mono-stat shadow-[0_0_10px_rgba(0,255,102,0.4)] flex items-center gap-1 cursor-pointer transition-all"
+                        className="px-2.5 py-1 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-black text-[10px] font-black uppercase font-mono-stat shadow-[0_0_10px_rgba(252,232,3,0.4)] flex items-center gap-1 cursor-pointer transition-all"
                       >
                         <Swords className="w-3 h-3 stroke-[2.5]" />
                         <span>DISPUTA AO VIVO</span>
                       </button>
                     )}
 
-                    <div className="flex items-center gap-1 text-emerald-400 font-bold text-[11px] group-hover:translate-x-1 transition-transform">
+                    <div className="flex items-center gap-1 text-yellow-400 font-bold text-[11px] group-hover:translate-x-1 transition-transform">
                       <span>Ver Detalhes</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </div>

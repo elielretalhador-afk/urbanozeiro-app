@@ -160,17 +160,17 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85  animate-in fade-in duration-200"
     >
       <div
-        className="w-full max-w-lg rounded-3xl bg-[#090e15] border-2 border-emerald-500/60 shadow-[0_0_50px_rgba(0,255,102,0.3)] flex flex-col max-h-[92vh] overflow-hidden text-left relative"
+        className="w-full max-w-lg rounded-3xl bg-[#090e15] border-2 border-yellow-500/60 shadow-[0_0_50px_rgba(252,232,3,0.3)] flex flex-col max-h-[92vh] overflow-hidden text-left relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Ambient Glow */}
-        <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-yellow-500/15 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none" />
 
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 pb-3 border-b border-white/10 bg-gradient-to-b from-emerald-950/40 via-[#0a121c] to-[#090e15] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 pb-3 border-b border-white/10 bg-gradient-to-b from-blue-950/40 via-[#0a121c] to-[#090e15] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-black font-black shadow-[0_0_15px_rgba(0,255,102,0.4)]">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-yellow-400 to-cyan-500 flex items-center justify-center text-black font-black shadow-[0_0_15px_rgba(252,232,3,0.4)]">
               <Swords className="w-5 h-5" />
             </div>
             <div>
@@ -180,7 +180,7 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
                   className={`px-2 py-0.5 rounded-full border text-[10px] font-black uppercase font-mono-stat tracking-wider ${
                     mode === 'x2'
                       ? 'bg-purple-500/20 border-purple-400/50 text-purple-300'
-                      : 'bg-emerald-500/20 border-emerald-400/50 text-emerald-400'
+                      : 'bg-yellow-500/20 border-yellow-400/50 text-yellow-400'
                   }`}
                 >
                   🎯 DESAFIO {mode.toUpperCase()}
@@ -203,7 +203,7 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
                   </span>
                 )}
                 {isConfirmed && (
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-[10px] font-black uppercase font-mono-stat tracking-wider">
+                  <span className="px-2 py-0.5 rounded-full bg-yellow-500/20 border border-yellow-400/50 text-yellow-300 text-[10px] font-black uppercase font-mono-stat tracking-wider">
                     🟢 CONFIRMADO
                   </span>
                 )}
@@ -244,8 +244,8 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
         <div className="p-4 sm:p-5 overflow-y-auto max-h-[calc(92vh-140px)] space-y-4">
           {/* Success Banner Alert if action taken */}
           {actionSuccessMessage && (
-            <div className="p-3 rounded-2xl bg-emerald-950/60 border-2 border-emerald-400/60 text-emerald-300 text-xs font-mono-stat flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,102,0.3)] animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="p-3 rounded-2xl bg-blue-950/60 border-2 border-yellow-400/60 text-yellow-300 text-xs font-mono-stat flex items-center gap-2 shadow-[0_0_20px_rgba(252,232,3,0.3)] animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 text-yellow-400 shrink-0" />
               <span>{actionSuccessMessage}</span>
             </div>
           )}
@@ -254,7 +254,7 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
           <div className="p-3.5 rounded-2xl bg-[#0c1420] border border-white/10 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-xs font-bold text-white uppercase font-mono-stat">
-                <Users className="w-3.5 h-3.5 text-emerald-400" />
+                <Users className="w-3.5 h-3.5 text-yellow-400" />
                 <span>PARTICIPANTES ({participants.length})</span>
               </div>
               <span className="text-[10px] font-mono-stat text-slate-400">
@@ -263,15 +263,15 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
             </div>
 
             {/* Challenger Card */}
-            <div className="p-2.5 rounded-xl bg-black/40 border border-emerald-500/30 flex items-center justify-between">
+            <div className="p-2.5 rounded-xl bg-black/40 border border-yellow-500/30 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="relative">
                   <img
                     src={challenger.avatar}
                     alt={challenger.nickname}
-                    className="w-10 h-10 rounded-lg object-cover border-2 border-emerald-400"
+                    className="w-10 h-10 rounded-lg object-cover border-2 border-yellow-400"
                   />
-                  <span className="absolute -bottom-1 -right-1 px-1 rounded bg-black border border-emerald-400 text-[7px] font-black text-emerald-400 font-mono-stat">
+                  <span className="absolute -bottom-1 -right-1 px-1 rounded bg-black border border-yellow-400 text-[7px] font-black text-yellow-400 font-mono-stat">
                     NV {challenger.level || 1}
                   </span>
                 </div>
@@ -280,11 +280,11 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
                     <span className="text-xs font-bold text-white font-display">
                       {challenger.nickname}
                     </span>
-                    <span className="text-emerald-400 text-[10px] font-mono-stat">
+                    <span className="text-yellow-400 text-[10px] font-mono-stat">
                       {challenger.tag || '#000'}
                     </span>
                     {challenger.playerId === currentUser.id && (
-                      <span className="px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[8px] font-mono-stat">
+                      <span className="px-1 py-0.2 rounded bg-yellow-500/20 text-yellow-300 text-[8px] font-mono-stat">
                         Você
                       </span>
                     )}
@@ -294,7 +294,7 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
                   </span>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-bold font-mono-stat uppercase">
+              <span className="px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-300 text-[9px] font-bold font-mono-stat uppercase">
                 Confirmado
               </span>
             </div>
@@ -348,7 +348,7 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
 
                     <div className="shrink-0">
                       {isAccepted && (
-                        <span className="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[9px] font-bold font-mono-stat uppercase flex items-center gap-1">
+                        <span className="px-2 py-0.5 rounded bg-yellow-500/20 border border-yellow-400/40 text-yellow-300 text-[9px] font-bold font-mono-stat uppercase flex items-center gap-1">
                           <CheckCircle2 className="w-2.5 h-2.5" />
                           Aceitou
                         </span>
@@ -376,13 +376,13 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
           <div className="p-3.5 rounded-2xl bg-[#0c1420] border border-white/10 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-xs font-bold text-white uppercase font-mono-stat">
-                <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                <MapPin className="w-3.5 h-3.5 text-yellow-400" />
                 <span>ROTA ESCOLHIDA</span>
               </div>
               <span
                 className={`px-2 py-0.5 rounded text-[9px] font-black uppercase font-mono-stat ${
                   challenge.routeDifficulty === 'Iniciante'
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                    ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-400/40'
                     : challenge.routeDifficulty === 'Intermediário'
                     ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40'
                     : challenge.routeDifficulty === 'Avançado'
@@ -409,7 +409,7 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
                 )}
               </div>
               <div className="text-right shrink-0 font-mono-stat">
-                <div className="text-sm font-black text-emerald-400">
+                <div className="text-sm font-black text-yellow-400">
                   {challenge.routeDistanceKm.toFixed(1)} KM
                 </div>
                 <div className="text-[10px] text-amber-400 font-bold">
@@ -498,7 +498,7 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
                           <b className="text-white">{isCurrent ? 'Você' : item.playerNickname}</b>
                         </span>
                       </div>
-                      <div className="text-right text-emerald-400 font-bold">
+                      <div className="text-right text-yellow-400 font-bold">
                         {item.proposedDate} às {item.proposedTime}
                       </div>
                     </div>
@@ -626,14 +626,14 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
 
           {/* CONFIRMED BANNER */}
           {isConfirmed && (
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 to-[#0a121c] border-2 border-emerald-400/60 text-center space-y-3 shadow-[0_0_25px_rgba(0,255,102,0.3)]">
-              <div className="w-10 h-10 rounded-full bg-emerald-400/20 border border-emerald-400 flex items-center justify-center text-emerald-400 mx-auto">
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-950/60 to-[#0a121c] border-2 border-yellow-400/60 text-center space-y-3 shadow-[0_0_25px_rgba(252,232,3,0.3)]">
+              <div className="w-10 h-10 rounded-full bg-yellow-400/20 border border-yellow-400 flex items-center justify-center text-yellow-400 mx-auto">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <h3 className="text-sm sm:text-base font-black text-white uppercase font-display">
                 DESAFIO {mode.toUpperCase()} CONFIRMADO!
               </h3>
-              <p className="text-xs text-emerald-300 font-mono-stat">
+              <p className="text-xs text-yellow-300 font-mono-stat">
                 Todos os participantes confirmaram para <b>{challenge.proposedDate} às {challenge.proposedTime}</b> no <b>{challenge.routeName}</b>.
               </p>
               
@@ -642,7 +642,7 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
                   id="btn-start-live-challenge-from-modal"
                   type="button"
                   onClick={() => onStartLiveChallenge(challenge.id)}
-                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-400 via-[#00ff66] to-cyan-400 hover:opacity-95 text-black font-black text-xs uppercase font-mono-stat tracking-wider shadow-[0_0_20px_rgba(0,255,102,0.5)] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-yellow-400 via-[#fce803] to-cyan-400 hover:opacity-95 text-black font-black text-xs uppercase font-mono-stat tracking-wider shadow-[0_0_20px_rgba(252,232,3,0.5)] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Swords className="w-4 h-4 stroke-[2.5]" />
                   <span>INICIAR DISPUTA AO VIVO NO MAPA</span>
@@ -680,7 +680,7 @@ export const DirectChallengeDetailsModal: React.FC<DirectChallengeDetailsModalPr
                   id="btn-accept-direct-challenge"
                   type="button"
                   onClick={handleAccept}
-                  className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-400 to-[#00ff66] hover:from-emerald-300 hover:to-emerald-400 text-black font-black text-xs sm:text-sm uppercase font-mono-stat tracking-wider shadow-[0_0_20px_rgba(0,255,102,0.5)] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-yellow-400 to-[#fce803] hover:from-yellow-300 hover:to-yellow-400 text-black font-black text-xs sm:text-sm uppercase font-mono-stat tracking-wider shadow-[0_0_20px_rgba(252,232,3,0.5)] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
                   <span>ACEITAR DESAFIO</span>

@@ -30,7 +30,7 @@ import {
   Zone,
   ZoneSearchResult,
 } from '../types';
-import { performUrbanozeiroSearch } from '../utils/searchEngine';
+import { performSearch } from '../utils/searchEngine';
 
 interface SearchDiscoveryModalProps {
   isOpen: boolean;
@@ -79,7 +79,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
 
   // Execução da busca consolidada
   const searchResults = useMemo(() => {
-    return performUrbanozeiroSearch({
+    return performSearch({
       query: searchQuery,
       filter: activeFilter,
       currentUser,
@@ -127,23 +127,23 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85  animate-in fade-in duration-200">
       <div
         id="search-discovery-modal"
-        className="w-full max-w-lg max-h-[92vh] flex flex-col rounded-3xl bg-[#080d14] border-2 border-emerald-500/40 shadow-[0_15px_60px_rgba(0,255,102,0.25)] overflow-hidden text-white font-sans relative"
+        className="w-full max-w-lg max-h-[92vh] flex flex-col rounded-3xl bg-[#080d14] border-2 border-yellow-500/40 shadow-[0_15px_60px_rgba(252,232,3,0.25)] overflow-hidden text-white font-sans relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Glow Superior */}
-        <div className="absolute -top-12 inset-x-0 h-24 bg-gradient-to-b from-emerald-500/20 to-transparent blur-xl pointer-events-none" />
+        <div className="absolute -top-12 inset-x-0 h-24 bg-gradient-to-b from-yellow-500/20 to-transparent blur-xl pointer-events-none" />
 
         {/* HEADER & CAMPO DE BUSCA PRINCIPAL */}
         <div className="p-4 bg-gradient-to-b from-[#101824] to-[#0a0f16] border-b border-white/10 relative z-10 shrink-0">
           <div className="flex items-center justify-between gap-2 mb-3">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-xl bg-emerald-400/20 border border-emerald-400/40 text-emerald-400">
+              <div className="p-1.5 rounded-xl bg-yellow-400/20 border border-yellow-400/40 text-yellow-400">
                 <Search className="w-4 h-4 stroke-[2.5]" />
               </div>
               <div>
                 <h2 className="text-sm font-black uppercase tracking-tight font-display text-white flex items-center gap-1.5">
                   BUSCA & DESCOBERTA
-                  <span className="px-1.5 py-0.2 rounded-md bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 text-[9px] font-mono-stat font-black">
+                  <span className="px-1.5 py-0.2 rounded-md bg-yellow-400/20 text-yellow-300 border border-yellow-400/30 text-[9px] font-mono-stat font-black">
                     GLOBAL
                   </span>
                 </h2>
@@ -166,7 +166,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
 
           {/* Campo Grande de Pesquisa */}
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-400">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-yellow-400">
               <Search className="w-4 h-4" />
             </div>
             <input
@@ -176,7 +176,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por nome, @nickname, zona, bairro ou rota..."
-              className="w-full pl-10 pr-10 py-3 rounded-2xl bg-black/60 border-2 border-emerald-500/30 focus:border-emerald-400 text-white placeholder:text-slate-500 text-xs sm:text-sm font-medium outline-none transition-all shadow-inner focus:shadow-[0_0_15px_rgba(0,255,102,0.25)] font-mono-stat"
+              className="w-full pl-10 pr-10 py-3 rounded-2xl bg-black/60 border-2 border-yellow-500/30 focus:border-yellow-400 text-white placeholder:text-slate-500 text-xs sm:text-sm font-medium outline-none transition-all shadow-inner focus:shadow-[0_0_15px_rgba(252,232,3,0.25)] font-mono-stat"
             />
             {searchQuery && (
               <button
@@ -202,7 +202,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
               onClick={() => setActiveFilter('TODOS')}
               className={`px-3 py-1.5 rounded-xl font-black uppercase tracking-wider transition-all flex items-center gap-1 shrink-0 cursor-pointer ${
                 activeFilter === 'TODOS'
-                  ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.4)]'
+                  ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.4)]'
                   : 'bg-[#121a24] text-slate-400 hover:text-white border border-white/10'
               }`}
             >
@@ -216,7 +216,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
               onClick={() => setActiveFilter('JOGADORES')}
               className={`px-3 py-1.5 rounded-xl font-black uppercase tracking-wider transition-all flex items-center gap-1 shrink-0 cursor-pointer ${
                 activeFilter === 'JOGADORES'
-                  ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.4)]'
+                  ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.4)]'
                   : 'bg-[#121a24] text-slate-400 hover:text-white border border-white/10'
               }`}
             >
@@ -235,7 +235,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
               onClick={() => setActiveFilter('ZONAS')}
               className={`px-3 py-1.5 rounded-xl font-black uppercase tracking-wider transition-all flex items-center gap-1 shrink-0 cursor-pointer ${
                 activeFilter === 'ZONAS'
-                  ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.4)]'
+                  ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.4)]'
                   : 'bg-[#121a24] text-slate-400 hover:text-white border border-white/10'
               }`}
             >
@@ -254,7 +254,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
               onClick={() => setActiveFilter('ROTAS')}
               className={`px-3 py-1.5 rounded-xl font-black uppercase tracking-wider transition-all flex items-center gap-1 shrink-0 cursor-pointer ${
                 activeFilter === 'ROTAS'
-                  ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.4)]'
+                  ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.4)]'
                   : 'bg-[#121a24] text-slate-400 hover:text-white border border-white/10'
               }`}
             >
@@ -274,14 +274,14 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
           {/* Status da Pesquisa */}
           <div className="flex items-center justify-between text-[10px] font-mono-stat px-1 text-slate-400">
             {isQueryEmpty ? (
-              <span className="flex items-center gap-1 text-emerald-400 font-bold uppercase">
+              <span className="flex items-center gap-1 text-yellow-400 font-bold uppercase">
                 <Sparkles className="w-3 h-3" />
                 SUGESTÕES & DESTAQUES EM SÃO PAULO
               </span>
             ) : (
               <span>
                 Mostrando <strong className="text-white">{searchResults.totalResultsCount}</strong>{' '}
-                resultado(s) para "<span className="text-emerald-400">{searchQuery}</span>"
+                resultado(s) para "<span className="text-yellow-400">{searchQuery}</span>"
               </span>
             )}
           </div>
@@ -305,7 +305,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
                   setSearchQuery('');
                   setActiveFilter('TODOS');
                 }}
-                className="px-4 py-2 rounded-xl bg-emerald-400/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold font-mono-stat uppercase tracking-wider hover:bg-emerald-400/30 transition-all cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-yellow-400/20 border border-yellow-400/40 text-yellow-300 text-xs font-bold font-mono-stat uppercase tracking-wider hover:bg-yellow-400/30 transition-all cursor-pointer"
               >
                 Limpar Busca & Ver Destaques
               </button>
@@ -375,7 +375,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
                           {player.approximateDistanceLabel && (
                             <>
                               <span>•</span>
-                              <span className="text-emerald-400">
+                              <span className="text-yellow-400">
                                 📍 {player.approximateDistanceLabel}
                               </span>
                             </>
@@ -399,7 +399,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
             <div className="space-y-2 pt-2 border-t border-white/5">
               <div className="flex items-center justify-between px-1">
                 <span className="text-xs font-black text-white uppercase tracking-tight flex items-center gap-1.5 font-display">
-                  <Shield className="w-3.5 h-3.5 text-emerald-400" />
+                  <Shield className="w-3.5 h-3.5 text-yellow-400" />
                   ZONAS & TERRITÓRIOS ({isQueryEmpty ? searchResults.suggestions.nearbyZones.length : searchResults.zones.length})
                 </span>
                 {isQueryEmpty && (
@@ -421,7 +421,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
                       onSelectZone(zone.rawZone);
                       onClose();
                     }}
-                    className="p-3 rounded-2xl bg-[#0d141e] hover:bg-[#121c2a] border border-white/10 hover:border-emerald-400/50 shadow-md transition-all active:scale-[0.99] cursor-pointer group"
+                    className="p-3 rounded-2xl bg-[#0d141e] hover:bg-[#121c2a] border border-white/10 hover:border-yellow-400/50 shadow-md transition-all active:scale-[0.99] cursor-pointer group"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
@@ -430,14 +430,14 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
                             className="w-2 h-2 rounded-full shrink-0"
                             style={{ backgroundColor: zone.color }}
                           />
-                          <h4 className="text-xs font-black text-white group-hover:text-emerald-300 transition-colors truncate font-display">
+                          <h4 className="text-xs font-black text-white group-hover:text-yellow-300 transition-colors truncate font-display">
                             {zone.name}
                           </h4>
                           <span className="px-1.5 py-0.2 rounded bg-white/5 text-slate-300 text-[8px] font-bold font-mono-stat uppercase shrink-0">
                             {zone.category}
                           </span>
                           {zone.status === 'controlled' ? (
-                            <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[8px] font-black font-mono-stat uppercase">
+                            <span className="px-1.5 py-0.2 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-400/30 text-[8px] font-black font-mono-stat uppercase">
                               DOMINADA ({zone.dominancePercent}%)
                             </span>
                           ) : zone.status === 'contested' ? (
@@ -459,7 +459,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
                         {/* Controlador & Estatísticas */}
                         <div className="flex items-center gap-2 text-[9px] text-slate-400 font-mono-stat mt-1.5">
                           {zone.controllerNickname ? (
-                            <span className="text-emerald-300 font-bold">
+                            <span className="text-yellow-300 font-bold">
                               👑 {zone.controllerNickname} ({zone.controllerCrew || 'Solo'})
                             </span>
                           ) : (
@@ -480,7 +480,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1 text-[10px] font-black font-mono-stat text-emerald-400 shrink-0 group-hover:translate-x-0.5 transition-transform mt-1">
+                      <div className="flex items-center gap-1 text-[10px] font-black font-mono-stat text-yellow-400 shrink-0 group-hover:translate-x-0.5 transition-transform mt-1">
                         <span className="hidden sm:inline uppercase">MAPA</span>
                         <ChevronRight className="w-4 h-4" />
                       </div>
@@ -534,7 +534,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
                                 ? 'bg-amber-500/20 text-amber-300 border border-amber-400/30'
                                 : route.difficulty === 'Intermediário'
                                 ? 'bg-blue-500/20 text-blue-300 border border-blue-400/30'
-                                : 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/30'
+                                : 'bg-yellow-500/20 text-yellow-300 border border-yellow-400/30'
                             }`}
                           >
                             {route.difficulty}
@@ -583,7 +583,7 @@ export const SearchDiscoveryModal: React.FC<SearchDiscoveryModalProps> = ({
         {/* FOOTER & DICA */}
         <div className="p-3 bg-[#080d14] border-t border-white/10 flex items-center justify-between text-[10px] font-mono-stat text-slate-400 shrink-0">
           <span className="flex items-center gap-1">
-            <Radio className="w-3 h-3 text-emerald-400" />
+            <Radio className="w-3 h-3 text-yellow-400" />
             Índice Urbano de São Paulo Ativo
           </span>
           <button

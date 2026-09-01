@@ -72,7 +72,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
   const getTypeInfo = (type: EventType) => {
     switch (type) {
       case 'RACE':
-        return { label: 'CORRIDA DE RUA', icon: Flag, color: 'text-emerald-400', border: 'border-emerald-500/40 bg-emerald-500/10' };
+        return { label: 'CORRIDA DE RUA', icon: Flag, color: 'text-yellow-400', border: 'border-yellow-500/40 bg-yellow-500/10' };
       case 'TOURNAMENT':
         return { label: 'TORNEIO MATA-MATA', icon: Trophy, color: 'text-amber-400', border: 'border-amber-500/40 bg-amber-500/10' };
       case 'ZONE_EVENT':
@@ -122,7 +122,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
               </span>
             )}
             {event.status === 'REGISTRATION_OPEN' && !isFull && (
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-black font-mono-stat">
+              <span className="px-2.5 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-[10px] font-black font-mono-stat">
                 INSCRIÇÕES ABERTAS
               </span>
             )}
@@ -141,7 +141,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
           {/* Meta Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-2 text-xs text-slate-300">
             <div className="flex items-center gap-2 font-mono-stat">
-              <Clock className="w-4 h-4 text-emerald-400 shrink-0" />
+              <Clock className="w-4 h-4 text-yellow-400 shrink-0" />
               <span className="font-bold text-white">{event.dateLabel}</span>
             </div>
 
@@ -158,7 +158,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
             onClick={() => setActiveTab('info')}
             className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-colors cursor-pointer ${
               activeTab === 'info'
-                ? 'bg-emerald-400 text-black font-black'
+                ? 'bg-yellow-400 text-black font-black'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
@@ -169,7 +169,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
             onClick={() => setActiveTab('regras')}
             className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-colors cursor-pointer ${
               activeTab === 'regras'
-                ? 'bg-emerald-400 text-black font-black'
+                ? 'bg-yellow-400 text-black font-black'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
@@ -180,7 +180,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
             onClick={() => setActiveTab('participantes')}
             className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-colors cursor-pointer ${
               activeTab === 'participantes'
-                ? 'bg-emerald-400 text-black font-black'
+                ? 'bg-yellow-400 text-black font-black'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
@@ -206,7 +206,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
               onClick={() => setActiveTab('classificacao')}
               className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-colors cursor-pointer ${
                 activeTab === 'classificacao'
-                  ? 'bg-emerald-400 text-black font-black'
+                  ? 'bg-yellow-400 text-black font-black'
                   : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
@@ -218,7 +218,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
             onClick={() => setActiveTab('recompensas')}
             className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-colors cursor-pointer ${
               activeTab === 'recompensas'
-                ? 'bg-emerald-400 text-black font-black'
+                ? 'bg-yellow-400 text-black font-black'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
@@ -235,7 +235,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
               {/* Descrição */}
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
                 <h4 className="text-xs font-black uppercase text-slate-400 font-mono-stat mb-1.5 flex items-center gap-1.5">
-                  <Info className="w-3.5 h-3.5 text-emerald-400" />
+                  <Info className="w-3.5 h-3.5 text-yellow-400" />
                   Sobre o Evento
                 </h4>
                 <p className="text-sm text-slate-200 leading-relaxed">
@@ -274,9 +274,9 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
 
               {/* Zona Vinculada */}
               {associatedZone && (
-                <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 flex items-center justify-between gap-3">
+                <div className="p-4 rounded-2xl bg-blue-950/30 border border-yellow-500/30 flex items-center justify-between gap-3">
                   <div>
-                    <span className="text-[10px] font-black uppercase text-emerald-400 font-mono-stat flex items-center gap-1">
+                    <span className="text-[10px] font-black uppercase text-yellow-400 font-mono-stat flex items-center gap-1">
                       <MapPin className="w-3 h-3" />
                       Zona de Domínio Vinculada
                     </span>
@@ -292,7 +292,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                         onClose();
                         onViewZoneOnMap(associatedZone.id);
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold font-mono-stat flex items-center gap-1 transition-colors cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 border border-yellow-500/40 text-xs font-bold font-mono-stat flex items-center gap-1 transition-colors cursor-pointer"
                     >
                       <span>Ver Zona no Mapa</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -311,7 +311,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                 </div>
                 <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-emerald-400 rounded-full shadow-[0_0_10px_#00ff66]"
+                    className="h-full bg-yellow-400 rounded-full shadow-[0_0_10px_#fce803]"
                     style={{ width: `${fillPercent}%` }}
                   />
                 </div>
@@ -324,7 +324,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
             <div className="space-y-4">
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
                 <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-emerald-400" />
+                  <Shield className="w-4 h-4 text-yellow-400" />
                   <h4 className="font-bold text-white text-sm uppercase font-mono-stat">
                     {event.rules.title}
                   </h4>
@@ -357,7 +357,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
 
                   <div className="p-2.5 rounded-xl bg-black/30 border border-white/5">
                     <span className="text-slate-400 text-[10px] uppercase block">Critério de Vitória</span>
-                    <span className="text-emerald-400 font-bold text-xs uppercase">
+                    <span className="text-yellow-400 font-bold text-xs uppercase">
                       {event.rules.criteria === 'first_to_finish' && 'Primeiro a Cruzar o Pórtico'}
                       {event.rules.criteria === 'lowest_time' && 'Menor Tempo Cronometrado'}
                       {event.rules.criteria === 'knockout' && 'Eliminatória Mata-Mata'}
@@ -368,7 +368,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                 </div>
 
                 {event.rules.scoringFormula && (
-                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 font-mono-stat">
+                  <div className="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-xs text-yellow-300 font-mono-stat">
                     <span className="font-bold block mb-0.5">Pontuação Oficial:</span>
                     <span>{event.rules.scoringFormula}</span>
                   </div>
@@ -384,7 +384,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                 <span className="text-slate-400 font-bold uppercase">
                   Patinadores Confirmados ({event.participants.length})
                 </span>
-                <span className="text-emerald-400 font-bold">
+                <span className="text-yellow-400 font-bold">
                   {event.maxParticipants - event.currentParticipants} vagas restantes
                 </span>
               </div>
@@ -399,13 +399,13 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                       <img
                         src={p.avatar}
                         alt={p.nickname}
-                        className="w-8 h-8 rounded-full object-cover border border-emerald-500/40 shrink-0"
+                        className="w-8 h-8 rounded-full object-cover border border-yellow-500/40 shrink-0"
                       />
                       <div className="truncate">
                         <div className="flex items-center gap-1.5">
                           <span className="font-bold text-white text-xs truncate">{p.nickname}</span>
                           {p.clanTag && (
-                            <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 text-[9px] font-mono-stat font-bold">
+                            <span className="px-1.5 py-0.2 rounded bg-yellow-500/20 text-yellow-400 text-[9px] font-mono-stat font-bold">
                               [{p.clanTag}]
                             </span>
                           )}
@@ -417,7 +417,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                     </div>
 
                     {p.isCurrentUser && (
-                      <span className="px-2 py-0.5 rounded bg-emerald-400 text-black font-black text-[9px] font-mono-stat shrink-0">
+                      <span className="px-2 py-0.5 rounded bg-yellow-400 text-black font-black text-[9px] font-mono-stat shrink-0">
                         VOCÊ
                       </span>
                     )}
@@ -455,7 +455,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
               <div className="space-y-3">
                 {event.tournament.rounds.map((round) => (
                   <div key={round.roundNumber} className="space-y-2">
-                    <div className="text-xs font-black uppercase text-emerald-400 font-mono-stat px-1 flex items-center gap-2">
+                    <div className="text-xs font-black uppercase text-yellow-400 font-mono-stat px-1 flex items-center gap-2">
                       <Swords className="w-3.5 h-3.5" />
                       <span>{round.name}</span>
                     </div>
@@ -486,7 +486,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                               </span>
                             </div>
                             {match.player1?.isCurrentUser && (
-                              <span className="text-[9px] font-black text-emerald-400 font-mono-stat">VOCÊ</span>
+                              <span className="text-[9px] font-black text-yellow-400 font-mono-stat">VOCÊ</span>
                             )}
                           </div>
 
@@ -510,7 +510,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                               </span>
                             </div>
                             {match.player2?.isCurrentUser && (
-                              <span className="text-[9px] font-black text-emerald-400 font-mono-stat">VOCÊ</span>
+                              <span className="text-[9px] font-black text-yellow-400 font-mono-stat">VOCÊ</span>
                             )}
                           </div>
                         </div>
@@ -541,7 +541,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                       key={entry.playerId}
                       className={`p-3 rounded-xl border flex items-center justify-between gap-2 transition-all ${
                         entry.isCurrentUser
-                          ? 'bg-emerald-500/10 border-emerald-500/40 shadow-[0_0_15px_rgba(0,255,102,0.15)]'
+                          ? 'bg-yellow-500/10 border-yellow-500/40 shadow-[0_0_15px_rgba(252,232,3,0.15)]'
                           : isTop1
                           ? 'bg-amber-500/10 border-amber-500/30'
                           : 'bg-white/5 border-white/5'
@@ -586,7 +586,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
 
                       {/* Score / Time / Status */}
                       <div className="flex flex-col items-end shrink-0 font-mono-stat">
-                        <span className="text-emerald-400 font-bold text-xs">
+                        <span className="text-yellow-400 font-bold text-xs">
                           {entry.points} pts
                         </span>
                         {entry.timeFormatted && (
@@ -643,7 +643,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                     </div>
 
                     {rew.amount && (
-                      <span className="text-xs font-black font-mono-stat text-emerald-400 shrink-0">
+                      <span className="text-xs font-black font-mono-stat text-yellow-400 shrink-0">
                         +{rew.amount} XP
                       </span>
                     )}
@@ -659,7 +659,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
         <div className="p-4 bg-[#080d14] border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs font-mono-stat text-slate-400">
             {isUserRegistered ? (
-              <span className="text-emerald-400 font-bold flex items-center gap-1.5">
+              <span className="text-yellow-400 font-bold flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4" />
                 Você está confirmado neste evento!
               </span>
@@ -669,7 +669,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                 Vagas esgotadas • Inscrições na lista de espera
               </span>
             ) : (
-              <span>Inscrição 100% gratuita no Urbanozeiro</span>
+              <span>Inscrição 100% gratuita no THE ROLLING WARS</span>
             )}
           </div>
 
@@ -701,7 +701,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
               <button
                 id="btn-register-event"
                 onClick={() => onRegister(event.id)}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black font-black text-xs font-mono-stat uppercase tracking-wider shadow-[0_0_20px_rgba(0,255,102,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs font-mono-stat uppercase tracking-wider shadow-[0_0_20px_rgba(252,232,3,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <UserCheck className="w-4 h-4" />
                 <span>PARTICIPAR DO EVENTO</span>

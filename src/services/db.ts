@@ -1,4 +1,4 @@
-import { db } from "../lib/firebase";
+import { db, auth } from "../lib/firebase";
 import { collection, getDocs, doc, runTransaction, setDoc } from "firebase/firestore";
 import { get as idbGet, set as idbSet } from 'idb-keyval';
 import { CacheManager } from './cache';
@@ -8,6 +8,7 @@ import {
   Zone, 
   ActivitySession,
   ZoneOperation, 
+  SegmentOperation,
   AppNotification, 
   Achievement,
   LiveChallenge,
@@ -31,11 +32,14 @@ import {
 import { DEFAULT_PLAYER_SETTINGS } from '../data/settingsData';
 import { INITIAL_ACTIVITIES } from '../data/activityData';
 
+
+
 // Constantes de chaves do LocalStorage
 const KEYS = {
   USER: 'urb_db_user',
   ZONES: 'urb_db_zones',
   ZONE_OUTBOX: 'urb_db_zone_outbox',
+  SEGMENT_OUTBOX: 'urb_db_segment_outbox',
   SESSIONS: 'urb_db_sessions',
   NOTIFICATIONS: 'urb_db_notifications',
   ACHIEVEMENTS: 'urb_db_achievements',
@@ -91,6 +95,21 @@ const saveIdb = async <T>(key: string, data: T): Promise<void> => {
 
 
 let isSyncing = false;
+
+
+
+class AsyncMutex {
+  private promise: Promise<void> = Promise.resolve();
+  async acquire(): Promise<() => void> {
+    let release: () => void = () => {};
+    const next = new Promise<void>(resolve => release = resolve);
+    const wait = this.promise;
+    this.promise = wait.then(() => next);
+    await wait;
+    return release;
+  }
+}
+const idbMutex = new AsyncMutex();
 
 export const DatabaseService = {
   // Inicialização pesada / Sincronização inicial
@@ -156,6 +175,10 @@ activity: PlayerPublicActivity): Promise<void> {
       console.log('Dispositivo offline: Sincronização em nuvem adiada na fila.');
       return;
     }
+    if (!auth.currentUser) {
+      console.log('Aguardando autenticação para processar fila de sincronização.');
+      return;
+    }
 
     if (isSyncing) {
       console.log('[SyncQueue] Sincronização já em andamento. Ignorando nova chamada (Mutex ativo).');
@@ -167,16 +190,18 @@ activity: PlayerPublicActivity): Promise<void> {
       const initialSessions = await loadIdb<ActivitySession[]>(KEYS.SESSIONS, []);
       const initialActivities = await loadIdb<PlayerPublicActivity[]>(KEYS.ACTIVITIES, []);
       const initialZoneOutbox = await loadIdb<ZoneOperation[]>(KEYS.ZONE_OUTBOX, []);
+      const initialSegmentOutbox = await loadIdb<SegmentOperation[]>(KEYS.SEGMENT_OUTBOX, []);
 
       const pendingSessions = initialSessions.filter(s => s.syncStatus === 'pending' || s.syncStatus === 'error');
       const pendingActivities = initialActivities.filter(a => a.syncStatus === 'pending' || a.syncStatus === 'error');
       const pendingZones = initialZoneOutbox.filter(z => z.syncStatus === 'pending' || z.syncStatus === 'error');
+      const pendingSegments = initialSegmentOutbox.filter(s => s.syncStatus === 'pending' || s.syncStatus === 'error');
 
-      if (pendingSessions.length === 0 && pendingActivities.length === 0 && pendingZones.length === 0) {
+      if (pendingSessions.length === 0 && pendingActivities.length === 0 && pendingZones.length === 0 && pendingSegments.length === 0) {
         return; // Fila vazia
       }
 
-      console.log(`[SyncQueue] Enviando ${pendingSessions.length} sessões, ${pendingActivities.length} atividades e ${pendingZones.length} zonas para o Firestore...`);
+      console.log(`[SyncQueue] Enviando ${pendingSessions.length} sessões, ${pendingActivities.length} atividades, ${pendingZones.length} zonas e ${pendingSegments.length} segmentos para o Firestore...`);
 
       const successfulSessionIds = new Set<string>();
       const failedSessionIds = new Set<string>();
@@ -184,14 +209,20 @@ activity: PlayerPublicActivity): Promise<void> {
       const failedActivityIds = new Set<string>();
       const successfulZoneIds = new Set<string>();
       const failedZoneIds = new Set<string>();
+      const successfulSegmentIds = new Set<string>();
+      const failedSegmentIds = new Set<string>();
 
       for (const s of pendingSessions) {
         try {
           const sessionRef = doc(db, 'sessions', s.id);
-          await setDoc(sessionRef, s);
+          // Strip undefined fields
+          const cleanSession = Object.fromEntries(Object.entries(s).filter(([_, v]) => v !== undefined));
+          // Ensure playerId matches current auth
+          if (auth.currentUser) cleanSession.playerId = auth.currentUser.uid;
+          await setDoc(sessionRef, cleanSession);
           successfulSessionIds.add(s.id);
         } catch (error) {
-          console.error(`[SyncQueue] Falha ao enviar sessão ${s.id}:`, error);
+          console.error(`[SyncQueue] Falha ao enviar sessão ${s.id}:`, error); throw error;
           failedSessionIds.add(s.id);
         }
       }
@@ -199,54 +230,111 @@ activity: PlayerPublicActivity): Promise<void> {
       for (const a of pendingActivities) {
         try {
           const activityRef = doc(db, 'activities', a.id);
-          await setDoc(activityRef, a);
+          const cleanActivity = Object.fromEntries(Object.entries(a).filter(([_, v]) => v !== undefined));
+          if (auth.currentUser) cleanActivity.playerId = auth.currentUser.uid;
+          await setDoc(activityRef, cleanActivity);
           successfulActivityIds.add(a.id);
         } catch (error) {
-          console.error(`[SyncQueue] Falha ao enviar atividade ${a.id}:`, error);
+          console.error(`[SyncQueue] Falha ao enviar atividade ${a.id}:`, error); throw error;
           failedActivityIds.add(a.id);
         }
       }
 
       for (const op of pendingZones) {
         try {
+          // Ensure playerId matches current auth
+          if (auth.currentUser) {
+            op.playerId = auth.currentUser.uid;
+            if (op.payload?.controller) op.payload.controller.id = auth.currentUser.uid;
+          }
           // Utiliza a transaction para processar a conquista garantindo regras de timeline e idempotência
           await this.conquerZoneTransaction(op.zoneId, op);
           successfulZoneIds.add(op.operationId);
         } catch (error) {
-          console.error(`[SyncQueue] Falha ao enviar zona ${op.operationId}:`, error);
+          console.error(`[SyncQueue] Falha ao enviar zona ${op.operationId}:`, error); throw error;
           failedZoneIds.add(op.operationId);
+        }
+      }
+
+      for (const op of pendingSegments) {
+        try {
+          if (auth.currentUser) {
+             op.playerId = auth.currentUser.uid;
+          }
+          const result = await this.syncSegmentTransaction(op);
+          successfulSegmentIds.add(op.operationId);
+          if (result.status === 'synced') {
+            window.dispatchEvent(new CustomEvent('segment-record-status', {
+              detail: { isNewRecord: result.isNewRecord, timeSeconds: op.timeSeconds, averageSpeedKmH: op.averageSpeedKmH }
+            }));
+          }
+        } catch (error) {
+          console.error(`[SyncQueue] Falha ao enviar segmento ${op.operationId}:`, error); throw error;
+          failedSegmentIds.add(op.operationId);
         }
       }
 
       // Re-load and update state to prevent stale writes
       if (successfulSessionIds.size > 0 || failedSessionIds.size > 0) {
-        const currentSessions = await loadIdb<ActivitySession[]>(KEYS.SESSIONS, []);
+        const release = await idbMutex.acquire();
+        try {
+          const currentSessions = await loadIdb<ActivitySession[]>(KEYS.SESSIONS, []);
         const updatedSessions = currentSessions.map(s => {
           if (successfulSessionIds.has(s.id)) return { ...s, syncStatus: 'synced' as const };
           if (failedSessionIds.has(s.id)) return { ...s, syncStatus: 'error' as const };
           return s;
         });
-        await saveIdb(KEYS.SESSIONS, updatedSessions);
+          await saveIdb(KEYS.SESSIONS, updatedSessions);
+        } finally {
+          release();
+        }
       }
 
       if (successfulActivityIds.size > 0 || failedActivityIds.size > 0) {
-        const currentActivities = await loadIdb<PlayerPublicActivity[]>(KEYS.ACTIVITIES, []);
+        const release = await idbMutex.acquire();
+        try {
+          const currentActivities = await loadIdb<PlayerPublicActivity[]>(KEYS.ACTIVITIES, []);
         const updatedActivities = currentActivities.map(a => {
           if (successfulActivityIds.has(a.id)) return { ...a, syncStatus: 'synced' as const };
           if (failedActivityIds.has(a.id)) return { ...a, syncStatus: 'error' as const };
           return a;
         });
-        await saveIdb(KEYS.ACTIVITIES, updatedActivities);
+          await saveIdb(KEYS.ACTIVITIES, updatedActivities);
+        } finally {
+          release();
+        }
       }
 
       if (successfulZoneIds.size > 0 || failedZoneIds.size > 0) {
-        const currentZones = await loadIdb<ZoneOperation[]>(KEYS.ZONE_OUTBOX, []);
-        const updatedZones = currentZones.map(z => {
-          if (successfulZoneIds.has(z.operationId)) return { ...z, syncStatus: 'synced' as const };
-          if (failedZoneIds.has(z.operationId)) return { ...z, syncStatus: 'error' as const, retryCount: (z.retryCount || 0) + 1 };
-          return z;
-        });
-        await saveIdb(KEYS.ZONE_OUTBOX, updatedZones);
+        const release = await idbMutex.acquire();
+        try {
+          const currentZones = await loadIdb<ZoneOperation[]>(KEYS.ZONE_OUTBOX, []);
+          const updatedZones = currentZones
+            .filter(z => !successfulZoneIds.has(z.operationId))
+            .map(z => {
+              if (failedZoneIds.has(z.operationId)) return { ...z, syncStatus: 'error' as const, retryCount: (z.retryCount || 0) + 1 };
+              return z;
+            });
+          await saveIdb(KEYS.ZONE_OUTBOX, updatedZones);
+        } finally {
+          release();
+        }
+      }
+
+      if (successfulSegmentIds.size > 0 || failedSegmentIds.size > 0) {
+        const release = await idbMutex.acquire();
+        try {
+          const currentSegments = await loadIdb<SegmentOperation[]>(KEYS.SEGMENT_OUTBOX, []);
+          const updatedSegments = currentSegments
+            .filter(s => !successfulSegmentIds.has(s.operationId))
+            .map(s => {
+              if (failedSegmentIds.has(s.operationId)) return { ...s, syncStatus: 'error' as const, retryCount: (s.retryCount || 0) + 1 };
+              return s;
+            });
+          await saveIdb(KEYS.SEGMENT_OUTBOX, updatedSegments);
+        } finally {
+          release();
+        }
       }
 
       // Invalidate zone cache so the next request pulls the consolidated data from Firestore
@@ -281,7 +369,7 @@ activity: PlayerPublicActivity): Promise<void> {
     const cacheKey = 'urb_zones_all_cached';
     let cachedZones = CacheManager.get<Zone[]>(cacheKey);
     
-    if (navigator.onLine) {
+    if (navigator.onLine && auth.currentUser) {
       try {
         const zonesSnap = await getDocs(collection(db, 'zones'));
         const zones: Zone[] = [];
@@ -308,9 +396,14 @@ activity: PlayerPublicActivity): Promise<void> {
   },
 
   async queueZoneOperation(operation: ZoneOperation): Promise<void> {
-    const outbox = await loadIdb<ZoneOperation[]>(KEYS.ZONE_OUTBOX, []);
-    outbox.push(operation);
-    await saveIdb(KEYS.ZONE_OUTBOX, outbox);
+    const release = await idbMutex.acquire();
+    try {
+      const outbox = await loadIdb<ZoneOperation[]>(KEYS.ZONE_OUTBOX, []);
+      outbox.push(operation);
+      await saveIdb(KEYS.ZONE_OUTBOX, outbox);
+    } finally {
+      release();
+    }
 
     if (navigator.onLine) {
       this.processSyncQueue().catch(console.error);
@@ -327,47 +420,132 @@ activity: PlayerPublicActivity): Promise<void> {
       
       const currentZone = zoneDoc.data() as Zone;
       
-      // Idempotency check
-      const currentHistory = currentZone.conquestHistory || [];
-      if (currentHistory.some(h => h.operationId === operation.operationId)) {
-        return currentZone; // Already processed
+      // We just write the operation to the history subcollection.
+      // The Cloud Function will process it and update the Zone and Clan.
+      const historyRef = doc(db, 'zones', zoneId, 'history', operation.operationId);
+      const historyDoc = await transaction.get(historyRef);
+      
+      if (historyDoc.exists()) {
+        return currentZone; // Already submitted
+      }
+      
+      transaction.set(historyRef, {
+        operationId: operation.operationId,
+        playerId: operation.playerId,
+        createdAt: operation.createdAt,
+        trackPoints: operation.payload.conquestHistoryEntry?.trackPoints || [],
+        payload: operation.payload
+      });
+      
+      return currentZone;
+    });
+  },
+  async queueSegmentOperation(operation: SegmentOperation): Promise<void> {
+    const release = await idbMutex.acquire();
+    try {
+      const outbox = await loadIdb<SegmentOperation[]>(KEYS.SEGMENT_OUTBOX, []);
+      outbox.push(operation);
+      await saveIdb(KEYS.SEGMENT_OUTBOX, outbox);
+    } finally {
+      release();
+    }
+
+    if (navigator.onLine) {
+      this.processSyncQueue().catch(console.error);
+    }
+  },
+
+  async getSegmentAttempts(segmentId: string, limitCount: number = 10): Promise<any[]> {
+    if (!navigator.onLine || !auth.currentUser) return [];
+    try {
+      const { collection, query, orderBy, limit, getDocs } = await import('firebase/firestore');
+      const attemptsRef = collection(db, 'segments', segmentId, 'attempts');
+      const q = query(attemptsRef, orderBy('timeSeconds', 'asc'), limit(limitCount));
+      const snap = await getDocs(q);
+      const attempts: any[] = [];
+      snap.forEach(doc => {
+        attempts.push({ id: doc.id, ...doc.data() });
+      });
+      return attempts;
+    } catch (e) {
+      console.warn('Error fetching segment attempts:', e);
+      return [];
+    }
+  },
+
+  async getSegmentData(segmentId: string): Promise<any> {
+    if (!navigator.onLine || !auth.currentUser) return null;
+    try {
+      const { doc, getDoc } = await import('firebase/firestore');
+      const snap = await getDoc(doc(db, 'segments', segmentId));
+      if (snap.exists()) {
+        return { id: snap.id, ...snap.data() };
+      }
+      return null;
+    } catch (e) {
+      console.warn('Error fetching segment data:', e);
+      return null;
+    }
+  },
+
+  async getAllSegmentsWithRecords(): Promise<any[]> {
+    if (!navigator.onLine || !auth.currentUser) return [];
+    try {
+      // Fetch all segments to list in discovery
+      const { collection, getDocs } = await import('firebase/firestore');
+      const snap = await getDocs(collection(db, 'segments'));
+      const segments: any[] = [];
+      snap.forEach(doc => {
+        segments.push({ id: doc.id, ...doc.data() });
+      });
+      return segments;
+    } catch (e) {
+      console.warn('Error fetching all segments:', e);
+      return [];
+    }
+  },
+
+  async syncSegmentTransaction(operation: SegmentOperation): Promise<{ status: 'synced' | 'already_exists', isNewRecord: boolean }> {
+    const segmentRef = doc(db, 'segments', operation.segmentId);
+    const attemptRef = doc(db, 'segments', operation.segmentId, 'attempts', operation.attemptId);
+
+    return await runTransaction(db, async (transaction) => {
+      const segmentDoc = await transaction.get(segmentRef);
+      // Even if segment metadata doesn't exist, we can still record attempts or initialize it.
+      let currentRecord = null;
+      if (segmentDoc.exists()) {
+        const data = segmentDoc.data();
+        currentRecord = data.bestRecord || null;
       }
 
-      const newEntry = operation.payload.conquestHistoryEntry;
-      // Add the new entry to history
-      const newHistory = [newEntry, ...currentHistory];
-      
-      const updatedData: Partial<Zone> = {
-        conquestHistory: newHistory,
-      };
-
-      // Concurrency check: Does this operation's createdAt beat the lastConquered time?
-      const lastConqueredTimestamp = currentZone.lastConquered ? new Date(currentZone.lastConquered).getTime() : 0;
-      
-      // If the zone is free, OR the operation is newer than the last conquer, update controller
-      if (currentZone.status === 'free' || operation.createdAt >= lastConqueredTimestamp) {
-        updatedData.status = 'controlled';
-        updatedData.controller = operation.payload.controller;
-        updatedData.dominance = 100;
-        updatedData.activeDispute = null;
-        updatedData.contested = false;
-        
-        // Flattened fields for easy access in views (if they are used)
-        if (operation.payload.controller) {
-          updatedData.controllerName = operation.payload.controller.name;
-          updatedData.controllerNickname = operation.payload.controller.nickname;
-          updatedData.controllerAvatar = operation.payload.controller.avatar;
-          updatedData.controllerLevel = operation.payload.controller.level;
-          updatedData.controllerCrew = operation.payload.controller.crew;
-        }
-        updatedData.lastConquered = new Date(operation.createdAt).toISOString();
+      // Check idempotency for the attempt
+      const attemptDoc = await transaction.get(attemptRef);
+      if (attemptDoc.exists()) {
+        // Already processed
+        return { status: 'already_exists', isNewRecord: false };
       }
 
-      // Merge manually, respecting rules
-      const mergedZone = { ...currentZone, ...updatedData };
-      
-      transaction.update(zoneRef, updatedData);
-      return mergedZone;
+      // Record the attempt
+      transaction.set(attemptRef, {
+        operationId: operation.operationId,
+        attemptId: operation.attemptId,
+        playerId: operation.playerId,
+        playerName: operation.playerName || 'Anônimo',
+        createdAt: operation.createdAt,
+        durationMs: operation.durationMs,
+        timeSeconds: operation.timeSeconds,
+        averageSpeedKmH: operation.averageSpeedKmH,
+        maxSpeedKmH: operation.maxSpeedKmH,
+        direction: operation.direction,
+        trackPoints: operation.trackPoints,
+        validationStatus: operation.validationStatus || 'pending_validation'
+      });
+
+      let isNewRecord = false;
+      // ETAPA 3: A Cloud Function onSegmentAttemptCreated agora detém
+      // a autoridade exclusiva sobre a escrita de 'bestRecord'.
+      // O cliente apenas escreve a tentativa.
+      return { status: 'synced', isNewRecord };
     });
   },
 
@@ -427,11 +605,15 @@ activity: PlayerPublicActivity): Promise<void> {
 
   // Persistência de Sessões (Histórico)
   async saveSession(session: ActivitySession): Promise<void> {
-    const sessions = await loadIdb<ActivitySession[]>(KEYS.SESSIONS, INITIAL_SESSION_HISTORY);
-    // Evitar duplicatas caso a sessão já exista (idempotência)
-    if (!sessions.some(s => s.id === session.id)) {
-      sessions.unshift(session);
-      await saveIdb(KEYS.SESSIONS, sessions);
+    const release = await idbMutex.acquire();
+    try {
+      const sessions = await loadIdb<ActivitySession[]>(KEYS.SESSIONS, INITIAL_SESSION_HISTORY);
+      if (!sessions.some(s => s.id === session.id)) {
+        sessions.unshift(session);
+        await saveIdb(KEYS.SESSIONS, sessions);
+      }
+    } finally {
+      release();
     }
   },
 
@@ -455,10 +637,15 @@ activity: PlayerPublicActivity): Promise<void> {
   },
   // Atividades (Feed)
   async saveActivity(activity: PlayerPublicActivity): Promise<void> {
-    const activities = await loadIdb<PlayerPublicActivity[]>(KEYS.ACTIVITIES, INITIAL_ACTIVITIES as any);
-    if (!activities.some(a => a.id === activity.id)) {
-      activities.unshift(activity);
-      await saveIdb(KEYS.ACTIVITIES, activities);
+    const release = await idbMutex.acquire();
+    try {
+      const activities = await loadIdb<PlayerPublicActivity[]>(KEYS.ACTIVITIES, INITIAL_ACTIVITIES as any);
+      if (!activities.some(a => a.id === activity.id)) {
+        activities.unshift(activity);
+        await saveIdb(KEYS.ACTIVITIES, activities);
+      }
+    } finally {
+      release();
     }
   }
 };

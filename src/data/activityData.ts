@@ -441,10 +441,10 @@ export function getActivityStyle(type: ActivityType): {
   switch (type) {
     case 'ZONE_CONQUERED':
       return {
-        badgeBg: 'bg-emerald-500/20',
-        badgeText: 'text-emerald-300',
-        borderColor: 'border-emerald-500/40',
-        accentColor: 'text-emerald-400',
+        badgeBg: 'bg-yellow-500/20',
+        badgeText: 'text-yellow-300',
+        borderColor: 'border-yellow-500/40',
+        accentColor: 'text-yellow-400',
       };
     case 'ZONE_LOST':
       return {
@@ -493,10 +493,10 @@ export function getActivityStyle(type: ActivityType): {
     case 'ROUTE_COMPLETED':
     default:
       return {
-        badgeBg: 'bg-emerald-500/15',
-        badgeText: 'text-emerald-300',
+        badgeBg: 'bg-yellow-500/15',
+        badgeText: 'text-yellow-300',
         borderColor: 'border-white/10',
-        accentColor: 'text-emerald-400',
+        accentColor: 'text-yellow-400',
       };
   }
 }

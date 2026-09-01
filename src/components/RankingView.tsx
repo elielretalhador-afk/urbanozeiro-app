@@ -30,7 +30,11 @@ export const RankingView: React.FC<RankingViewProps> = ({
     period === 'semanal' ? MOCK_WEEKLY_LEADERBOARD : MOCK_MONTHLY_LEADERBOARD;
 
   const top3Players = currentLeaderboard.slice(0, 3);
-  const sortedClans = [...clans].sort((a, b) => (a.rankPosition || 99) - (b.rankPosition || 99));
+  const sortedClans = [...clans].sort((a, b) => {
+    const scoreDiff = (b.territoryScore || 0) - (a.territoryScore || 0);
+    if (scoreDiff !== 0) return scoreDiff;
+    return (b.zonesControlledCount || 0) - (a.zonesControlledCount || 0);
+  });
   const top3Clans = sortedClans.slice(0, 3);
 
   const handlePlayerClick = (p: RankPlayer) => {
@@ -48,11 +52,11 @@ export const RankingView: React.FC<RankingViewProps> = ({
         <button
           type="button"
           
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-amber-500/20 via-emerald-500/20 to-amber-500/20 hover:from-amber-500/30 hover:to-emerald-500/30 border border-amber-400/50 rounded-full text-amber-300 text-[10px] font-black uppercase tracking-wider mb-2 font-mono-stat transition-all active:scale-95 shadow-[0_0_12px_rgba(251,191,36,0.2)] cursor-pointer"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20 hover:from-amber-500/30 hover:to-yellow-500/30 border border-amber-400/50 rounded-full text-amber-300 text-[10px] font-black uppercase tracking-wider mb-2 font-mono-stat transition-all active:scale-95 shadow-[0_0_12px_rgba(251,191,36,0.2)] cursor-pointer"
         >
           <Trophy className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
           <span>TEMPORADA #1: PRIMEIRO ROLÊ (ATIVA)</span>
-          <span className="text-[9px] text-emerald-400 underline font-bold ml-0.5">HUB DA TEMPORADA →</span>
+          <span className="text-[9px] text-yellow-400 underline font-bold ml-0.5">HUB DA TEMPORADA →</span>
         </button>
         <h2 className="text-xl sm:text-2xl font-black text-white font-display uppercase tracking-tight">
           {mainCategory === 'jogadores' ? 'LÍDERES DE TERRITÓRIO' : 'RANKING GERAL DE CLÃS'}
@@ -74,7 +78,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
             onClick={() => setMainCategory('jogadores')}
             className={`py-2 px-3 rounded-xl text-xs font-bold uppercase font-mono-stat tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
               mainCategory === 'jogadores'
-                ? 'bg-emerald-400 text-black shadow-[0_0_15px_rgba(0,255,102,0.4)] font-black'
+                ? 'bg-yellow-400 text-black shadow-[0_0_15px_rgba(252,232,3,0.4)] font-black'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -86,7 +90,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
             onClick={() => setMainCategory('clas')}
             className={`py-2 px-3 rounded-xl text-xs font-bold uppercase font-mono-stat tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
               mainCategory === 'clas'
-                ? 'bg-emerald-400 text-black shadow-[0_0_15px_rgba(0,255,102,0.4)] font-black'
+                ? 'bg-yellow-400 text-black shadow-[0_0_15px_rgba(252,232,3,0.4)] font-black'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -174,7 +178,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
                 <div className="text-xs font-bold text-white mt-1.5 truncate max-w-full font-display uppercase">
                   {top3Players[0].nickname}
                 </div>
-                <div className="text-[11px] text-emerald-400 font-bold font-mono-stat">
+                <div className="text-[11px] text-yellow-400 font-bold font-mono-stat">
                   {top3Players[0].zonesControlled} ZONAS
                 </div>
                 <div className="text-xs font-bold text-amber-400 mt-0.5 font-mono-stat">
@@ -218,9 +222,9 @@ export const RankingView: React.FC<RankingViewProps> = ({
                 key={skater.rank}
                 id={`leaderboard-row-${skater.rank}`}
                 onClick={() => handlePlayerClick(skater)}
-                className={`p-3 rounded-2xl flex items-center justify-between transition-all cursor-pointer hover:border-emerald-400/70 active:scale-[0.98] ${
+                className={`p-3 rounded-2xl flex items-center justify-between transition-all cursor-pointer hover:border-yellow-400/70 active:scale-[0.98] ${
                   skater.isCurrentUser
-                    ? 'bg-emerald-950/50 border-2 border-emerald-400 shadow-[0_0_20px_rgba(0,255,102,0.2)]'
+                    ? 'bg-blue-950/50 border-2 border-yellow-400 shadow-[0_0_20px_rgba(252,232,3,0.2)]'
                     : 'bg-[#0d141d] border-2 border-white/10'
                 }`}
               >
@@ -251,7 +255,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
                         {skater.nickname}
                       </span>
                       {skater.isCurrentUser && (
-                        <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/20 px-1 rounded uppercase font-mono-stat border border-emerald-400/40 shrink-0">
+                        <span className="text-[9px] font-bold text-yellow-400 bg-yellow-500/20 px-1 rounded uppercase font-mono-stat border border-yellow-400/40 shrink-0">
                           VOCÊ
                         </span>
                       )}
@@ -267,7 +271,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
                 </div>
 
                 <div className="text-right shrink-0 ml-2">
-                  <div className="text-xs font-bold text-emerald-400 flex items-center justify-end gap-1 font-mono-stat">
+                  <div className="text-xs font-bold text-yellow-400 flex items-center justify-end gap-1 font-mono-stat">
                     <Shield className="w-3.5 h-3.5" />
                     {skater.zonesControlled} {skater.zonesControlled === 1 ? 'ZONA' : 'ZONAS'}
                   </div>
@@ -280,7 +284,9 @@ export const RankingView: React.FC<RankingViewProps> = ({
           </div>
         </>
       ) : (
-        /* CLÃS VIEW */
+        <>
+        {/* CLÃS VIEW */}
+        <div className="mb-3 flex items-center justify-between"><h2 className="text-sm font-black text-yellow-400 uppercase tracking-widest">GUERRA TERRITORIAL</h2></div>
         <div className="space-y-4">
           {/* Top 3 Podium Clãs */}
           {top3Clans.length >= 3 && (
@@ -309,7 +315,8 @@ export const RankingView: React.FC<RankingViewProps> = ({
                   [{top3Clans[1].tag}]
                 </div>
                 <div className="text-[10px] text-cyan-400 font-bold font-mono-stat mt-0.5">
-                  {top3Clans[1].controlledZonesCount} ZONAS
+                  {top3Clans[1].territoryScore || 0} PTS<br/>
+                  {top3Clans[1].zonesControlledCount || 0} ZONAS
                 </div>
               </div>
 
@@ -335,8 +342,9 @@ export const RankingView: React.FC<RankingViewProps> = ({
                 <div className="text-[10px] text-amber-300 font-mono-stat font-bold">
                   [{top3Clans[0].tag}]
                 </div>
-                <div className="text-[11px] text-emerald-400 font-bold font-mono-stat mt-0.5">
-                  {top3Clans[0].controlledZonesCount} ZONAS
+                <div className="text-[11px] text-yellow-400 font-bold font-mono-stat mt-0.5">
+                  {top3Clans[0].territoryScore || 0} PTS<br/>
+                  {top3Clans[0].zonesControlledCount || 0} ZONAS
                 </div>
               </div>
 
@@ -364,7 +372,8 @@ export const RankingView: React.FC<RankingViewProps> = ({
                   [{top3Clans[2].tag}]
                 </div>
                 <div className="text-[10px] text-cyan-400 font-bold font-mono-stat mt-0.5">
-                  {top3Clans[2].controlledZonesCount} ZONAS
+                  {top3Clans[2].territoryScore || 0} PTS<br/>
+                  {top3Clans[2].zonesControlledCount || 0} ZONAS
                 </div>
               </div>
             </div>
@@ -378,7 +387,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
                 <div
                   key={clan.id}
                   onClick={() => onSelectClan && onSelectClan(clan)}
-                  className="p-3 rounded-2xl bg-[#0d141d] border-2 border-white/10 hover:border-emerald-400/70 transition-all cursor-pointer active:scale-[0.99] flex items-center justify-between gap-3 group"
+                  className="p-3 rounded-2xl bg-[#0d141d] border-2 border-white/10 hover:border-yellow-400/70 transition-all cursor-pointer active:scale-[0.99] flex items-center justify-between gap-3 group"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <span
@@ -423,29 +432,33 @@ export const RankingView: React.FC<RankingViewProps> = ({
                       <div className="text-xs text-slate-400 flex items-center gap-2 font-mono-stat truncate">
                         <span>{clan.membersCount} membros</span>
                         <span>•</span>
-                        <span className="text-cyan-300">{clan.totalKm.toFixed(0)} km</span>
+                        <span className="text-cyan-300">{(clan.totalKm || 0).toFixed(0)} km</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="text-right shrink-0 flex items-center gap-2">
                     <div>
-                      <div className="text-xs font-bold text-emerald-400 flex items-center justify-end gap-1 font-mono-stat">
+                      <div className="text-xs font-bold text-yellow-400 flex items-center justify-end gap-1 font-mono-stat">
                         <Shield className="w-3.5 h-3.5" />
-                        {clan.controlledZonesCount} {clan.controlledZonesCount === 1 ? 'ZONA' : 'ZONAS'}
+                        {clan.territoryScore || 0} PTS
+                      </div>
+                      <div className="text-[10px] font-bold text-cyan-300 mt-0.5 font-mono-stat text-right">
+                        {clan.zonesControlledCount || 0} ZONAS
                       </div>
                       <div className="text-xs font-bold text-amber-400 mt-0.5 font-mono-stat">
-                        {clan.xp.toLocaleString('pt-BR')} XP
+                        {(clan.xp || 0).toLocaleString('pt-BR')} XP
                       </div>
                     </div>
 
-                    <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-yellow-400 group-hover:translate-x-0.5 transition-all" />
                   </div>
                 </div>
               );
             })}
           </div>
         </div>
+        </>
       )}
 
       {/* Public Profile Modal (if triggered internally) */}

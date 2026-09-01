@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { SeasonService } from '../services/seasonService';
 import {
   Trophy,
   Calendar,
@@ -23,7 +24,6 @@ import {
 import { Season, SeasonRankingEntry, SeasonRewardTier, UserProfile } from '../types';
 import {
   MOCK_SEASONS,
-  MOCK_SEASON_LEADERBOARD,
   getCurrentSeason,
   getSeasonStatusBadge,
 } from '../data/seasonData';
@@ -53,30 +53,62 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
     initialTab
   );
   const [selectedSeasonId, setSelectedSeasonId] = useState<string>('season_01');
+  const [activeSeason, setActiveSeason] = useState<Season | null>(null);
+  const [topPlayers, setTopPlayers] = useState<SeasonRankingEntry[]>([]);
+  const [topClans, setTopClans] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const season = await SeasonService.getActiveSeason();
+        if (season) {
+          setActiveSeason(season);
+          const players = await SeasonService.getTopPlayers(season.id);
+          const clans = await SeasonService.getTopClans(season.id);
+          setTopPlayers(players);
+          setTopClans(clans);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [isOpen]);
+
 
   if (!isOpen) return null;
 
   const currentSeason = getCurrentSeason();
   const viewingSeason = MOCK_SEASONS.find((s) => s.id === selectedSeasonId) || currentSeason;
   const statusBadge = getSeasonStatusBadge(viewingSeason.status);
-  const top3 = MOCK_SEASON_LEADERBOARD.slice(0, 3);
-  const userSeasonalEntry = MOCK_SEASON_LEADERBOARD.find((p) => p.isCurrentUser);
+  const top3 = topPlayers.slice(0, 3);
+  const userSeasonalEntry = topPlayers.find((p) => p.isCurrentUser);
 
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+         <div className="text-yellow-400 font-bold font-mono-stat animate-pulse">Carregando Temporada...</div>
+      </div>
+    );
+  }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
       <div
         id="season-hub-modal-card"
-        className="w-full max-w-2xl bg-[#080d13] border-2 border-emerald-500/40 rounded-3xl overflow-hidden shadow-2xl shadow-emerald-950/40 flex flex-col max-h-[90vh]"
+        className="w-full max-w-2xl bg-[#080d13] border-2 border-yellow-500/40 rounded-3xl overflow-hidden shadow-2xl shadow-blue-950/40 flex flex-col max-h-[90vh]"
       >
         {/* Header */}
         <div className="p-4 sm:p-5 bg-gradient-to-r from-[#0d1622] via-[#091018] to-[#0d1622] border-b border-white/10 flex items-center justify-between relative shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-xl shadow-[0_0_15px_rgba(0,255,102,0.3)]">
+            <div className="w-10 h-10 rounded-2xl bg-yellow-500/20 border-2 border-yellow-400 flex items-center justify-center text-xl shadow-[0_0_15px_rgba(252,232,3,0.3)]">
               {viewingSeason.icon || '🏆'}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase font-mono-stat text-emerald-400 tracking-wider">
+                <span className="text-[10px] font-black uppercase font-mono-stat text-yellow-400 tracking-wider">
                   TEMPORADA #{viewingSeason.number}
                 </span>
                 <span
@@ -107,7 +139,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
               onClick={() => setActiveTab('visao_geral')}
               className={`py-2 px-2 rounded-xl text-[10px] sm:text-xs font-bold uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 activeTab === 'visao_geral'
-                  ? 'bg-emerald-400 text-black font-black shadow-[0_0_12px_rgba(0,255,102,0.3)]'
+                  ? 'bg-yellow-400 text-black font-black shadow-[0_0_12px_rgba(252,232,3,0.3)]'
                   : 'text-slate-400 hover:text-white bg-black/30'
               }`}
             >
@@ -119,7 +151,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
               onClick={() => setActiveTab('ranking')}
               className={`py-2 px-2 rounded-xl text-[10px] sm:text-xs font-bold uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 activeTab === 'ranking'
-                  ? 'bg-emerald-400 text-black font-black shadow-[0_0_12px_rgba(0,255,102,0.3)]'
+                  ? 'bg-yellow-400 text-black font-black shadow-[0_0_12px_rgba(252,232,3,0.3)]'
                   : 'text-slate-400 hover:text-white bg-black/30'
               }`}
             >
@@ -131,7 +163,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
               onClick={() => setActiveTab('recompensas')}
               className={`py-2 px-2 rounded-xl text-[10px] sm:text-xs font-bold uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 activeTab === 'recompensas'
-                  ? 'bg-emerald-400 text-black font-black shadow-[0_0_12px_rgba(0,255,102,0.3)]'
+                  ? 'bg-yellow-400 text-black font-black shadow-[0_0_12px_rgba(252,232,3,0.3)]'
                   : 'text-slate-400 hover:text-white bg-black/30'
               }`}
             >
@@ -143,7 +175,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
               onClick={() => setActiveTab('historico')}
               className={`py-2 px-2 rounded-xl text-[10px] sm:text-xs font-bold uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 activeTab === 'historico'
-                  ? 'bg-emerald-400 text-black font-black shadow-[0_0_12px_rgba(0,255,102,0.3)]'
+                  ? 'bg-yellow-400 text-black font-black shadow-[0_0_12px_rgba(252,232,3,0.3)]'
                   : 'text-slate-400 hover:text-white bg-black/30'
               }`}
             >
@@ -171,8 +203,8 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
 
                 <div className="p-4 sm:p-5 relative -mt-16 sm:-mt-20">
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                    <span className="px-2.5 py-1 rounded-lg bg-black/70 border border-emerald-400/40 text-emerald-400 text-xs font-black font-mono-stat flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="px-2.5 py-1 rounded-lg bg-black/70 border border-yellow-400/40 text-yellow-400 text-xs font-black font-mono-stat flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-yellow-400" />
                       {viewingSeason.timeRemainingLabel || 'Em andamento'}
                     </span>
                     <span className="text-xs text-slate-400 font-mono-stat">
@@ -189,9 +221,9 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
 
                   {/* Player Current Placement Bar */}
                   {userSeasonalEntry && viewingSeason.status === 'ACTIVE' && (
-                    <div className="mt-4 p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between">
+                    <div className="mt-4 p-3 rounded-2xl bg-blue-950/40 border border-yellow-500/30 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-emerald-400/20 text-emerald-400 border border-emerald-400/40 flex items-center justify-center font-mono-stat font-black text-xs">
+                        <div className="w-8 h-8 rounded-xl bg-yellow-400/20 text-yellow-400 border border-yellow-400/40 flex items-center justify-center font-mono-stat font-black text-xs">
                           #{userSeasonalEntry.position}
                         </div>
                         <div>
@@ -205,7 +237,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
                       </div>
                       <button
                         onClick={() => setActiveTab('ranking')}
-                        className="px-3 py-1.5 rounded-xl bg-emerald-400 text-black text-[10px] font-black font-mono-stat uppercase tracking-wider hover:bg-emerald-300 transition-all cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl bg-yellow-400 text-black text-[10px] font-black font-mono-stat uppercase tracking-wider hover:bg-yellow-300 transition-all cursor-pointer"
                       >
                         Ver Ranking →
                       </button>
@@ -223,7 +255,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
                 <div className="space-y-1.5 pt-1">
                   {viewingSeason.rulesSummary?.map((rule, idx) => (
                     <div key={idx} className="flex items-start gap-2 text-xs text-slate-300">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-yellow-400 shrink-0 mt-0.5" />
                       <span>{rule}</span>
                     </div>
                   ))}
@@ -310,7 +342,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
                     Pontuação obtida exclusivamente durante o período da Temporada #{viewingSeason.number}.
                   </p>
                 </div>
-                <div className="px-2.5 py-1 rounded-lg bg-emerald-400/15 border border-emerald-400/30 text-emerald-400 text-[10px] font-black font-mono-stat">
+                <div className="px-2.5 py-1 rounded-lg bg-yellow-400/15 border border-yellow-400/30 text-yellow-400 text-[10px] font-black font-mono-stat">
                   {viewingSeason.totalParticipants?.toLocaleString()} PATINADORES
                 </div>
               </div>
@@ -355,7 +387,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
                     <div className="text-xs font-black text-white mt-1.5 truncate max-w-full font-display uppercase">
                       {top3[0].nickname}
                     </div>
-                    <div className="text-[11px] font-black text-emerald-400 font-mono-stat">
+                    <div className="text-[11px] font-black text-yellow-400 font-mono-stat">
                       {top3[0].zones} ZONAS
                     </div>
                     <div className="text-xs font-black text-amber-400 mt-0.5 font-mono-stat">
@@ -390,15 +422,15 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
 
               {/* Leaderboard Table List */}
               <div className="space-y-2">
-                {MOCK_SEASON_LEADERBOARD.map((skater) => (
+                {topPlayers.map((skater) => (
                   <div
                     key={skater.position}
                     id={`season-leaderboard-row-${skater.position}`}
                     onClick={() => onSelectPlayer && onSelectPlayer(skater)}
                     className={`p-3 rounded-2xl flex items-center justify-between transition-all cursor-pointer ${
                       skater.isCurrentUser
-                        ? 'bg-emerald-950/60 border-2 border-emerald-400 shadow-[0_0_15px_rgba(0,255,102,0.2)]'
-                        : 'bg-[#0c131d] border border-white/10 hover:border-emerald-400/50'
+                        ? 'bg-blue-950/60 border-2 border-yellow-400 shadow-[0_0_15px_rgba(252,232,3,0.2)]'
+                        : 'bg-[#0c131d] border border-white/10 hover:border-yellow-400/50'
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
@@ -428,7 +460,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
                             {skater.nickname}
                           </span>
                           {skater.isCurrentUser && (
-                            <span className="text-[8px] font-black text-emerald-400 bg-emerald-500/20 px-1 rounded uppercase font-mono-stat border border-emerald-400/40">
+                            <span className="text-[8px] font-black text-yellow-400 bg-yellow-500/20 px-1 rounded uppercase font-mono-stat border border-yellow-400/40">
                               VOCÊ
                             </span>
                           )}
@@ -436,7 +468,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
                         <div className="text-[10px] text-slate-400 flex items-center gap-1.5 font-mono-stat truncate">
                           <span>{skater.crew}</span>
                           <span>•</span>
-                          <span className="text-emerald-400">{skater.zones} Zonas</span>
+                          <span className="text-yellow-400">{skater.zones} Zonas</span>
                           <span>•</span>
                           <span className="text-cyan-400">{skater.wins} Vitórias</span>
                         </div>
@@ -482,7 +514,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
                         : tier.tier === 'TOP_3'
                         ? 'bg-gradient-to-r from-slate-900 to-[#0f1724] border-slate-400/40'
                         : tier.tier === 'TOP_10'
-                        ? 'bg-gradient-to-r from-emerald-950/30 to-[#0f1724] border-emerald-400/30'
+                        ? 'bg-gradient-to-r from-blue-950/30 to-[#0f1724] border-yellow-400/30'
                         : 'bg-[#0c131d] border-white/10'
                     }`}
                   >
@@ -557,7 +589,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
                       onClick={() => setSelectedSeasonId(season.id)}
                       className={`p-4 rounded-2xl border transition-all cursor-pointer ${
                         isCurrent
-                          ? 'bg-[#101b28] border-emerald-400 shadow-[0_0_15px_rgba(0,255,102,0.2)]'
+                          ? 'bg-[#101b28] border-yellow-400 shadow-[0_0_15px_rgba(252,232,3,0.2)]'
                           : 'bg-[#0c131d] border-white/10 hover:border-white/20'
                       }`}
                     >
@@ -581,7 +613,7 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
 
                       <div className="flex flex-wrap items-center justify-between text-[10px] text-slate-400 font-mono-stat pt-2 border-t border-white/10">
                         <span>Tema: <strong className="text-slate-200">{season.theme}</strong></span>
-                        <span className="text-emerald-400 font-bold">
+                        <span className="text-yellow-400 font-bold">
                           {season.timeRemainingLabel || 'Detalhes disponíveis'}
                         </span>
                       </div>
@@ -611,8 +643,8 @@ export const SeasonHubModal: React.FC<SeasonHubModalProps> = ({
         {/* Footer */}
         <div className="p-3 sm:p-4 bg-[#090f16] border-t border-white/10 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono-stat">
-            <Shield className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Temporadas Sazonais Urbanozeiro</span>
+            <Shield className="w-3.5 h-3.5 text-yellow-400" />
+            <span>Temporadas Sazonais THE ROLLING WARS</span>
           </div>
 
           <button

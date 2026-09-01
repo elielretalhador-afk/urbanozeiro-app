@@ -1,3 +1,4 @@
+import { SeasonService } from '../services/seasonService';
 import React from 'react';
 import { Activity as ActivityItem, ActivitySession, Clan, PersonalAchievement, PlayerProgression, UserProfile, VirtualWallet, Zone } from '../types';
 import { Shield, Flame, Disc, History, MapPin, Zap, Clock, Gauge, ArrowRight, Activity, Calendar, Trophy, Award, Sparkles, Users, Plus, LogIn, Crown, Package, Layers, Coins, Eye, Radio, Gift, Settings } from 'lucide-react';
@@ -111,9 +112,9 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
   return (
     <div className="h-full w-full overflow-y-auto overscroll-contain px-4 py-4 pb-36 bg-[#080b0e]">
       {/* Skater Card */}
-      <div className="p-4 rounded-3xl bg-gradient-to-b from-[#111923] to-[#0a0f15] border-2 border-emerald-500/40 shadow-2xl relative overflow-hidden">
+      <div className="p-4 rounded-3xl bg-gradient-to-b from-[#111923] to-[#0a0f15] border-2 border-yellow-500/40 shadow-2xl relative overflow-hidden">
         {/* Background glow */}
-        <div className="absolute -top-12 -right-12 w-36 h-36 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-36 h-36 bg-yellow-500/15 rounded-full blur-2xl pointer-events-none" />
 
         <div className="flex items-start gap-3.5">
           <div className="relative shrink-0">
@@ -122,7 +123,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
               alt={user.nickname}
               className={`w-16 h-16 rounded-2xl object-cover ${frameStyle.borderClass} ${frameStyle.glowClass}`}
             />
-            <div className="absolute -bottom-2 -right-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-400 text-black font-mono-stat">
+            <div className="absolute -bottom-2 -right-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-yellow-400 text-black font-mono-stat">
               LVL.{user.level}
             </div>
           </div>
@@ -150,7 +151,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
               </button>
             </div>
 
-            <p className="text-xs font-bold text-emerald-400 uppercase font-mono-stat mt-1">
+            <p className="text-xs font-bold text-yellow-400 uppercase font-mono-stat mt-1">
               {user.crew}
             </p>
             <p className="text-[11px] text-slate-300 mt-0.5 font-medium">
@@ -163,13 +164,13 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
         <div className="mt-4 pt-3 border-t border-white/10">
           <div className="flex items-center justify-between text-xs font-bold mb-1 font-mono-stat">
             <span className="text-slate-400 uppercase text-[11px]">PROGRESSO NÍVEL {user.level}</span>
-            <span className="text-emerald-400 font-black">
+            <span className="text-yellow-400 font-black">
               {user.xp} / {user.nextLevelXp} XP ({xpProgress}%)
             </span>
           </div>
           <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-[1px]">
             <div
-              className="h-full bg-emerald-400 rounded-full shadow-[0_0_10px_#00ff66] transition-all duration-500"
+              className="h-full bg-yellow-400 rounded-full shadow-[0_0_10px_#fce803] transition-all duration-500"
               style={{ width: `${xpProgress}%` }}
             />
           </div>
@@ -181,7 +182,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
               <button
                 type="button"
                 onClick={() => onOpenProgressionHub('visao_geral')}
-                className="text-emerald-400 hover:text-emerald-300 font-bold underline cursor-pointer"
+                className="text-yellow-400 hover:text-yellow-300 font-bold underline cursor-pointer"
               >
                 Ver Trilha →
               </button>
@@ -196,12 +197,12 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
         <div className="grid grid-cols-3 gap-2 mt-3.5 pt-3 border-t border-white/10">
           <div
             onClick={() => onOpenSocialHub && onOpenSocialHub('amigos')}
-            className="p-2.5 rounded-xl bg-black/40 border border-white/10 hover:border-emerald-400/40 text-center transition-all cursor-pointer"
+            className="p-2.5 rounded-xl bg-black/40 border border-white/10 hover:border-yellow-400/40 text-center transition-all cursor-pointer"
           >
             <span className="text-[8px] font-bold text-slate-400 uppercase font-mono-stat block">
               AMIGOS
             </span>
-            <div className="text-base font-black text-emerald-400 font-mono-stat my-0.5">
+            <div className="text-base font-black text-yellow-400 font-mono-stat my-0.5">
               {friendsCount}
             </div>
             <div className="text-[9px] text-slate-400">Conectados</div>
@@ -238,10 +239,10 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
       <div className="mt-4 p-4 rounded-2xl bg-[#0d141d] border-2 border-white/10">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 text-xs font-bold text-slate-200 uppercase tracking-wider font-mono-stat">
-            <Disc className="w-4 h-4 text-emerald-400" />
+            <Disc className="w-4 h-4 text-yellow-400" />
             SETUP DE EQUIPAMENTO
           </div>
-          <button onClick={() => window.dispatchEvent(new CustomEvent('open-equipment-modal'))} className="text-[10px] uppercase font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md hover:bg-emerald-500/20">
+          <button onClick={() => window.dispatchEvent(new CustomEvent('open-equipment-modal'))} className="text-[10px] uppercase font-bold text-yellow-400 bg-yellow-500/10 px-2 py-1 rounded-md hover:bg-yellow-500/20">
             Editar
           </button>
         </div>
@@ -253,7 +254,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
           </div>
           <div className="flex items-center justify-between py-1.5 border-b border-white/10">
             <span className="text-slate-400 uppercase font-mono-stat text-[11px]">RODAS</span>
-            <span className="font-bold text-emerald-400 font-mono-stat text-right max-w-[60%]">
+            <span className="font-bold text-yellow-400 font-mono-stat text-right max-w-[60%]">
               {typeof user.skateSetup?.wheels === 'string' ? user.skateSetup.wheels : (user.skateSetup?.wheels ? `${user.skateSetup.wheels.brand} ${user.skateSetup.wheels.model} ${user.skateSetup.wheels.size}mm ${user.skateSetup.wheels.hardness}` : 'Não informado')}
             </span>
           </div>
@@ -267,16 +268,16 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
       </div>
 
       {/* ÁREA DE CLÃ (SISTEMA DE CLÃS) */}
-      <div id="perfil-clan-section" className="mt-4 p-4 rounded-3xl bg-gradient-to-b from-[#111a26] to-[#0a1017] border-2 border-emerald-500/40 shadow-xl relative overflow-hidden">
+      <div id="perfil-clan-section" className="mt-4 p-4 rounded-3xl bg-gradient-to-b from-[#111a26] to-[#0a1017] border-2 border-yellow-500/40 shadow-xl relative overflow-hidden">
         {/* Glow */}
         <div
           className="absolute -top-10 -right-10 w-28 h-28 rounded-full blur-2xl pointer-events-none opacity-20"
-          style={{ backgroundColor: userClan?.color || '#00ff66' }}
+          style={{ backgroundColor: userClan?.color || '#fce803' }}
         />
 
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-xl bg-emerald-400/15 border border-emerald-400/40 text-emerald-400">
+            <div className="p-1.5 rounded-xl bg-yellow-400/15 border border-yellow-400/40 text-yellow-400">
               <Users className="w-4 h-4" />
             </div>
             <div>
@@ -307,7 +308,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
           <div className="space-y-3">
             <div
               onClick={() => onOpenClanProfile && onOpenClanProfile(userClan)}
-              className="p-3.5 rounded-2xl bg-[#0d141e] border border-white/10 hover:border-emerald-400/60 transition-all cursor-pointer group active:scale-[0.99]"
+              className="p-3.5 rounded-2xl bg-[#0d141e] border border-white/10 hover:border-yellow-400/60 transition-all cursor-pointer group active:scale-[0.99]"
             >
               <div className="flex items-start gap-3">
                 {/* Clan Crest */}
@@ -351,7 +352,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                   </p>
 
                   <div className="flex items-center gap-3 mt-2 text-[9px] text-slate-400 font-mono-stat">
-                    <span className="text-emerald-400 font-bold">
+                    <span className="text-yellow-400 font-bold">
                       NÍVEL {userClan.level}
                     </span>
                     <span>•</span>
@@ -373,7 +374,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                 type="button"
                 id="btn-view-clan-profile"
                 onClick={() => onOpenClanProfile && onOpenClanProfile(userClan)}
-                className="py-2.5 px-3 rounded-2xl bg-emerald-400 hover:bg-emerald-300 text-black font-black text-xs font-mono-stat uppercase tracking-wider shadow-[0_0_15px_rgba(0,255,102,0.3)] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="py-2.5 px-3 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs font-mono-stat uppercase tracking-wider shadow-[0_0_15px_rgba(252,232,3,0.3)] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <span>VER PERFIL DO CLÃ</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -410,7 +411,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                 type="button"
                 id="btn-create-clan-from-profile"
                 onClick={onOpenCreateClan}
-                className="py-2.5 px-3 rounded-2xl bg-emerald-400 hover:bg-emerald-300 text-black font-black text-xs font-mono-stat uppercase tracking-wider shadow-[0_0_15px_rgba(0,255,102,0.3)] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="py-2.5 px-3 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs font-mono-stat uppercase tracking-wider shadow-[0_0_15px_rgba(252,232,3,0.3)] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>CRIAR CLÃ</span>
@@ -431,13 +432,13 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
       </div>
 
       {/* ÁREA DE CONQUISTAS, MEDALHAS & TÍTULOS */}
-      <div id="perfil-conquistas-section" className="mt-4 p-4 rounded-3xl bg-gradient-to-b from-[#101824] to-[#0a1017] border-2 border-emerald-500/40 shadow-xl relative overflow-hidden">
+      <div id="perfil-conquistas-section" className="mt-4 p-4 rounded-3xl bg-gradient-to-b from-[#101824] to-[#0a1017] border-2 border-yellow-500/40 shadow-xl relative overflow-hidden">
         {/* Glow */}
-        <div className="absolute -top-10 -right-10 w-28 h-28 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-10 -right-10 w-28 h-28 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none" />
 
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-xl bg-emerald-400/15 border border-emerald-400/40 text-emerald-400">
+            <div className="p-1.5 rounded-xl bg-yellow-400/15 border border-yellow-400/40 text-yellow-400">
               <Trophy className="w-4 h-4" />
             </div>
             <div>
@@ -454,7 +455,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
             type="button"
             id="btn-view-all-achievements"
             onClick={() => handleOpenTab('conquistas')}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-400/15 hover:bg-emerald-400 text-emerald-300 hover:text-black font-black text-xs font-mono-stat border border-emerald-400/40 active:scale-95 transition-all shadow-sm cursor-pointer group"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-yellow-400/15 hover:bg-yellow-400 text-yellow-300 hover:text-black font-black text-xs font-mono-stat border border-yellow-400/40 active:scale-95 transition-all shadow-sm cursor-pointer group"
           >
             <span>Ver todas</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -465,16 +466,16 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
         <div className="p-3 rounded-2xl bg-black/40 border border-white/10">
           <div className="flex items-center justify-between text-xs font-bold mb-1.5 font-mono-stat">
             <span className="text-slate-300 flex items-center gap-1.5">
-              <Award className="w-3.5 h-3.5 text-emerald-400" />
+              <Award className="w-3.5 h-3.5 text-yellow-400" />
               <span>🏆 {unlockedAchievementsCount} / {totalAchievementsCount} desbloqueadas</span>
             </span>
-            <span className="text-emerald-400">
+            <span className="text-yellow-400">
               {achievementProgressPct}%
             </span>
           </div>
           <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden p-[1px]">
             <div
-              className="h-full bg-emerald-400 rounded-full shadow-[0_0_10px_#00ff66]"
+              className="h-full bg-yellow-400 rounded-full shadow-[0_0_10px_#fce803]"
               style={{ width: `${achievementProgressPct}%` }}
             />
           </div>
@@ -487,9 +488,9 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
               <div
                 key={ach.id}
                 onClick={() => handleOpenTab('conquistas')}
-                className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer hover:border-emerald-400/80 active:scale-95 ${
+                className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer hover:border-yellow-400/80 active:scale-95 ${
                   ach.isUnlocked
-                    ? 'bg-[#0f1a26] border-emerald-500/40 shadow-sm'
+                    ? 'bg-[#0f1a26] border-yellow-500/40 shadow-sm'
                     : 'bg-[#090d13] border-white/10 opacity-90'
                 }`}
               >
@@ -649,7 +650,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               <div className="p-3 rounded-2xl bg-[#0d141e] border border-white/10 flex flex-col justify-center">
                 <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">
-                  <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                  <MapPin className="w-3.5 h-3.5 text-yellow-400" />
                   <span>Distância Total</span>
                 </div>
                 <div className="text-xl font-black text-white font-mono-stat tracking-tight">
@@ -727,7 +728,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
       <div className="mt-4">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 font-mono-stat">
-            <History className="w-4 h-4 text-[#00ff66]" />
+            <History className="w-4 h-4 text-[#fce803]" />
             HISTÓRICO DE PATINAÇÕES ({sessionHistory.length})
           </h3>
           {sessionHistory.length > 0 && onOpenSessionHistory && (
@@ -735,7 +736,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
               type="button"
               id="btn-open-full-history-modal"
               onClick={() => onOpenSessionHistory()}
-              className="px-2.5 py-1 rounded-lg bg-[#00ff66]/15 hover:bg-[#00ff66]/25 text-[#00ff66] text-[10px] font-black font-mono-stat border border-[#00ff66]/40 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1 rounded-lg bg-[#fce803]/15 hover:bg-[#fce803]/25 text-[#fce803] text-[10px] font-black font-mono-stat border border-[#fce803]/40 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
             >
               <span>VER COMPLETO</span>
               <ArrowRight className="w-3 h-3" />
@@ -765,11 +766,11 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                 <div
                   key={session.id || `hist-${index}`}
                   id={`session-card-${session.id}`}
-                  className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#111a26] to-[#0a1017] border-2 border-white/10 hover:border-[#00ff66]/60 transition-all duration-200 shadow-xl"
+                  className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#111a26] to-[#0a1017] border-2 border-white/10 hover:border-[#fce803]/60 transition-all duration-200 shadow-xl"
                 >
                   {/* Subtle top accent line for latest session */}
                   {index === 0 && (
-                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00ff66] to-transparent" />
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#fce803] to-transparent" />
                   )}
 
                   <div className="p-4">
@@ -780,14 +781,14 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                     >
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <div className="p-1.5 rounded-lg bg-[#00ff66]/15 text-[#00ff66] border border-[#00ff66]/30">
+                          <div className="p-1.5 rounded-lg bg-[#fce803]/15 text-[#fce803] border border-[#fce803]/30">
                             <Activity className="w-3.5 h-3.5" />
                           </div>
-                          <span className="text-sm font-black text-white uppercase font-display tracking-tight hover:text-[#00ff66] transition-colors">
+                          <span className="text-sm font-black text-white uppercase font-display tracking-tight hover:text-[#fce803] transition-colors">
                             {title}
                           </span>
                           {index === 0 && (
-                            <span className="px-2 py-0.5 rounded-md text-[9px] font-black bg-[#00ff66]/20 text-[#00ff66] border border-[#00ff66]/40 font-mono-stat shadow-[0_0_8px_rgba(0,255,102,0.25)]">
+                            <span className="px-2 py-0.5 rounded-md text-[9px] font-black bg-[#fce803]/20 text-[#fce803] border border-[#fce803]/40 font-mono-stat shadow-[0_0_8px_rgba(252,232,3,0.25)]">
                               MAIS RECENTE
                             </span>
                           )}
@@ -814,7 +815,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                             </span>
                           )}
                           {conqueredCount > 0 && (
-                            <span className="text-emerald-400 font-bold">
+                            <span className="text-yellow-400 font-bold">
                               • {conqueredCount} {conqueredCount === 1 ? 'zona conquistada' : 'zonas conquistadas'}
                             </span>
                           )}
@@ -835,10 +836,10 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                       {/* Distance */}
                       <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 flex flex-col justify-between">
                         <div className="flex items-center gap-1 text-[9px] text-slate-400 uppercase font-bold tracking-wider">
-                          <MapPin className="w-3 h-3 text-[#00ff66]" />
+                          <MapPin className="w-3 h-3 text-[#fce803]" />
                           <span>Distância</span>
                         </div>
-                        <div className="text-base font-black text-[#00ff66] mt-1.5 tracking-tight">
+                        <div className="text-base font-black text-[#fce803] mt-1.5 tracking-tight">
                           {formattedDist}
                         </div>
                       </div>
@@ -868,10 +869,10 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                       {/* Avg Speed */}
                       <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 flex flex-col justify-between">
                         <div className="flex items-center gap-1 text-[9px] text-slate-400 uppercase font-bold tracking-wider">
-                          <Gauge className="w-3 h-3 text-emerald-400" />
+                          <Gauge className="w-3 h-3 text-yellow-400" />
                           <span>Vel. Média</span>
                         </div>
-                        <div className="text-base font-bold text-emerald-300 mt-1.5 tracking-tight">
+                        <div className="text-base font-bold text-yellow-300 mt-1.5 tracking-tight">
                           {avgSpeedVal.toFixed(1)} <span className="text-[10px] font-normal text-slate-400">km/h</span>
                         </div>
                       </div>
@@ -899,7 +900,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                             type="button"
                             id={`btn-view-track-${session.id}`}
                             onClick={() => onSelectHistoricalSession(session)}
-                            className="px-3.5 py-1.5 rounded-xl bg-[#00ff66]/15 hover:bg-[#00ff66] text-[#00ff66] hover:text-black font-bold text-xs font-mono-stat border border-[#00ff66]/50 active:scale-95 transition-all flex items-center gap-1.5 shadow-md cursor-pointer group"
+                            className="px-3.5 py-1.5 rounded-xl bg-[#fce803]/15 hover:bg-[#fce803] text-[#fce803] hover:text-black font-bold text-xs font-mono-stat border border-[#fce803]/50 active:scale-95 transition-all flex items-center gap-1.5 shadow-md cursor-pointer group"
                             title="Visualizar o rastro desta patinação no mapa"
                           >
                             <MapPin className="w-3.5 h-3.5 fill-current shrink-0" />
@@ -916,7 +917,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
           </div>
         ) : (
           <div className="p-5 rounded-2xl bg-[#0d141d] border-2 border-white/10 text-center">
-            <div className="w-10 h-10 mx-auto rounded-full bg-[#00ff66]/10 border border-[#00ff66]/30 flex items-center justify-center text-[#00ff66] mb-2.5">
+            <div className="w-10 h-10 mx-auto rounded-full bg-[#fce803]/10 border border-[#fce803]/30 flex items-center justify-center text-[#fce803] mb-2.5">
               <History className="w-5 h-5" />
             </div>
             <p className="text-xs font-bold text-slate-200">
@@ -933,7 +934,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 font-mono-stat">
-            <Shield className="w-3.5 h-3.5 text-emerald-400" />
+            <Shield className="w-3.5 h-3.5 text-yellow-400" />
             ZONAS SOB SEU CONTROLE ({controlledZones.length})
           </h3>
         </div>
@@ -945,15 +946,15 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                 key={zone.id}
                 id={`user-zone-${zone.id}`}
                 onClick={() => onSelectZoneOnMap(zone)}
-                className="p-3 rounded-2xl bg-[#0d141d] border-2 border-emerald-500/40 flex items-center justify-between cursor-pointer hover:border-emerald-400 transition-all shadow-md active:scale-[0.99]"
+                className="p-3 rounded-2xl bg-[#0d141d] border-2 border-yellow-500/40 flex items-center justify-between cursor-pointer hover:border-yellow-400 transition-all shadow-md active:scale-[0.99]"
               >
                 <div>
                   <h4 className="text-sm font-bold text-white uppercase font-display">{zone.name}</h4>
-                  <p className="text-xs text-emerald-400 font-bold font-mono-stat">
+                  <p className="text-xs text-yellow-400 font-bold font-mono-stat">
                     DOMÍNIO {zone.dominance !== undefined ? zone.dominance : zone.dominancePercent}% • +{zone.xpPerHour !== undefined ? zone.xpPerHour : zone.pointsPerHour} XP/H
                   </p>
                 </div>
-                <span className="text-xs font-bold uppercase text-emerald-400 bg-emerald-500/15 px-2.5 py-1 rounded-xl border border-emerald-500/30 font-mono-stat shrink-0 ml-2">
+                <span className="text-xs font-bold uppercase text-yellow-400 bg-yellow-500/15 px-2.5 py-1 rounded-xl border border-yellow-500/30 font-mono-stat shrink-0 ml-2">
                   VER NO MAPA
                 </span>
               </div>

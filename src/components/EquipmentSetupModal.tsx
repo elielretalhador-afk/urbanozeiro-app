@@ -32,7 +32,7 @@ export const EquipmentSetupModal: React.FC<EquipmentSetupModalProps> = ({ isOpen
             SETUP DE EQUIPAMENTO
           </h3>
         </div>
-        <button onClick={handleSave} className="p-1.5 bg-emerald-500/20 text-emerald-400 rounded-xl">
+        <button onClick={handleSave} className="p-1.5 bg-yellow-500/20 text-yellow-400 rounded-xl">
           <Check className="w-5 h-5" />
         </button>
       </div>
@@ -46,7 +46,7 @@ export const EquipmentSetupModal: React.FC<EquipmentSetupModalProps> = ({ isOpen
 
         {/* RODAS */}
         <div className="space-y-3 p-4 bg-[#0d141e] rounded-2xl border border-white/10">
-          <div className="flex items-center gap-2 text-emerald-400 font-bold uppercase text-xs font-mono-stat">
+          <div className="flex items-center gap-2 text-yellow-400 font-bold uppercase text-xs font-mono-stat">
             <Disc className="w-4 h-4" /> Rodas
           </div>
           

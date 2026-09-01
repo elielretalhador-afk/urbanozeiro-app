@@ -309,9 +309,9 @@ export function getSeverityBadgeStyle(severity: SecuritySeverity): {
     default:
       return {
         label: 'INFORMATIVO',
-        bg: 'bg-emerald-500/20',
-        text: 'text-emerald-400',
-        border: 'border-emerald-500/50',
+        bg: 'bg-yellow-500/20',
+        text: 'text-yellow-400',
+        border: 'border-yellow-500/50',
       };
   }
 }
@@ -382,8 +382,8 @@ export function getAccountStatusDetails(status: PlayerAccountStatus = 'ACTIVE'):
     default:
       return {
         label: 'CONTA ÍNTEGRA (ATIVO)',
-        badgeBg: 'bg-emerald-500/20',
-        badgeText: 'text-emerald-400',
+        badgeBg: 'bg-yellow-500/20',
+        badgeText: 'text-yellow-400',
         description: 'Status verificado de Fair Play. Todas as funcionalidades ativas e seguras.',
       };
   }

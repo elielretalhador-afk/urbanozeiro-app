@@ -42,9 +42,9 @@ export const LiveChallengeResultModal: React.FC<LiveChallengeResultModalProps> =
       id="modal-live-challenge-result"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85  animate-fade-in"
     >
-      <div className="relative w-full max-w-md bg-[#0a0f16] border-2 border-emerald-400/80 rounded-3xl p-5 sm:p-6 shadow-[0_0_50px_rgba(0,255,102,0.35)] overflow-hidden">
+      <div className="relative w-full max-w-md bg-[#1d4ed8] border-2 border-yellow-400/80 rounded-3xl p-5 sm:p-6 shadow-[0_0_50px_rgba(252,232,3,0.35)] overflow-hidden">
         {/* Glow de fundo */}
-        <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-yellow-500/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
 
         {/* Botão fechar */}
@@ -58,12 +58,12 @@ export const LiveChallengeResultModal: React.FC<LiveChallengeResultModalProps> =
 
         {/* Header com Troféu */}
         <div className="text-center space-y-2 mb-5">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400/20 to-emerald-400/20 border-2 border-amber-400 flex items-center justify-center mx-auto shadow-[0_0_25px_rgba(251,191,36,0.5)]">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400/20 to-yellow-400/20 border-2 border-amber-400 flex items-center justify-center mx-auto shadow-[0_0_25px_rgba(251,191,36,0.5)]">
             <Trophy className="w-8 h-8 text-amber-400 animate-bounce" />
           </div>
 
           <div>
-            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest font-mono-stat flex items-center justify-center gap-1">
+            <span className="text-[10px] font-black text-yellow-400 uppercase tracking-widest font-mono-stat flex items-center justify-center gap-1">
               <Swords className="w-3 h-3" />
               DISPUTA AO VIVO CONCLUÍDA
             </span>
@@ -80,7 +80,7 @@ export const LiveChallengeResultModal: React.FC<LiveChallengeResultModalProps> =
         <div
           className={`p-3 rounded-2xl border text-center mb-4 ${
             isCurrentUserWinner
-              ? 'bg-emerald-950/40 border-emerald-400/60 shadow-[0_0_20px_rgba(0,255,102,0.2)]'
+              ? 'bg-blue-950/40 border-yellow-400/60 shadow-[0_0_20px_rgba(252,232,3,0.2)]'
               : 'bg-[#101722] border-white/10'
           }`}
         >
@@ -88,7 +88,7 @@ export const LiveChallengeResultModal: React.FC<LiveChallengeResultModalProps> =
             {isCurrentUserWinner ? '🏆 VOCÊ VENCEU A DISPUTA!' : `🥇 ${winner?.nickname || 'Vencedor'} LEVOU A VITÓRIA!`}
           </p>
           {challenge.xpReward && (
-            <p className="text-[11px] font-bold text-emerald-300 font-mono-stat mt-0.5">
+            <p className="text-[11px] font-bold text-yellow-300 font-mono-stat mt-0.5">
               +{challenge.xpReward} XP de Bônus de Confronto adicionados ao perfil
             </p>
           )}
@@ -117,7 +117,7 @@ export const LiveChallengeResultModal: React.FC<LiveChallengeResultModalProps> =
                         {winner.nickname}
                       </span>
                       {winner.isCurrentUser && (
-                        <span className="px-1.5 py-0.2 rounded bg-emerald-400 text-black text-[8px] font-black font-mono-stat uppercase">
+                        <span className="px-1.5 py-0.2 rounded bg-yellow-400 text-black text-[8px] font-black font-mono-stat uppercase">
                           VOCÊ
                         </span>
                       )}
@@ -129,7 +129,7 @@ export const LiveChallengeResultModal: React.FC<LiveChallengeResultModalProps> =
                 </div>
 
                 <div className="text-right shrink-0">
-                  <div className="text-xs font-black text-emerald-400 font-mono-stat">
+                  <div className="text-xs font-black text-yellow-400 font-mono-stat">
                     {formatSeconds(winner.elapsedTime)}
                   </div>
                   <div className="text-[10px] text-slate-400 font-mono-stat">
@@ -161,7 +161,7 @@ export const LiveChallengeResultModal: React.FC<LiveChallengeResultModalProps> =
                         {secondPlace.nickname}
                       </span>
                       {secondPlace.isCurrentUser && (
-                        <span className="px-1.5 py-0.2 rounded bg-emerald-400 text-black text-[8px] font-black font-mono-stat uppercase">
+                        <span className="px-1.5 py-0.2 rounded bg-yellow-400 text-black text-[8px] font-black font-mono-stat uppercase">
                           VOCÊ
                         </span>
                       )}
@@ -192,7 +192,7 @@ export const LiveChallengeResultModal: React.FC<LiveChallengeResultModalProps> =
               id="btn-challenge-rematch"
               type="button"
               onClick={onRematch}
-              className="w-full py-3 px-4 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black font-black text-xs uppercase font-mono-stat tracking-wider shadow-[0_0_20px_rgba(0,255,102,0.4)] flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.98]"
+              className="w-full py-3 px-4 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs uppercase font-mono-stat tracking-wider shadow-[0_0_20px_rgba(252,232,3,0.4)] flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-[0.98]"
             >
               <Swords className="w-4 h-4 stroke-[2.5]" />
               <span>REVANCHE / NOVA DISPUTA</span>

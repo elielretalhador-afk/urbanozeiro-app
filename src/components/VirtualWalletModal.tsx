@@ -16,6 +16,8 @@ import {
   Flame,
   Filter,
 } from 'lucide-react';
+import { EconomyService } from '../services/economyService';
+import { Chest } from '../types';
 import { VirtualWallet, CurrencyTransaction, CurrencySource } from '../types';
 import {
   MOCK_COSMETIC_STORE_PRICES,
@@ -55,27 +57,18 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
     }, 4000);
   };
 
-  const handleTestEarn = (amount: number, source: CurrencySource, desc: string) => {
-    if (onEarnCoins) {
-      onEarnCoins(amount, source, desc);
+  const handleTestEarn = async (amount: number, source: CurrencySource, desc: string) => {
+    // Disabled frontend-only earn, now uses backend function for debug
+    const res = await EconomyService.debugGrantCoins(amount);
+    if (res.success) {
       showFeedback(`+${amount} moedas creditadas com sucesso!`, 'success');
+    } else {
+      showFeedback('Erro ao adicionar moedas.', 'error');
     }
   };
 
   const handleTestSpend = (item: MockStoreItemPrice) => {
-    if (wallet.balance < item.price) {
-      showFeedback(`Saldo insuficiente! Você possui ${wallet.balance} moedas e o item custa ${item.price} moedas.`, 'error');
-      return;
-    }
-
-    if (onSpendCoins) {
-      const success = onSpendCoins(item.price, 'COSMETIC_PURCHASE', `Item Cosmético: ${item.name}`, item.id);
-      if (success) {
-        showFeedback(`Compra simulada de "${item.name}" realizada! -${item.price} moedas.`, 'success');
-      } else {
-        showFeedback('Saldo insuficiente para completar a transação.', 'error');
-      }
-    }
+    alert("Loja não implementada nesta fase. Apenas recompensa de temporada e cofres estão ativos.");
   };
 
   const filteredTransactions = wallet.transactions.filter((tx) => {
@@ -101,13 +94,13 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
       >
         {/* Decorative ambient glow */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Header */}
         <div className="relative z-10 flex items-center justify-between p-4 sm:p-5 border-b border-white/10 bg-[#0d141f]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 p-0.5 shadow-[0_0_15px_rgba(245,158,11,0.4)] flex items-center justify-center">
-              <div className="w-full h-full bg-[#0a0f15] rounded-[14px] flex items-center justify-center text-amber-400">
+              <div className="w-full h-full bg-[#1d4ed8] rounded-[14px] flex items-center justify-center text-amber-400">
                 <Coins className="w-5 h-5" />
               </div>
             </div>
@@ -121,7 +114,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 font-medium">
-                Economia de Recompensas & Cosméticos do Urbanozeiro
+                Economia de Recompensas & Cosméticos do THE ROLLING WARS
               </p>
             </div>
           </div>
@@ -142,12 +135,12 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
           <div
             className={`relative z-20 px-4 py-2.5 mx-4 mt-3 flex items-center gap-2 rounded-2xl text-xs font-bold font-mono-stat shadow-lg transition-all animate-in slide-in-from-top-2 ${
               feedbackMessage.type === 'success'
-                ? 'bg-emerald-950/90 border border-emerald-400 text-emerald-200'
+                ? 'bg-blue-950/90 border border-yellow-400 text-yellow-200'
                 : 'bg-rose-950/90 border border-rose-400 text-rose-200'
             }`}
           >
             {feedbackMessage.type === 'success' ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-yellow-400 shrink-0" />
             ) : (
               <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
             )}
@@ -179,8 +172,8 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
 
               {/* Quick Summary Pills */}
               <div className="grid grid-cols-2 sm:grid-cols-1 gap-2 shrink-0">
-                <div className="px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 font-mono-stat">
+                <div className="px-3 py-1.5 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-yellow-400 font-mono-stat">
                     <ArrowUpRight className="w-3.5 h-3.5" />
                     <span>GANHOS</span>
                   </div>
@@ -203,7 +196,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
 
             {/* Non-financial disclaimer */}
             <div className="mt-4 pt-3 border-t border-white/10 flex items-center gap-2 text-[10px] text-slate-400">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <ShieldCheck className="w-4 h-4 text-yellow-400 shrink-0" />
               <span>
                 <strong>Moeda Virtual Fechada:</strong> Sem conversão em dinheiro real, depósitos, saques ou apostas.
               </span>
@@ -296,7 +289,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
                     onClick={() => setHistoryFilter('EARN')}
                     className={`px-2.5 py-1 rounded-lg text-[10px] font-bold font-mono-stat transition-all cursor-pointer ${
                       historyFilter === 'EARN'
-                        ? 'bg-emerald-500/30 text-emerald-300 border border-emerald-500/50'
+                        ? 'bg-yellow-500/30 text-yellow-300 border border-yellow-500/50'
                         : 'text-slate-400 hover:text-white bg-white/5'
                     }`}
                   >
@@ -337,7 +330,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
                           <div
                             className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm shrink-0 ${
                               isEarn
-                                ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                                ? 'bg-yellow-500/15 text-yellow-400 border border-yellow-500/30'
                                 : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
                             }`}
                           >
@@ -365,7 +358,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
                         <div className="text-right shrink-0">
                           <span
                             className={`text-sm font-black font-mono-stat ${
-                              isEarn ? 'text-emerald-400' : 'text-rose-400'
+                              isEarn ? 'text-yellow-400' : 'text-rose-400'
                             }`}
                           >
                             {isEarn ? `+${tx.amount.toLocaleString('pt-BR')}` : `-${tx.amount.toLocaleString('pt-BR')}`}
@@ -458,7 +451,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
             <div className="space-y-3">
               <div className="p-3 rounded-2xl bg-[#0e1622] border border-white/10 text-xs text-slate-300">
                 <p className="font-bold text-white flex items-center gap-1.5">
-                  <Zap className="w-4 h-4 text-emerald-400" />
+                  <Zap className="w-4 h-4 text-yellow-400" />
                   Simulador de Eventos Econômicos
                 </p>
                 <p className="text-[11px] text-slate-400 mt-1">
@@ -479,7 +472,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleTestEarn(100, 'MISSION', 'Missão Concluída: Rolê Noturno')}
-                    className="px-3 py-1.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black text-[10px] font-black font-mono-stat uppercase cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-[10px] font-black font-mono-stat uppercase cursor-pointer"
                   >
                     +100 🪙
                   </button>
@@ -497,7 +490,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleTestEarn(150, 'ZONE_CONQUEST', 'Bônus de Conquista: Praça Roosevelt')}
-                    className="px-3 py-1.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black text-[10px] font-black font-mono-stat uppercase cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-[10px] font-black font-mono-stat uppercase cursor-pointer"
                   >
                     +150 🪙
                   </button>
@@ -515,7 +508,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleTestEarn(250, 'CHALLENGE', 'Vitória em Desafio X1')}
-                    className="px-3 py-1.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black text-[10px] font-black font-mono-stat uppercase cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-[10px] font-black font-mono-stat uppercase cursor-pointer"
                   >
                     +250 🪙
                   </button>
@@ -577,7 +570,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
           {activeTab === 'regras' && (
             <div className="space-y-3 max-h-[340px] overflow-y-auto pr-1 text-xs">
               <div className="p-4 rounded-2xl bg-[#0e1622] border border-white/10 space-y-3">
-                <div className="flex items-center gap-2 text-emerald-400 font-bold font-mono-stat">
+                <div className="flex items-center gap-2 text-yellow-400 font-bold font-mono-stat">
                   <ShieldCheck className="w-4 h-4" />
                   <span>DIRETRIZES DA ECONOMIA VIRTUAL</span>
                 </div>
@@ -617,7 +610,7 @@ export const VirtualWalletModal: React.FC<VirtualWalletModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="relative z-10 p-3 sm:p-4 bg-[#0a0f15] border-t border-white/10 flex items-center justify-between">
+        <div className="relative z-10 p-3 sm:p-4 bg-[#1d4ed8] border-t border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-mono-stat">
             <span>Saldo:</span>
             <strong className="text-amber-400 font-bold">

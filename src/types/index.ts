@@ -22,6 +22,9 @@ export interface ZoneController {
   level: number;
   clan?: string;
   crew?: string;
+  clanId?: string;
+  clanName?: string;
+  clanIcon?: string;
 }
 
 export interface ZoneRecord {
@@ -103,6 +106,8 @@ export interface Zone {
   pointsPerHour?: number;
   contested?: boolean;
   lastConquered?: string;
+  conqueredAtUnix?: number;
+  clanCooldowns?: Record<string, number>;
 }
 
 export interface PublicProfile {
@@ -678,6 +683,12 @@ export interface ConquestResultModalData {
   xpEarned: number; // e.g. 320
   player: UserProfile;
   trackPoints: ActivityTrackPoint[];
+  isPending?: boolean;
+  clanWar?: {
+    points: number;
+    result: string;
+    clanName: string;
+  };
 }
 
 export interface ZoneConquestProgress {
@@ -773,7 +784,12 @@ export type AppNotificationType =
   | 'evento'
   | 'patrocinador'
   | 'mensagem'
-  | 'social';
+  | 'social'
+  | 'friend_request'
+  | 'friend_accept'
+  | 'new_record'
+  | 'record_beaten'
+  | 'social_activity';
 
 export interface AppNotification {
   id: string;
@@ -784,7 +800,7 @@ export interface AppNotification {
   timeAgo: string;
   timestamp?: string; // ISO string
   isRead: boolean;
-  actionType?: 'open_zone' | 'open_challenge' | 'open_ranking' | 'open_routes' | 'open_profile' | 'open_direct_challenge' | 'open_event' | 'open_progression' | 'open_social_hub';
+  actionType?: 'open_clan_profile' | 'open_zone' | 'open_challenge' | 'open_ranking' | 'open_routes' | 'open_profile' | 'open_direct_challenge' | 'open_event' | 'open_progression' | 'open_social_hub';
   actionPayload?: {
     zoneId?: string;
     challengeId?: string;
@@ -966,26 +982,49 @@ export interface ClanControlledZone {
   xpPerHour: number;
 }
 
+
+export type ClanMissionType = 'EXPANSION' | 'WAR' | 'DOMINANCE';
+
+export interface ClanMission {
+  id: string;
+  type: ClanMissionType;
+  title: string;
+  description: string;
+  target: number;
+  progress: number;
+  rewardXp: number;
+  status: 'active' | 'completed' | 'expired';
+  createdAt: number;
+  expiresAt: number;
+}
+
 export interface Clan {
+  missions?: ClanMission[];
   id: string;
   authId?: string;
   name: string;
-  tag: string; // Ex: "SR", "NR", "SW"
-  description: string;
-  symbol: string; // Emoji or glyph, ex: "🐺", "⚡", "🦅"
-  color: string; // Hex color code, ex: "#00FF66"
-  level: number;
-  xp: number;
-  nextLevelXp: number;
-  membersCount: number;
-  maxMembers: number;
-  controlledZonesCount: number;
-  rankPosition: number;
-  totalKm: number;
+  tag?: string; // Ex: "SR", "NR", "SW"
+  description?: string;
+  symbol?: string; // Emoji or glyph, ex: "🐺", "⚡", "🦅"
+  icon?: string;
+  color?: string; // Hex color code, ex: "#00FF66"
+  level?: number;
+  xp?: number;
+  nextLevelXp?: number;
+  membersCount?: number;
+  memberCount?: number;
+  memberIds?: string[];
+  maxMembers?: number;
+  controlledZonesCount?: number;
+  territoryScore?: number;
+  zonesControlledCount?: number;
+  zonesContestedCount?: number;
+  rankPosition?: number;
+  totalKm?: number;
   leaderId: string;
-  leaderName: string;
-  createdAt: string;
-  members: ClanMember[];
+  leaderName?: string;
+  createdAt: any;
+  members?: ClanMember[];
   controlledZones?: ClanControlledZone[];
   // Future extensions
   isRecruiting?: boolean;
@@ -994,10 +1033,10 @@ export interface Clan {
 
 export interface ClanCreationInput {
   name: string;
-  tag: string;
-  description: string;
-  symbol: string;
-  color: string;
+  tag?: string;
+  description?: string;
+  symbol?: string;
+  color?: string;
 }
 
 // ==========================================
@@ -2257,3 +2296,58 @@ export interface PaginatedResult<T> {
   lastDocId?: string; // Cursor para a próxima página
   hasMore: boolean;   // Indica se existem mais registros
 }
+
+export interface SegmentAttempt {
+  segmentId: string;
+  status: 'approaching' | 'active' | 'finished' | 'aborted';
+  direction: 'forward' | 'reverse';
+  startTime: number;
+  startPointIndex: number;
+  trackPoints: ActivityTrackPoint[];
+  distanceCovered: number;
+  durationMs?: number;
+}
+
+export interface SegmentOperation {
+  operationId: string;
+  attemptId: string;
+  segmentId: string;
+  playerId: string;
+  playerName?: string;
+  createdAt: number;
+  durationMs: number;
+  timeSeconds: number;
+  averageSpeedKmH: number;
+  maxSpeedKmH: number;
+  direction: 'forward' | 'reverse';
+  trackPoints: ActivityTrackPoint[];
+  retryCount: number;
+  syncStatus: 'pending' | 'error' | 'synced';
+  validationStatus?: 'pending_validation' | 'validated' | 'rejected';
+  validation?: any;
+}
+
+export type ChestStatus = 'locked' | 'available' | 'opened';
+export type ChestType = 'bronze' | 'silver' | 'gold' | 'epic' | 'legendary';
+
+export interface ChestReward {
+  type: 'currency' | 'seasonXp' | 'clanXp' | 'cosmeticUnlock' | 'chest';
+  amount?: number;
+  cosmeticId?: string;
+  name?: string;
+}
+
+export interface Chest {
+  id: string;
+  userId: string;
+  type: ChestType;
+  source: string;
+  sourceId: string;
+  seasonId?: string;
+  status: ChestStatus;
+  createdAt: string;
+  openedAt?: string;
+  rewardTransactionId?: string;
+  rewards?: ChestReward[];
+}
+

@@ -82,11 +82,11 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
   return (
     <div className="absolute inset-x-0 bottom-16 sm:bottom-18 z-40 px-3 pb-2 sm:pb-3 pointer-events-none flex justify-center">
       <div
-        className="pointer-events-auto w-full max-w-md bg-[#0a0f15]/95 border-2 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.95)] backdrop-blur-xl animate-in slide-in-from-bottom duration-300 max-h-[64vh] sm:max-h-[70vh] flex flex-col overflow-hidden"
+        className="pointer-events-auto w-full max-w-md bg-[#1d4ed8]/95 border-2 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.95)] backdrop-blur-xl animate-in slide-in-from-bottom duration-300 max-h-[64vh] sm:max-h-[70vh] flex flex-col overflow-hidden"
         style={{ borderColor: `${zoneColor}70` }}
       >
         {/* Sticky Header - Fixed at the top of the card */}
-        <div className="p-3.5 pb-2.5 bg-[#0a0f15] border-b-2 border-white/10 flex items-start justify-between gap-2.5 shrink-0 z-10">
+        <div className="p-3.5 pb-2.5 bg-[#1d4ed8] border-b-2 border-white/10 flex items-start justify-between gap-2.5 shrink-0 z-10">
           <div className="flex-1 min-w-0 pr-1">
             <div className="flex items-center gap-1.5 mb-1 flex-wrap">
               {/* Type Badge */}
@@ -99,8 +99,8 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
 
               {/* Status Badge */}
               {isFree ? (
-                <span className="flex items-center gap-1 text-[9px] font-black uppercase text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-500/40 font-mono-stat shrink-0">
-                  <Flag className="w-3 h-3 text-emerald-400" /> ZONA LIVRE
+                <span className="flex items-center gap-1 text-[9px] font-black uppercase text-yellow-300 bg-blue-950/80 px-2 py-0.5 rounded-md border border-yellow-500/40 font-mono-stat shrink-0">
+                  <Flag className="w-3 h-3 text-yellow-400" /> ZONA LIVRE
                 </span>
               ) : isContested ? (
                 <span className="flex items-center gap-1 text-[9px] font-black uppercase text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded-md border border-amber-500/40 font-mono-stat shrink-0">
@@ -159,31 +159,31 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
             <div
               className={`p-2.5 rounded-xl border flex items-center justify-between gap-2.5 transition-all ${
                 isPlayerInside
-                  ? 'bg-emerald-950/80 border-emerald-500/60 shadow-[0_0_15px_rgba(0,255,102,0.2)]'
+                  ? 'bg-blue-950/80 border-yellow-500/60 shadow-[0_0_15px_rgba(252,232,3,0.2)]'
                   : 'bg-[#0f1722]/90 border-white/10'
               }`}
             >
               <div className="flex items-center gap-2 min-w-0">
                 <div className="relative flex h-2.5 w-2.5 shrink-0">
                   {isPlayerInside && (
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75" />
                   )}
                   <span
                     className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
-                      isPlayerInside ? 'bg-emerald-400' : 'bg-slate-500'
+                      isPlayerInside ? 'bg-yellow-400' : 'bg-slate-500'
                     }`}
                   />
                 </div>
                 <div className="flex flex-col min-w-0">
                   <span
                     className={`text-xs font-black uppercase font-mono-stat truncate ${
-                      isPlayerInside ? 'text-emerald-300' : 'text-slate-300'
+                      isPlayerInside ? 'text-yellow-300' : 'text-slate-300'
                     }`}
                   >
                     {isPlayerInside ? 'Você está dentro desta zona.' : 'Você está fora desta zona.'}
                   </span>
                   {isSessionActive && isPlayerInside && (
-                    <span className="text-[9px] text-emerald-400/90 font-bold font-mono-stat">
+                    <span className="text-[9px] text-yellow-400/90 font-bold font-mono-stat">
                       ● Presença sendo registrada na patinação
                     </span>
                   )}
@@ -191,7 +191,7 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
               </div>
               <span
                 className={`text-[10px] font-bold font-mono-stat shrink-0 ${
-                  isPlayerInside ? 'text-emerald-400' : 'text-slate-400'
+                  isPlayerInside ? 'text-yellow-400' : 'text-slate-400'
                 }`}
               >
                 {distanceToCenterMeters >= 1000
@@ -212,7 +212,7 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {zone.surface && (
               <div className="p-2.5 rounded-xl bg-[#0f1722] border border-white/10 flex items-start gap-2">
-                <Layers className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <Layers className="w-4 h-4 text-yellow-400 shrink-0 mt-0.5" />
                 <div className="min-w-0">
                   <div className="text-[9px] text-slate-400 font-black uppercase font-mono-stat">QUALIDADE DO PISO</div>
                   <div className="text-xs font-bold text-slate-200 mt-0.5 leading-snug break-words">{zone.surface}</div>
@@ -246,7 +246,7 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
           <div className="p-3 rounded-2xl bg-[#0f1722] border-2 border-white/10">
             <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between font-mono-stat">
               <span className="flex items-center gap-1.5">
-                <Shield className="w-3.5 h-3.5 text-emerald-400" />
+                <Shield className="w-3.5 h-3.5 text-yellow-400" />
                 {isFree ? 'STATUS DA ZONA' : isContested ? 'DISPUTA EM ANDAMENTO' : `CONTROLADA POR ${controllerNickname?.toUpperCase() || 'JOGADOR'}`}
               </span>
               <span className="text-[9px] font-bold text-slate-400 font-mono-stat">
@@ -257,7 +257,7 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
             {isContested ? (
               <div className="py-2.5 px-3 rounded-xl bg-amber-950/40 border border-amber-500/40 text-left">
                 <div className="text-xs font-bold text-amber-300 flex items-center gap-1.5 mb-2 font-mono-stat">
-                  <Swords className="w-4 h-4 text-amber-400 shrink-0 animate-pulse" />
+                  <Swords className="w-4 h-4 text-white shrink-0 animate-pulse" />
                   <span>A ZONA <strong className="text-white">'{zone.name.toUpperCase()}'</strong> ESTÁ EM DISPUTA.</span>
                 </div>
 
@@ -292,21 +292,21 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-slate-400">Meta de distância:</span>
-                    <span className="text-emerald-400 font-bold">{zone.captureRequirements?.minDistance || 100}m dentro da zona</span>
+                    <span className="text-yellow-400 font-bold">{zone.captureRequirements?.minDistance || 100}m dentro da zona</span>
                   </div>
                 </div>
               </div>
             ) : isFree ? (
-              <div className="py-2.5 px-3 rounded-xl bg-black/40 border border-emerald-500/20 text-center">
-                <div className="text-xs font-bold text-emerald-300 flex items-center justify-center gap-1.5">
-                  <Flag className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="py-2.5 px-3 rounded-xl bg-black/40 border border-yellow-500/20 text-center">
+                <div className="text-xs font-bold text-yellow-300 flex items-center justify-center gap-1.5">
+                  <Flag className="w-4 h-4 text-yellow-400 shrink-0" />
                   Esta zona está livre e disponível para conquista.
                 </div>
-                <div className="mt-2 p-2 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-[11px] text-emerald-200/90 font-mono-stat text-left flex items-start gap-1.5">
-                  <Award className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                <div className="mt-2 p-2 rounded-lg bg-blue-950/40 border border-yellow-500/30 text-[11px] text-yellow-200/90 font-mono-stat text-left flex items-start gap-1.5">
+                  <Award className="w-3.5 h-3.5 text-yellow-400 shrink-0 mt-0.5" />
                   <span>
                     <strong>Requisito de Conquista:</strong> Patinar no mínimo{' '}
-                    <strong className="text-emerald-300 font-bold">{zone.captureRequirements?.minDistance || 100}m</strong> dentro do raio da zona durante a sua patinação para assumir o controle com 100% de domínio.
+                    <strong className="text-yellow-300 font-bold">{zone.captureRequirements?.minDistance || 100}m</strong> dentro do raio da zona durante a sua patinação para assumir o controle com 100% de domínio.
                   </span>
                 </div>
               </div>
@@ -344,7 +344,7 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
                           {controllerNickname}
                         </h3>
                         {isCurrentUserController && (
-                          <span className="text-[8px] font-black text-emerald-400 bg-emerald-500/20 px-1 py-0.2 rounded border border-emerald-400/40 uppercase font-mono-stat shrink-0">
+                          <span className="text-[8px] font-black text-yellow-400 bg-yellow-500/20 px-1 py-0.2 rounded border border-yellow-400/40 uppercase font-mono-stat shrink-0">
                             VOCÊ
                           </span>
                         )}
@@ -396,7 +396,7 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
             </div>
             <div className="p-2 rounded-xl bg-[#0f1722] border border-white/10">
               <div className="text-[8px] text-slate-400 font-black uppercase font-mono-stat">AGORA</div>
-              <div className="text-xs sm:text-sm font-black text-emerald-400 mt-0.5 flex items-center justify-center gap-1 font-mono-stat">
+              <div className="text-xs sm:text-sm font-black text-yellow-400 mt-0.5 flex items-center justify-center gap-1 font-mono-stat">
                 <Users className="w-3 h-3" />
                 {skatersCountValue}
               </div>
@@ -446,14 +446,14 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
                 aria-disabled="true"
                 className="w-full py-2.5 px-4 bg-amber-500/10 border border-amber-500/20 text-amber-300/70 font-black text-xs uppercase tracking-wider rounded-xl cursor-not-allowed select-none flex items-center justify-center gap-2 font-mono-stat pointer-events-none"
               >
-                <Swords className="w-4 h-4 text-amber-400/70" />
+                <Swords className="w-4 h-4 text-white/70" />
                 ⚔ ZONA EM DISPUTA ATIVA
               </button>
             ) : isFree ? (
               <button
                 type="button"
                 onClick={() => onChallengeZone(zone)}
-                className="w-full py-2.5 px-4 bg-emerald-400 hover:bg-emerald-300 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-[0_0_20px_rgba(0,255,102,0.4)] flex items-center justify-center gap-2 active:scale-98 font-mono-stat cursor-pointer"
+                className="w-full py-2.5 px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-[0_0_20px_rgba(252,232,3,0.4)] flex items-center justify-center gap-2 active:scale-98 font-mono-stat cursor-pointer"
               >
                 <Swords className="w-4 h-4 stroke-[2.5]" />
                 ⚔ DISPUTAR ZONA
@@ -462,16 +462,16 @@ export const ZoneDetailsModal: React.FC<ZoneDetailsModalProps> = ({
               <button
                 type="button"
                 onClick={() => onChallengeZone(zone)}
-                className="w-full py-2.5 px-4 bg-[#11241a] border-2 border-emerald-500/60 hover:bg-[#183325] text-emerald-400 font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2 font-mono-stat cursor-pointer"
+                className="w-full py-2.5 px-4 bg-[#11241a] border-2 border-yellow-500/60 hover:bg-[#183325] text-yellow-400 font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2 font-mono-stat cursor-pointer"
               >
-                <Award className="w-4 h-4 text-emerald-400" />
+                <Award className="w-4 h-4 text-yellow-400" />
                 DEFENDER TERRITÓRIO (+{xpValue} XP)
               </button>
             ) : (
               <button
                 type="button"
                 onClick={() => onChallengeZone(zone)}
-                className="w-full py-2.5 px-4 bg-emerald-400 hover:bg-emerald-300 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-[0_0_20px_rgba(0,255,102,0.4)] flex items-center justify-center gap-2 active:scale-98 font-mono-stat cursor-pointer"
+                className="w-full py-2.5 px-4 bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-[0_0_20px_rgba(252,232,3,0.4)] flex items-center justify-center gap-2 active:scale-98 font-mono-stat cursor-pointer"
               >
                 <Swords className="w-4 h-4 stroke-[3]" />
                 DESAFIAR CONTROLE DA ZONA

@@ -104,7 +104,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
 
     // Glow polyline
     const glowPolyline = L.polyline(validCoords, {
-      color: '#00ff66',
+      color: '#fce803',
       weight: 8,
       opacity: 0.35,
       lineCap: 'round',
@@ -113,7 +113,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
 
     // Solid polyline
     const polyline = L.polyline(validCoords, {
-      color: '#00ff66',
+      color: '#fce803',
       weight: 4,
       opacity: 0.95,
       lineCap: 'round',
@@ -124,7 +124,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
     // Start marker (Green pulsing dot)
     const startMarker = L.circleMarker(startCoord, {
       radius: 7,
-      fillColor: '#00ff66',
+      fillColor: '#fce803',
       fillOpacity: 1,
       color: '#ffffff',
       weight: 2,
@@ -253,10 +253,10 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85  animate-in fade-in duration-200">
       <div
         id="session-history-modal-container"
-        className="relative w-full max-w-2xl max-h-[92vh] rounded-3xl bg-gradient-to-b from-[#0e1622] via-[#090d14] to-[#06090e] border-2 border-[#00ff66]/50 shadow-[0_0_50px_rgba(0,255,102,0.25)] flex flex-col overflow-hidden text-white"
+        className="relative w-full max-w-2xl max-h-[92vh] rounded-3xl bg-gradient-to-b from-[#0e1622] via-[#090d14] to-[#06090e] border-2 border-[#fce803]/50 shadow-[0_0_50px_rgba(252,232,3,0.25)] flex flex-col overflow-hidden text-white"
       >
         {/* Neon Ambient Header Glow */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-32 bg-[#00ff66]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-32 bg-[#fce803]/15 rounded-full blur-3xl pointer-events-none" />
 
         {/* TOP BAR */}
         <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between relative z-10 shrink-0">
@@ -272,7 +272,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                 <span className="hidden sm:inline">Voltar</span>
               </button>
             ) : (
-              <div className="p-2.5 rounded-2xl bg-[#00ff66]/20 border border-[#00ff66]/50 text-[#00ff66] shadow-[0_0_15px_rgba(0,255,102,0.3)]">
+              <div className="p-2.5 rounded-2xl bg-[#fce803]/20 border border-[#fce803]/50 text-[#fce803] shadow-[0_0_15px_rgba(252,232,3,0.3)]">
                 <History className="w-5 h-5" />
               </div>
             )}
@@ -283,7 +283,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                   {selectedSession ? selectedSession.title || 'DETALHES DA PATINAÇÃO' : 'HISTÓRICO DE PATINAÇÕES'}
                 </h2>
                 {!selectedSession && (
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-[#00ff66]/20 text-[#00ff66] border border-[#00ff66]/40 font-mono-stat shrink-0">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-[#fce803]/20 text-[#fce803] border border-[#fce803]/40 font-mono-stat shrink-0">
                     {totalSessionsCount} {totalSessionsCount === 1 ? 'ROLÊ' : 'ROLÊS'}
                   </span>
                 )}
@@ -315,10 +315,10 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
           {selectedSession ? (
             <div className="space-y-4 animate-in fade-in duration-200">
               {/* Header Hero Card */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-[#101b2a] via-[#0d1622] to-[#0b111a] border border-[#00ff66]/30 relative overflow-hidden">
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-[#101b2a] via-[#0d1622] to-[#0b111a] border border-[#fce803]/30 relative overflow-hidden">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <span className="text-[10px] font-black text-[#00ff66] uppercase tracking-widest font-mono-stat block">
+                    <span className="text-[10px] font-black text-[#fce803] uppercase tracking-widest font-mono-stat block">
                       RESUMO DA SESSÃO
                     </span>
                     <h3 className="text-xl font-black text-white uppercase font-display mt-0.5">
@@ -326,7 +326,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                     </h3>
                     <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-400 font-mono-stat flex-wrap">
                       <span className="flex items-center gap-1 text-slate-300">
-                        <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+                        <Calendar className="w-3.5 h-3.5 text-yellow-400" />
                         {formatDateFull(selectedSession.startedAt, selectedSession.dateFormatted)}
                       </span>
                       <span>•</span>
@@ -359,7 +359,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
 
                 {/* Map Floating Overlay Badges */}
                 <div className="absolute top-2.5 left-2.5 z-10 flex items-center gap-1.5 flex-wrap">
-                  <div className="px-2.5 py-1 rounded-lg bg-black/80  border border-[#00ff66]/50 text-[10px] font-mono-stat font-bold text-[#00ff66] flex items-center gap-1 shadow-md">
+                  <div className="px-2.5 py-1 rounded-lg bg-black/80  border border-[#fce803]/50 text-[10px] font-mono-stat font-bold text-[#fce803] flex items-center gap-1 shadow-md">
                     <MapPin className="w-3 h-3" />
                     <span>
                       {(selectedSession.gpsPoints?.length || selectedSession.track?.length || 0)} PONTOS GPS
@@ -380,7 +380,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                       onSelectHistoricalSession(selectedSession);
                       onClose();
                     }}
-                    className="px-3 py-1.5 rounded-xl bg-black/80  border border-white/20 hover:border-[#00ff66] text-white hover:text-[#00ff66] text-[11px] font-mono-stat font-bold active:scale-95 transition-all flex items-center gap-1.5 shadow-lg cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-black/80  border border-white/20 hover:border-[#fce803] text-white hover:text-[#fce803] text-[11px] font-mono-stat font-bold active:scale-95 transition-all flex items-center gap-1.5 shadow-lg cursor-pointer"
                   >
                     <Maximize2 className="w-3.5 h-3.5" />
                     <span>Expandir no Mapa Principal</span>
@@ -393,10 +393,10 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                 {/* 1. Distância */}
                 <div className="p-3 rounded-2xl bg-black/40 border border-white/10 flex flex-col justify-between">
                   <span className="text-[10px] text-slate-400 font-bold uppercase flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-[#00ff66]" />
+                    <MapPin className="w-3.5 h-3.5 text-[#fce803]" />
                     Distância
                   </span>
-                  <div className="text-xl font-black text-[#00ff66] mt-2">
+                  <div className="text-xl font-black text-[#fce803] mt-2">
                     {(selectedSession.distance ?? selectedSession.distanceKm ?? 0).toFixed(2)}{' '}
                     <span className="text-xs font-normal text-slate-400">km</span>
                   </div>
@@ -437,10 +437,10 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                 {/* 4. Vel. Média */}
                 <div className="p-3 rounded-2xl bg-black/40 border border-white/10 flex flex-col justify-between">
                   <span className="text-[10px] text-slate-400 font-bold uppercase flex items-center gap-1">
-                    <Gauge className="w-3.5 h-3.5 text-emerald-400" />
+                    <Gauge className="w-3.5 h-3.5 text-yellow-400" />
                     Vel. Média
                   </span>
-                  <div className="text-xl font-bold text-emerald-300 mt-2">
+                  <div className="text-xl font-bold text-yellow-300 mt-2">
                     {(selectedSession.averageSpeed ?? selectedSession.avgSpeedKmH ?? 0).toFixed(1)}{' '}
                     <span className="text-xs font-normal text-slate-400">km/h</span>
                   </div>
@@ -454,7 +454,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
               <div className="p-4 rounded-2xl bg-[#0b121c] border border-white/10">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-xs font-black text-slate-200 uppercase tracking-wider flex items-center gap-2 font-mono-stat">
-                    <Shield className="w-4 h-4 text-emerald-400" />
+                    <Shield className="w-4 h-4 text-yellow-400" />
                     ZONAS E TERRITÓRIOS NA SESSÃO ({selectedSession.zonesVisited?.length || selectedSession.zonesConquered?.length || 0})
                   </h4>
                 </div>
@@ -464,10 +464,10 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                     {selectedSession.zonesVisited.map((zone, idx) => (
                       <div
                         key={`${zone.zoneId}-${idx}`}
-                        className="p-3 rounded-xl bg-black/40 border border-emerald-500/30 flex items-center justify-between gap-2"
+                        className="p-3 rounded-xl bg-black/40 border border-yellow-500/30 flex items-center justify-between gap-2"
                       >
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-lg bg-emerald-400/20 border border-emerald-400/40 text-emerald-400 flex items-center justify-center font-bold text-sm">
+                          <div className="w-8 h-8 rounded-lg bg-yellow-400/20 border border-yellow-400/40 text-yellow-400 flex items-center justify-center font-bold text-sm">
                             📍
                           </div>
                           <div>
@@ -481,7 +481,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                           </div>
                         </div>
 
-                        <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase font-mono-stat bg-emerald-400/20 text-emerald-300 border border-emerald-400/40">
+                        <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase font-mono-stat bg-yellow-400/20 text-yellow-300 border border-yellow-400/40">
                           {zone.status === 'conquered' ? 'CONQUISTADA' : 'VISITADA'}
                         </span>
                       </div>
@@ -492,13 +492,13 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                     {selectedSession.zonesConquered.map((zName, idx) => (
                       <div
                         key={`conq-${idx}`}
-                        className="p-3 rounded-xl bg-black/40 border border-emerald-500/30 flex items-center justify-between gap-2"
+                        className="p-3 rounded-xl bg-black/40 border border-yellow-500/30 flex items-center justify-between gap-2"
                       >
                         <div className="flex items-center gap-2">
-                          <Flag className="w-4 h-4 text-emerald-400" />
+                          <Flag className="w-4 h-4 text-yellow-400" />
                           <span className="text-xs font-bold text-white uppercase font-display">{zName}</span>
                         </div>
-                        <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase font-mono-stat bg-emerald-400/20 text-emerald-300 border border-emerald-400/40">
+                        <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase font-mono-stat bg-yellow-400/20 text-yellow-300 border border-yellow-400/40">
                           CONQUISTADA
                         </span>
                       </div>
@@ -520,7 +520,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                     onSelectHistoricalSession(selectedSession);
                     onClose();
                   }}
-                  className="flex-1 py-3 px-4 rounded-xl bg-[#00ff66] hover:bg-[#00e55b] text-black font-black text-xs uppercase font-mono-stat tracking-wider flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,255,102,0.4)] active:scale-95 transition-all cursor-pointer"
+                  className="flex-1 py-3 px-4 rounded-xl bg-[#fce803] hover:bg-[#00e55b] text-black font-black text-xs uppercase font-mono-stat tracking-wider flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(252,232,3,0.4)] active:scale-95 transition-all cursor-pointer"
                 >
                   <MapPin className="w-4 h-4 stroke-[3]" />
                   <span>VER RASTRO NO MAPA PRINCIPAL</span>
@@ -537,7 +537,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                     className="py-3 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs uppercase font-mono-stat border border-white/15 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     title="Tentar bater o tempo desta sessão no mesmo trajeto"
                   >
-                    <Play className="w-3.5 h-3.5 text-[#00ff66]" />
+                    <Play className="w-3.5 h-3.5 text-[#fce803]" />
                     <span>REPETIR ROTA</span>
                   </button>
                 )}
@@ -558,7 +558,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                     </div>
                     <div className="p-2 rounded-xl bg-black/40 border border-white/5">
                       <span className="text-[9px] text-slate-400 font-bold uppercase block">KM ACUMULADOS</span>
-                      <span className="text-lg font-black text-[#00ff66] mt-1 block">{totalDistanceKm.toFixed(1)} km</span>
+                      <span className="text-lg font-black text-[#fce803] mt-1 block">{totalDistanceKm.toFixed(1)} km</span>
                     </div>
                     <div className="p-2 rounded-xl bg-black/40 border border-white/5">
                       <span className="text-[9px] text-slate-400 font-bold uppercase block">TEMPO NO ASFALTO</span>
@@ -580,7 +580,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                     onClick={() => setFilterMode('ALL')}
                     className={`px-3 py-1.5 rounded-xl border transition-all cursor-pointer whitespace-nowrap ${
                       filterMode === 'ALL'
-                        ? 'bg-[#00ff66]/20 text-[#00ff66] border-[#00ff66]/60 font-black'
+                        ? 'bg-[#fce803]/20 text-[#fce803] border-[#fce803]/60 font-black'
                         : 'bg-white/5 text-slate-400 border-white/10 hover:text-white'
                     }`}
                   >
@@ -592,7 +592,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                     onClick={() => setFilterMode('ZONES')}
                     className={`px-3 py-1.5 rounded-xl border transition-all cursor-pointer whitespace-nowrap ${
                       filterMode === 'ZONES'
-                        ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/60 font-black'
+                        ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/60 font-black'
                         : 'bg-white/5 text-slate-400 border-white/10 hover:text-white'
                     }`}
                   >
@@ -646,20 +646,20 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                         key={session.id || `session-${idx}`}
                         id={`history-item-${session.id}`}
                         onClick={() => setSelectedSession(session)}
-                        className="p-4 rounded-2xl bg-gradient-to-b from-[#111a26] to-[#090f17] border-2 border-white/10 hover:border-[#00ff66]/60 transition-all duration-200 shadow-xl cursor-pointer group active:scale-[0.99]"
+                        className="p-4 rounded-2xl bg-gradient-to-b from-[#111a26] to-[#090f17] border-2 border-white/10 hover:border-[#fce803]/60 transition-all duration-200 shadow-xl cursor-pointer group active:scale-[0.99]"
                       >
                         {/* Header: Title + Date + Badges */}
                         <div className="flex items-start justify-between gap-2 pb-3 border-b border-white/10">
                           <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <div className="p-1.5 rounded-lg bg-[#00ff66]/15 text-[#00ff66] border border-[#00ff66]/30">
+                              <div className="p-1.5 rounded-lg bg-[#fce803]/15 text-[#fce803] border border-[#fce803]/30">
                                 <Activity className="w-3.5 h-3.5" />
                               </div>
-                              <span className="text-sm font-black text-white uppercase font-display tracking-tight group-hover:text-[#00ff66] transition-colors">
+                              <span className="text-sm font-black text-white uppercase font-display tracking-tight group-hover:text-[#fce803] transition-colors">
                                 {title}
                               </span>
                               {idx === 0 && (
-                                <span className="px-2 py-0.5 rounded-md text-[9px] font-black bg-[#00ff66]/20 text-[#00ff66] border border-[#00ff66]/40 font-mono-stat">
+                                <span className="px-2 py-0.5 rounded-md text-[9px] font-black bg-[#fce803]/20 text-[#fce803] border border-[#fce803]/40 font-mono-stat">
                                   MAIS RECENTE
                                 </span>
                               )}
@@ -681,7 +681,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                                 </span>
                               )}
                               {conqueredCount > 0 && (
-                                <span className="text-emerald-400 font-bold">
+                                <span className="text-yellow-400 font-bold">
                                   • {conqueredCount} {conqueredCount === 1 ? 'zona conquistada' : 'zonas conquistadas'}
                                 </span>
                               )}
@@ -693,7 +693,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-1 text-xs font-mono-stat font-bold text-slate-400 group-hover:text-[#00ff66] transition-colors shrink-0">
+                          <div className="flex items-center gap-1 text-xs font-mono-stat font-bold text-slate-400 group-hover:text-[#fce803] transition-colors shrink-0">
                             <span className="hidden sm:inline">Detalhes</span>
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                           </div>
@@ -703,7 +703,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 font-mono-stat">
                           <div className="p-2.5 rounded-xl bg-black/40 border border-white/5">
                             <div className="text-[9px] text-slate-400 uppercase font-bold">Distância</div>
-                            <div className="text-base font-black text-[#00ff66] mt-1">{formattedDist}</div>
+                            <div className="text-base font-black text-[#fce803] mt-1">{formattedDist}</div>
                           </div>
 
                           <div className="p-2.5 rounded-xl bg-black/40 border border-white/5">
@@ -718,7 +718,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
 
                           <div className="p-2.5 rounded-xl bg-black/40 border border-white/5">
                             <div className="text-[9px] text-slate-400 uppercase font-bold">Vel. Média</div>
-                            <div className="text-base font-bold text-emerald-300 mt-1">{avgSpeedVal.toFixed(1)} km/h</div>
+                            <div className="text-base font-bold text-yellow-300 mt-1">{avgSpeedVal.toFixed(1)} km/h</div>
                           </div>
                         </div>
                       </div>
@@ -728,7 +728,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
               ) : (
                 /* Empty State */
                 <div className="p-8 rounded-3xl bg-[#0c131d] border-2 border-white/10 text-center space-y-3 my-4">
-                  <div className="w-14 h-14 mx-auto rounded-2xl bg-[#00ff66]/10 border border-[#00ff66]/30 flex items-center justify-center text-[#00ff66] shadow-[0_0_20px_rgba(0,255,102,0.15)]">
+                  <div className="w-14 h-14 mx-auto rounded-2xl bg-[#fce803]/10 border border-[#fce803]/30 flex items-center justify-center text-[#fce803] shadow-[0_0_20px_rgba(252,232,3,0.15)]">
                     <History className="w-7 h-7" />
                   </div>
                   <h3 className="text-base font-black text-white uppercase font-display">
@@ -742,7 +742,7 @@ export const SessionHistoryModal: React.FC<SessionHistoryModalProps> = ({
                       type="button"
                       id="btn-empty-start-skate"
                       onClick={onClose}
-                      className="px-5 py-2.5 rounded-xl bg-[#00ff66] hover:bg-[#00e55b] text-black font-black text-xs uppercase font-mono-stat tracking-wider active:scale-95 transition-all shadow-[0_0_15px_rgba(0,255,102,0.35)] cursor-pointer"
+                      className="px-5 py-2.5 rounded-xl bg-[#fce803] hover:bg-[#00e55b] text-black font-black text-xs uppercase font-mono-stat tracking-wider active:scale-95 transition-all shadow-[0_0_15px_rgba(252,232,3,0.35)] cursor-pointer"
                     >
                       IR PARA O MAPA E PATINAR
                     </button>

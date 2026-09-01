@@ -41,9 +41,9 @@ export const AchievementUnlockedModal: React.FC<AchievementUnlockedModalProps> =
       id="modal-achievement-unlocked"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85  animate-in fade-in zoom-in-95 duration-200"
     >
-      <div className="w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#101b26] to-[#070c12] border-2 border-emerald-400/80 shadow-[0_0_60px_rgba(0,255,102,0.35)] p-6 relative overflow-hidden text-center">
+      <div className="w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#101b26] to-[#070c12] border-2 border-yellow-400/80 shadow-[0_0_60px_rgba(252,232,3,0.35)] p-6 relative overflow-hidden text-center">
         {/* Glowing backdrop elements */}
-        <div className="absolute -top-16 -left-16 w-44 h-44 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -left-16 w-44 h-44 bg-yellow-500/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none" />
 
         {/* Close button */}
@@ -57,17 +57,17 @@ export const AchievementUnlockedModal: React.FC<AchievementUnlockedModalProps> =
 
         {/* Big Icon / Badge */}
         <div className="relative inline-flex items-center justify-center mt-2 mb-4">
-          <div className="w-20 h-20 rounded-3xl bg-emerald-500/15 border-2 border-emerald-400/80 flex items-center justify-center text-4xl shadow-[0_0_30px_rgba(0,255,102,0.4)] animate-bounce">
+          <div className="w-20 h-20 rounded-3xl bg-yellow-500/15 border-2 border-yellow-400/80 flex items-center justify-center text-4xl shadow-[0_0_30px_rgba(252,232,3,0.4)] animate-bounce">
             {achievement.icon || achievement.iconEmoji || '🏆'}
           </div>
-          <div className="absolute -top-1.5 -right-1.5 p-1.5 rounded-full bg-emerald-400 text-black shadow-md">
+          <div className="absolute -top-1.5 -right-1.5 p-1.5 rounded-full bg-yellow-400 text-black shadow-md">
             <Sparkles className="w-3.5 h-3.5 fill-black" />
           </div>
         </div>
 
         {/* Header Tag */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/50 text-[10px] font-black text-emerald-300 font-mono-stat uppercase tracking-wider mb-2">
-          <Award className="w-3.5 h-3.5 text-emerald-400" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400/20 border border-yellow-400/50 text-[10px] font-black text-yellow-300 font-mono-stat uppercase tracking-wider mb-2">
+          <Award className="w-3.5 h-3.5 text-yellow-400" />
           <span>CONQUISTA DESBLOQUEADA!</span>
         </div>
 
@@ -81,10 +81,10 @@ export const AchievementUnlockedModal: React.FC<AchievementUnlockedModalProps> =
         </p>
 
         {/* Rewards Section */}
-        <div className="mt-4 p-3 rounded-2xl bg-black/60 border border-emerald-500/40 space-y-2">
+        <div className="mt-4 p-3 rounded-2xl bg-black/60 border border-yellow-500/40 space-y-2">
           <div className="flex items-center justify-center gap-2">
             <Zap className="w-4 h-4 text-yellow-400 fill-yellow-400/30" />
-            <span className="text-sm font-black text-emerald-400 font-mono-stat">
+            <span className="text-sm font-black text-yellow-400 font-mono-stat">
               +{xpReward} XP ADICIONADOS
             </span>
           </div>
@@ -124,7 +124,7 @@ export const AchievementUnlockedModal: React.FC<AchievementUnlockedModalProps> =
           <button
             type="button"
             onClick={onClose}
-            className="w-full py-3 rounded-2xl bg-emerald-400 hover:bg-emerald-300 text-black font-black text-xs font-mono-stat uppercase tracking-wider shadow-[0_0_20px_rgba(0,255,102,0.4)] active:scale-[0.98] transition-all cursor-pointer"
+            className="w-full py-3 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs font-mono-stat uppercase tracking-wider shadow-[0_0_20px_rgba(252,232,3,0.4)] active:scale-[0.98] transition-all cursor-pointer"
           >
             CONTINUAR PATINANDO
           </button>

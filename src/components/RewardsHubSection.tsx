@@ -131,7 +131,7 @@ export const RewardsHubSection: React.FC<RewardsHubSectionProps> = ({
 
           <div className="w-full bg-[#0d141e] h-2.5 rounded-full overflow-hidden p-0.5 border border-white/10">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-500 via-emerald-400 to-amber-400 transition-all duration-500 shadow-[0_0_10px_rgba(251,191,36,0.5)]"
+              className="h-full rounded-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-400 transition-all duration-500 shadow-[0_0_10px_rgba(251,191,36,0.5)]"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -172,7 +172,7 @@ export const RewardsHubSection: React.FC<RewardsHubSectionProps> = ({
       </div>
 
       {/* Status Sub-filter (Todos / Desbloqueados / Bloqueados / Equipados) */}
-      <div className="grid grid-cols-4 gap-1 p-1 bg-[#0a0f15] border border-white/10 rounded-2xl mb-3">
+      <div className="grid grid-cols-4 gap-1 p-1 bg-[#1d4ed8] border border-white/10 rounded-2xl mb-3">
         <button
           type="button"
           onClick={() => setStatusFilter('todos')}
@@ -189,7 +189,7 @@ export const RewardsHubSection: React.FC<RewardsHubSectionProps> = ({
           onClick={() => setStatusFilter('desbloqueados')}
           className={`py-1.5 text-[10px] font-black uppercase font-mono-stat rounded-xl transition-all ${
             statusFilter === 'desbloqueados'
-              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-400/40'
+              ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-400/40'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -237,7 +237,7 @@ export const RewardsHubSection: React.FC<RewardsHubSectionProps> = ({
                 id={`reward-card-${item.id}`}
                 className={`p-3.5 rounded-2xl border-2 transition-all relative overflow-hidden ${
                   item.isEquipped
-                    ? 'bg-gradient-to-r from-[#0d221c] via-[#091512] to-[#0d221c] border-emerald-400/80 shadow-[0_0_20px_rgba(0,255,102,0.2)]'
+                    ? 'bg-gradient-to-r from-[#102a70] via-[#06102b] to-[#102a70] border-yellow-400/80 shadow-[0_0_20px_rgba(252,232,3,0.2)]'
                     : item.isUnlocked
                     ? 'bg-[#0d141d] border-white/10 hover:border-white/20'
                     : 'bg-[#090d12]/90 border-white/5 opacity-75'
@@ -289,7 +289,7 @@ export const RewardsHubSection: React.FC<RewardsHubSectionProps> = ({
                       {/* Requirement or Bonus */}
                       <div className="mt-1.5 flex items-center gap-2">
                         {item.isUnlocked ? (
-                          <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-1 font-mono-stat">
+                          <span className="text-[10px] font-bold text-yellow-400 flex items-center gap-1 font-mono-stat">
                             <CheckCircle2 className="w-3.5 h-3.5" />
                             {item.unlockRequirement.label}
                           </span>
@@ -318,8 +318,8 @@ export const RewardsHubSection: React.FC<RewardsHubSectionProps> = ({
                         onClick={() => handleToggleEquip(item)}
                         className={`px-3 py-1.5 rounded-xl text-xs font-black uppercase font-mono-stat tracking-wider transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
                           item.isEquipped
-                            ? 'bg-emerald-400 text-black shadow-[0_0_12px_rgba(0,255,102,0.4)]'
-                            : 'bg-[#112019] text-emerald-400 border border-emerald-500/50 hover:bg-[#193227]'
+                            ? 'bg-yellow-400 text-black shadow-[0_0_12px_rgba(252,232,3,0.4)]'
+                            : 'bg-[#0c1b47] text-yellow-400 border border-yellow-500/50 hover:bg-[#193227]'
                         }`}
                       >
                         {item.isEquipped ? (

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Target, Swords, Trophy } from 'lucide-react';
+import { Target, Swords, Trophy, Route } from 'lucide-react';
 import { Challenge, DirectChallenge, Mission, UrbanozeiroEvent, UserProfile } from '../types';
 import { DirectChallengesHub } from './DirectChallengesHub';
 import { EventsHub } from './EventsHub';
+import { SegmentsHub } from './SegmentsHub';
 import { MissionsHub } from './MissionsHub';
 
 interface DesafiosViewProps {
@@ -38,7 +39,7 @@ export const DesafiosView: React.FC<DesafiosViewProps> = ({
   onSelectZoneOnMap,
   initialTab = 'diretos',
 }) => {
-  const [activeMainTab, setActiveMainTab] = useState<'urbanos' | 'diretos' | 'eventos'>(initialTab);
+  const [activeMainTab, setActiveMainTab] = useState<'urbanos' | 'diretos' | 'eventos' | 'segmentos'>(initialTab);
 
   const pendingReceivedCount = currentUser
     ? directChallenges.filter(
@@ -58,7 +59,7 @@ export const DesafiosView: React.FC<DesafiosViewProps> = ({
     <div className="h-full w-full overflow-y-auto overscroll-contain px-4 py-4 pb-36 bg-[#080b0e]">
       {/* Header */}
       <div className="mb-4">
-        <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider font-mono-stat">
+        <div className="flex items-center gap-2 text-yellow-400 text-xs font-bold uppercase tracking-wider font-mono-stat">
           <Target className="w-4 h-4" />
           ARENA DE COMPETIÇÃO
         </div>
@@ -71,8 +72,22 @@ export const DesafiosView: React.FC<DesafiosViewProps> = ({
       </div>
 
       {/* Main Mode Toggle: MISSÕES URBANAS | DESAFIOS X1 | EVENTOS */}
-      <div className="grid grid-cols-2 p-1 bg-[#0c1420] border border-white/10 rounded-2xl mb-4 gap-1">
+      <div className="grid grid-cols-3 p-1 bg-[#0c1420] border border-white/10 rounded-2xl mb-4 gap-1">
         
+
+                <button
+          id="tab-toggle-desafios-segmentos"
+          type="button"
+          onClick={() => setActiveMainTab('segmentos')}
+          className={`py-2.5 px-2 rounded-xl text-xs font-bold uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 relative cursor-pointer ${
+            activeMainTab === 'segmentos'
+              ? 'bg-indigo-400 text-black font-black shadow-[0_0_15px_rgba(99,102,241,0.4)]'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <Route className="w-3.5 h-3.5" />
+          <span className="truncate">SPRINTS</span>
+        </button>
 
         <button
           id="tab-toggle-desafios-diretos"
@@ -80,7 +95,7 @@ export const DesafiosView: React.FC<DesafiosViewProps> = ({
           onClick={() => setActiveMainTab('diretos')}
           className={`py-2.5 px-2 rounded-xl text-xs font-bold uppercase font-mono-stat tracking-wider transition-all flex items-center justify-center gap-1.5 relative cursor-pointer ${
             activeMainTab === 'diretos'
-              ? 'bg-emerald-400 text-black font-black shadow-[0_0_15px_rgba(0,255,102,0.4)]'
+              ? 'bg-yellow-400 text-black font-black shadow-[0_0_15px_rgba(252,232,3,0.4)]'
               : 'text-slate-400 hover:text-white'
           }`}
         >
@@ -90,8 +105,8 @@ export const DesafiosView: React.FC<DesafiosViewProps> = ({
             <span
               className={`px-1.5 py-0.2 rounded-full text-[9px] font-black font-mono-stat ${
                 activeMainTab === 'diretos'
-                  ? 'bg-black text-emerald-400'
-                  : 'bg-emerald-400 text-black animate-pulse'
+                  ? 'bg-black text-yellow-400'
+                  : 'bg-yellow-400 text-black animate-pulse'
               }`}
             >
               {pendingReceivedCount}
@@ -133,6 +148,11 @@ export const DesafiosView: React.FC<DesafiosViewProps> = ({
           onSelectEvent={onSelectEvent}
           onRegisterEvent={onRegisterEvent}
         />
+      )}
+
+            {/* VIEW: SEGMENTOS */}
+      {activeMainTab === 'segmentos' && (
+        <SegmentsHub onSelectSegmentOnMap={onSelectZoneOnMap || (() => {})} />
       )}
 
       {/* VIEW: DIRECT CHALLENGES (X1) */}

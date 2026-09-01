@@ -55,9 +55,9 @@ export const FollowListModal: React.FC<FollowListModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85  animate-in fade-in duration-200">
-      <div className="w-full max-w-sm h-[85vh] max-h-[600px] rounded-3xl bg-[#090e15] border-2 border-emerald-500/40 shadow-[0_0_50px_rgba(0,255,102,0.25)] flex flex-col relative overflow-hidden text-left">
+      <div className="w-full max-w-sm h-[85vh] max-h-[600px] rounded-3xl bg-[#090e15] border-2 border-yellow-500/40 shadow-[0_0_50px_rgba(252,232,3,0.25)] flex flex-col relative overflow-hidden text-left">
         {/* Glow */}
-        <div className="absolute -top-16 -left-16 w-44 h-44 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -left-16 w-44 h-44 rounded-full bg-yellow-500/15 blur-3xl pointer-events-none" />
         
         {/* Header */}
         <div className="p-4 border-b border-white/10 flex items-center justify-between shrink-0 bg-[#0c121a]">
@@ -113,7 +113,7 @@ export const FollowListModal: React.FC<FollowListModalProps> = ({
                     }}
                     className={`shrink-0 p-2 rounded-xl border ${
                       player.isFollowing
-                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                        ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
                         : 'bg-white/5 border-white/10 hover:border-white/20 text-white'
                     }`}
                   >

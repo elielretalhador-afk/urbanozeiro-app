@@ -26,7 +26,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'O que é XP?',
-    a: 'XP (Pontos de Experiência) mede sua progressão no Urbanozeiro. Ganhe XP patinando e completando objetivos para subir de nível.'
+    a: 'XP (Pontos de Experiência) mede sua progressão no THE ROLLING WARS. Ganhe XP patinando e completando objetivos para subir de nível.'
   },
   {
     q: 'Como ganho recompensas?',
@@ -78,11 +78,11 @@ export const HelpSupportModal: React.FC<HelpSupportModalProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex px-4 border-b border-white/5 bg-[#0a0f16]">
+        <div className="flex px-4 border-b border-white/5 bg-[#1d4ed8]">
           <button
             onClick={() => setActiveTab('help')}
             className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${
-              activeTab === 'help' ? 'border-emerald-400 text-emerald-400' : 'border-transparent text-slate-400 hover:text-slate-300'
+              activeTab === 'help' ? 'border-yellow-400 text-yellow-400' : 'border-transparent text-slate-400 hover:text-slate-300'
             }`}
           >
             Guia
@@ -90,7 +90,7 @@ export const HelpSupportModal: React.FC<HelpSupportModalProps> = ({
           <button
             onClick={() => setActiveTab('faq')}
             className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${
-              activeTab === 'faq' ? 'border-emerald-400 text-emerald-400' : 'border-transparent text-slate-400 hover:text-slate-300'
+              activeTab === 'faq' ? 'border-yellow-400 text-yellow-400' : 'border-transparent text-slate-400 hover:text-slate-300'
             }`}
           >
             FAQ
@@ -98,7 +98,7 @@ export const HelpSupportModal: React.FC<HelpSupportModalProps> = ({
           <button
             onClick={() => setActiveTab('support')}
             className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${
-              activeTab === 'support' ? 'border-emerald-400 text-emerald-400' : 'border-transparent text-slate-400 hover:text-slate-300'
+              activeTab === 'support' ? 'border-yellow-400 text-yellow-400' : 'border-transparent text-slate-400 hover:text-slate-300'
             }`}
           >
             Suporte
@@ -110,20 +110,20 @@ export const HelpSupportModal: React.FC<HelpSupportModalProps> = ({
           
           {activeTab === 'help' && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
-              <div className="bg-gradient-to-br from-emerald-500/10 to-transparent p-5 rounded-2xl border border-emerald-500/20 flex flex-col sm:flex-row items-center gap-4">
-                <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl">
+              <div className="bg-gradient-to-br from-yellow-500/10 to-transparent p-5 rounded-2xl border border-yellow-500/20 flex flex-col sm:flex-row items-center gap-4">
+                <div className="p-3 bg-yellow-500/20 text-yellow-400 rounded-xl">
                   <Book className="w-6 h-6" />
                 </div>
                 <div className="flex-1 text-center sm:text-left">
                   <h3 className="text-white font-bold font-display uppercase">Tutorial Interativo</h3>
-                  <p className="text-sm text-slate-400 mt-1">Refaça o passo a passo inicial para entender os fundamentos do Urbanozeiro.</p>
+                  <p className="text-sm text-slate-400 mt-1">Refaça o passo a passo inicial para entender os fundamentos do THE ROLLING WARS.</p>
                 </div>
                 <button
                   onClick={() => {
                     onClose();
                     onOpenTutorial();
                   }}
-                  className="px-6 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold uppercase tracking-wider text-sm transition-colors"
+                  className="px-6 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-black font-bold uppercase tracking-wider text-sm transition-colors"
                 >
                   Iniciar Tutorial
                 </button>
@@ -186,17 +186,17 @@ export const HelpSupportModal: React.FC<HelpSupportModalProps> = ({
                   <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-indigo-400" />
                 </button>
 
-                <button className="w-full flex items-center justify-between p-5 rounded-2xl bg-[#121a24] border border-white/5 hover:border-emerald-400/50 hover:bg-emerald-500/5 transition-all text-left group">
+                <button className="w-full flex items-center justify-between p-5 rounded-2xl bg-[#121a24] border border-white/5 hover:border-yellow-400/50 hover:bg-yellow-500/5 transition-all text-left group">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-white/5 rounded-xl group-hover:bg-emerald-500/20 group-hover:text-emerald-400 transition-colors">
-                      <MessageSquare className="w-6 h-6 text-slate-400 group-hover:text-emerald-400" />
+                    <div className="p-3 bg-white/5 rounded-xl group-hover:bg-yellow-500/20 group-hover:text-yellow-400 transition-colors">
+                      <MessageSquare className="w-6 h-6 text-slate-400 group-hover:text-yellow-400" />
                     </div>
                     <div>
                       <div className="text-white font-bold">Enviar Feedback</div>
                       <div className="text-sm text-slate-500 mt-1">Sugestões, elogios ou reclamações sobre o jogo.</div>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-emerald-400" />
+                  <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-yellow-400" />
                 </button>
 
                 <button className="w-full flex items-center justify-between p-5 rounded-2xl bg-[#121a24] border border-rose-500/10 hover:border-rose-500/50 hover:bg-rose-500/5 transition-all text-left group">
@@ -214,7 +214,7 @@ export const HelpSupportModal: React.FC<HelpSupportModalProps> = ({
               </div>
 
               <div className="p-4 rounded-2xl bg-white/5 text-center text-xs text-slate-500">
-                A equipe do Urbanozeiro pode levar até 48 horas para responder. Esta é uma estrutura de suporte preparada para atendimento futuro.
+                A equipe do THE ROLLING WARS pode levar até 48 horas para responder. Esta é uma estrutura de suporte preparada para atendimento futuro.
               </div>
             </div>
           )}

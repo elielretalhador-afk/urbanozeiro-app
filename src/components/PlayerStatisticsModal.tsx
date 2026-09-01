@@ -91,15 +91,15 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
     >
       <div
         id="player-statistics-modal-container"
-        className="w-full max-w-2xl max-h-[92vh] flex flex-col rounded-3xl bg-[#090d14] border-2 border-emerald-500/40 shadow-[0_0_50px_rgba(0,255,102,0.15)] overflow-hidden"
+        className="w-full max-w-2xl max-h-[92vh] flex flex-col rounded-3xl bg-[#090d14] border-2 border-yellow-500/40 shadow-[0_0_50px_rgba(252,232,3,0.15)] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Gamer */}
         <div className="p-4 sm:p-5 border-b border-white/10 bg-gradient-to-r from-[#0c141f] via-[#090e16] to-[#0c141f] flex items-center justify-between shrink-0 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 h-24 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-48 h-24 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none" />
 
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-400/20 text-emerald-400 border border-emerald-400/40 flex items-center justify-center text-lg shrink-0 shadow-[0_0_15px_rgba(0,255,102,0.3)]">
+            <div className="w-10 h-10 rounded-2xl bg-yellow-400/20 text-yellow-400 border border-yellow-400/40 flex items-center justify-center text-lg shrink-0 shadow-[0_0_15px_rgba(252,232,3,0.3)]">
               📊
             </div>
             <div>
@@ -109,7 +109,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                     ? `ESTATÍSTICAS • ${targetPlayerName || user.nickname}`
                     : 'ESTATÍSTICAS DO JOGADOR'}
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase font-mono-stat bg-emerald-400/20 text-emerald-300 border border-emerald-400/40">
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase font-mono-stat bg-yellow-400/20 text-yellow-300 border border-yellow-400/40">
                   LVL.{stats.progression.level}
                 </span>
               </div>
@@ -146,7 +146,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                   onClick={() => setSelectedPeriod(p.id)}
                   className={`px-3 py-1.5 rounded-xl text-[10px] font-black font-mono-stat uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                     isSelected
-                      ? 'bg-emerald-400 text-black border border-emerald-300 shadow-[0_0_12px_rgba(0,255,102,0.35)]'
+                      ? 'bg-yellow-400 text-black border border-yellow-300 shadow-[0_0_12px_rgba(252,232,3,0.35)]'
                       : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-slate-200 border border-white/5'
                   }`}
                 >
@@ -274,7 +274,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                     </div>
                     <div className="text-lg font-black text-amber-300 font-mono-stat mt-1 flex items-center justify-center gap-1.5">
                       <span>{stats.records.maxStreakDays} Dias</span>
-                      <span className="text-xs text-emerald-400 font-bold">🔥 Ativo</span>
+                      <span className="text-xs text-yellow-400 font-bold">🔥 Ativo</span>
                     </div>
                     <span className="text-[9px] text-slate-400 block truncate">
                       Sequência diária de presença no asfalto
@@ -292,7 +292,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-xl bg-emerald-400/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center text-xs">
+                    <div className="w-7 h-7 rounded-xl bg-yellow-400/20 text-yellow-400 border border-yellow-400/30 flex items-center justify-center text-xs">
                       <Activity className="w-4 h-4" />
                     </div>
                     <div>
@@ -314,7 +314,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                     <span className="text-[9px] font-bold text-slate-400 uppercase font-mono-stat block">
                       DISTÂNCIA TOTAL
                     </span>
-                    <span className="text-base font-black text-emerald-400 font-mono-stat block mt-0.5">
+                    <span className="text-base font-black text-yellow-400 font-mono-stat block mt-0.5">
                       {stats.general.totalDistanceKm > 0
                         ? `${stats.general.totalDistanceKm.toLocaleString('pt-BR')} km`
                         : '0.0 km'}
@@ -381,7 +381,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                     <span className="text-[9px] font-bold text-slate-400 uppercase font-mono-stat block">
                       EVENTOS & PROVAS
                     </span>
-                    <span className="text-base font-black text-emerald-300 font-mono-stat block mt-0.5">
+                    <span className="text-base font-black text-yellow-300 font-mono-stat block mt-0.5">
                       {stats.general.eventsCompletedCount}
                     </span>
                   </div>
@@ -414,7 +414,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                     <span className="text-[9px] font-bold text-slate-400 uppercase font-mono-stat block">
                       DISTÂNCIA TOTAL
                     </span>
-                    <span className="text-base font-black text-emerald-400 font-mono-stat block mt-0.5">
+                    <span className="text-base font-black text-yellow-400 font-mono-stat block mt-0.5">
                       {stats.skating.totalDistanceKm.toFixed(1)} km
                     </span>
                     <span className="text-[9px] text-slate-400">Rodagem acumulada</span>
@@ -464,7 +464,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                     <span className="text-[9px] font-bold text-slate-400 uppercase font-mono-stat block">
                       TOTAL DE SESSÕES
                     </span>
-                    <span className="text-base font-black text-emerald-300 font-mono-stat block mt-0.5">
+                    <span className="text-base font-black text-yellow-300 font-mono-stat block mt-0.5">
                       {stats.skating.sessionsCount} sessões
                     </span>
                     <span className="text-[9px] text-slate-400">Rolês concluídos</span>
@@ -518,7 +518,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                     <span className="text-[9px] font-bold text-slate-400 uppercase font-mono-stat block">
                       DISPUTAS VENCIDAS
                     </span>
-                    <span className="text-base font-black text-emerald-400 font-mono-stat block mt-0.5">
+                    <span className="text-base font-black text-yellow-400 font-mono-stat block mt-0.5">
                       {stats.zones.disputesWon}
                     </span>
                     <span className="text-[9px] text-slate-400">Defesas e ataques</span>
@@ -577,7 +577,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                       <span className="text-[9px] font-bold text-slate-400 font-mono-stat uppercase block">
                         TAXA DE VITÓRIA
                       </span>
-                      <span className="text-sm font-black text-emerald-400 font-mono-stat">
+                      <span className="text-sm font-black text-yellow-400 font-mono-stat">
                         {stats.challenges.winRatePct}%
                       </span>
                     </div>
@@ -589,7 +589,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                   <div className="mb-3">
                     <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden flex">
                       <div
-                        className="h-full bg-emerald-400 transition-all duration-500"
+                        className="h-full bg-yellow-400 transition-all duration-500"
                         style={{ width: `${stats.challenges.winRatePct}%` }}
                       />
                       <div
@@ -598,7 +598,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                       />
                     </div>
                     <div className="flex justify-between text-[9px] text-slate-400 font-mono-stat mt-1">
-                      <span className="text-emerald-400 font-bold">
+                      <span className="text-yellow-400 font-bold">
                         {stats.challenges.wins} Vitórias ({stats.challenges.winRatePct}%)
                       </span>
                       <span className="text-rose-400 font-bold">
@@ -622,7 +622,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                     <span className="text-[9px] font-bold text-slate-400 uppercase font-mono-stat block">
                       VITÓRIAS
                     </span>
-                    <span className="text-base font-black text-emerald-400 font-mono-stat block mt-0.5">
+                    <span className="text-base font-black text-yellow-400 font-mono-stat block mt-0.5">
                       {stats.challenges.wins}
                     </span>
                   </div>
@@ -652,15 +652,15 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                  ========================================== */}
               <div
                 id="stat-section-progression"
-                className="p-4 rounded-3xl bg-gradient-to-b from-[#0c1815] to-[#0a1017] border-2 border-emerald-500/40"
+                className="p-4 rounded-3xl bg-gradient-to-b from-[#0c1815] to-[#0a1017] border-2 border-yellow-500/40"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-xl bg-emerald-400/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center text-xs">
+                    <div className="w-7 h-7 rounded-xl bg-yellow-400/20 text-yellow-400 border border-yellow-400/30 flex items-center justify-center text-xs">
                       <Crown className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="text-xs font-black text-emerald-400 uppercase tracking-wider font-mono-stat">
+                      <h3 className="text-xs font-black text-yellow-400 uppercase tracking-wider font-mono-stat">
                         PROGRESSÃO & HONRA
                       </h3>
                       <p className="text-[10px] text-slate-400 font-mono-stat">
@@ -668,24 +668,24 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                       </p>
                     </div>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase font-mono-stat bg-emerald-400/20 text-emerald-300 border border-emerald-400/30">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase font-mono-stat bg-yellow-400/20 text-yellow-300 border border-yellow-400/30">
                     NÍVEL {stats.progression.level}
                   </span>
                 </div>
 
                 {/* Barra de XP */}
-                <div className="p-3 rounded-2xl bg-black/40 border border-emerald-500/20 mb-3">
+                <div className="p-3 rounded-2xl bg-black/40 border border-yellow-500/20 mb-3">
                   <div className="flex justify-between items-center text-[10px] font-mono-stat mb-1.5">
                     <span className="text-slate-300 font-bold">
                       Progresso para Nível {stats.progression.level + 1}
                     </span>
-                    <span className="text-emerald-400 font-bold">
+                    <span className="text-yellow-400 font-bold">
                       {stats.progression.currentXp.toLocaleString()} / {stats.progression.nextLevelXp.toLocaleString()} XP ({stats.progression.progressPct}%)
                     </span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500"
+                      className="h-full bg-gradient-to-r from-yellow-500 to-yellow-400 rounded-full transition-all duration-500"
                       style={{ width: `${stats.progression.progressPct}%` }}
                     />
                   </div>
@@ -700,7 +700,7 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
                     <div className="text-[9px] font-bold text-slate-400 uppercase font-mono-stat">
                       CONQUISTAS
                     </div>
-                    <div className="text-base font-black text-emerald-400 font-mono-stat mt-0.5">
+                    <div className="text-base font-black text-yellow-400 font-mono-stat mt-0.5">
                       {stats.progression.unlockedAchievementsCount} / {stats.progression.totalAchievementsCount}
                     </div>
                     <span className="text-[8px] text-slate-400">Desbloqueadas</span>
@@ -734,14 +734,14 @@ export const PlayerStatisticsModal: React.FC<PlayerStatisticsModalProps> = ({
         {/* Footer */}
         <div className="p-3 sm:p-4 border-t border-white/10 bg-[#070a0f] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono-stat">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
             <span>Dados sincronizados em tempo real</span>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black text-xs font-black font-mono-stat uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(0,255,102,0.3)] active:scale-95 cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black font-mono-stat uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(252,232,3,0.3)] active:scale-95 cursor-pointer"
           >
             FECHAR
           </button>

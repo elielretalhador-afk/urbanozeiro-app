@@ -1,6 +1,18 @@
-import { auth } from './lib/firebase';
+import { EconomyService } from './services/economyService';
+import { auth, db, functions } from './lib/firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
 import { onAuthStateChanged } from 'firebase/auth';
 import { fetchFeed } from './lib/feedService';
+import {
+  getPathBoundingBox,
+  isPointInsideBoundingBox,
+  getDistanceToPath,
+  getNearestEndpoint,
+  distanceToSegmentStart,
+  distanceToSegmentEnd
+} from './utils/segmentMath';
+import { SegmentAttempt, SegmentOperation } from './types';
 import React, { useState, useEffect, useRef } from 'react';
 import { Geolocation } from '@capacitor/geolocation';
 import { Capacitor } from '@capacitor/core';
@@ -37,6 +49,7 @@ import { SkaterHud } from './components/SkaterHud';
 import { LiveChallengeHud } from './components/LiveChallengeHud';
 import { LiveChallengeResultModal } from './components/LiveChallengeResultModal';
 import { ZoneDetailsModal } from './components/ZoneDetailsModal';
+import { SegmentDetailsModal } from './components/SegmentDetailsModal';
 import { NearbyZonesDrawer } from './components/NearbyZonesDrawer';
 import { CreateZoneModal } from './components/CreateZoneModal';
 import { ActivitySummaryModal } from './components/ActivitySummaryModal';
@@ -63,6 +76,7 @@ import { ProgressionHubModal } from './components/ProgressionHubModal';
 import { AuthScreen } from "./components/AuthScreen";
 import { AuthService } from "./services/auth";
 import { SocialService } from "./services/social";
+import { ClanService } from "./services/clan";
 import { FeedService } from "./services/feed";
 import { DatabaseService } from "./services/db";
 import { get as idbGet, set as idbSet, del as idbDel } from "idb-keyval";
@@ -70,7 +84,7 @@ import { LevelUpModal } from './components/LevelUpModal';
 import { SeasonHubModal } from './components/SeasonHubModal';
 import { VirtualWalletModal } from './components/VirtualWalletModal';
 import { SecurityIntegrityModal } from './components/SecurityIntegrityModal';
-import { FeedView } from './components/FeedView';
+import { SocialHub } from './components/SocialHub';
 import { EquipmentSetupModal } from './components/EquipmentSetupModal';
 import { SearchDiscoveryModal } from './components/SearchDiscoveryModal';
 import { SettingsModal } from './components/SettingsModal';
@@ -113,7 +127,7 @@ import {
   ZoneConquestProgress,
   CaptureAttempt,
   ConquestResultModalData,
-  AppNotification,
+  AppNotification, AppNotificationType,
   PersonalAchievement,
   Clan,
   ClanCreationInput,
@@ -155,7 +169,7 @@ import {
   UserProfile,
   TutorialState,
 } from './types';
-import { Zap, CheckCircle2, Award, Shield, Users } from 'lucide-react';
+import { Zap, CheckCircle2, Award, Shield, Users , Swords, Settings} from 'lucide-react';
 
 function triggerZoneVibration() {
   try {
@@ -167,7 +181,7 @@ function triggerZoneVibration() {
         if (parsed?.audioHaptics && (!parsed.audioHaptics.vibrationEnabled || !parsed.audioHaptics.vibrateOnZoneEntry)) {
           return;
         }
-      } catch (e) {
+      } catch (e: any) {
         // Safe fallback
       }
     }
@@ -175,7 +189,7 @@ function triggerZoneVibration() {
       // 2-3 discrete pulses (150ms vibra, 100ms pausa, 150ms vibra, 100ms pausa, 150ms vibra)
       navigator.vibrate([150, 100, 150, 100, 150]);
     }
-  } catch (e) {
+  } catch (e: any) {
     // Non-blocking safe fallback if vibration is not supported
   }
 }
@@ -194,13 +208,88 @@ function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: num
   return R * c;
 }
 
+
+const SprintOverlay: React.FC<{ attempt: any }> = ({ attempt }) => {
+  const [displayTime, setDisplayTime] = React.useState(0);
+
+  React.useEffect(() => {
+    let animationFrameId: number;
+    const updateTime = () => {
+      if (attempt.status === 'active' && attempt.startTime) {
+        setDisplayTime(performance.now() - attempt.startTime);
+        animationFrameId = requestAnimationFrame(updateTime);
+      }
+    };
+    if (attempt.status === 'active') {
+      animationFrameId = requestAnimationFrame(updateTime);
+    }
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [attempt.status, attempt.startTime]);
+
+  const isApproaching = attempt.status === 'approaching';
+  const isActive = attempt.status === 'active';
+  const isFinished = attempt.status === 'finished';
+
+  const timeToShowMs = isFinished && attempt.durationMs ? attempt.durationMs : displayTime;
+  const timeSeconds = (timeToShowMs / 1000).toFixed(2);
+
+  const directionArrow = attempt.direction === 'forward' ? 'IDA →' : '← VOLTA';
+
+  return (
+    <div className={`p-4 rounded-2xl shadow-2xl backdrop-blur-md border ${
+      isApproaching ? 'bg-amber-500/95 border-amber-400 text-amber-50' :
+      isActive ? 'bg-rose-500/95 border-rose-400 text-rose-50 shadow-[0_0_30px_rgba(244,63,94,0.3)]' :
+      'bg-indigo-500/95 border-indigo-400 text-indigo-50'
+    } flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-top-4 duration-300 pointer-events-auto w-full max-w-sm mx-auto`}>
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="text-[9px] font-black bg-black/20 text-white px-2 py-0.5 rounded uppercase font-mono-stat tracking-widest shadow-inner">
+          {directionArrow}
+        </span>
+      </div>
+      <h3 className="text-lg font-black uppercase tracking-wide mb-2 font-display leading-none">
+        {isApproaching ? '⚡ SPRINT PRÓXIMO' :
+         isActive ? 'SPRINT EM ANDAMENTO' :
+         'SPRINT CONCLUÍDO'}
+      </h3>
+      
+      {isApproaching && (
+        <div className="text-xs font-medium opacity-90 max-w-[200px] leading-snug">
+          Você está chegando ao início do segmento. Prepare-se!
+        </div>
+      )}
+
+      {isActive && (
+        <div className="flex flex-col items-center">
+          <div className="text-5xl font-black tabular-nums tracking-tighter font-mono-stat drop-shadow-md my-1">
+            {timeSeconds}<span className="text-xl opacity-80 ml-1">s</span>
+          </div>
+          <div className="text-[10px] font-black uppercase opacity-80 tracking-widest mt-1 bg-black/10 px-2 py-0.5 rounded">
+            {attempt.distanceCovered > 0 ? (attempt.distanceCovered).toFixed(0) : '0'} m
+          </div>
+        </div>
+      )}
+
+      {isFinished && attempt.durationMs && (
+        <div className="flex flex-col items-center gap-1">
+          <div className="text-4xl font-black tabular-nums tracking-tighter font-mono-stat drop-shadow-md my-1">
+            {timeSeconds}<span className="text-lg opacity-80 ml-1">s</span>
+          </div>
+          <div className="text-[10px] uppercase font-black opacity-80 tracking-widest bg-black/10 px-2 py-0.5 rounded mt-1">
+            Sincronizando...
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('mapa');
   const [user, setUser] = useState<UserProfile>(() => {
     try {
       const saved = localStorage.getItem('urbanozeiro_user');
       if (saved) return JSON.parse(saved);
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error loading user profile', e);
     }
     return CURRENT_USER;
@@ -212,11 +301,15 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         setUser(prev => {
-          if (prev.authId === firebaseUser.uid) return prev;
-          const updated = { ...prev, authId: firebaseUser.uid };
+          if (prev.authId === firebaseUser.uid && prev.id === firebaseUser.uid) return prev;
+          const updated = { ...prev, authId: firebaseUser.uid, id: firebaseUser.uid };
           localStorage.setItem('urbanozeiro_user', JSON.stringify(updated));
           return updated;
         });
+        // Dispara fila de sincronização agora que temos o Firebase Auth
+        DatabaseService.processSyncQueue().catch(console.error);
+        // Atualiza as zonas no mapa
+        DatabaseService.getZonesInRegion(null).then(z => setZones(z));
       } else {
         // If they are not in firebase but have a local token, clear it to force re-login
         if (localStorage.getItem('urbanozeiro_auth_token')) {
@@ -234,19 +327,40 @@ export default function App() {
     return () => window.removeEventListener('open-equipment-modal', handleOpenEq);
   }, []);
   useEffect(() => {
+    let unsubscribeNotifs: (() => void) | undefined;
+    
     if (user && user.id) {
       loadSocialData();
       FeedService.seedMockActivitiesIfEmpty(user);
-      // setActivities(FeedService.getActivitiesDB()); // Removido para evitar carga total
       loadInitialFeed(user.id);
+      
+      unsubscribeNotifs = SocialService.subscribeToNotifications(user.authId || user.id, (notifs) => {
+        const mappedNotifs = notifs.map(n => ({
+          id: n.id,
+          authId: n.recipientId,
+          type: n.type as AppNotificationType,
+          title: n.title || (n.type === "friend_request" ? "Nova Solicitação" : n.type === "friend_accept" ? "Amizade Aceita" : n.type === "new_record" ? "Novo Recorde!" : n.type === "record_beaten" ? "Seu recorde foi superado!" : "Notificação"),
+          message: n.message || "",
+          timeAgo: "agora",
+          timestamp: n.createdAt ? new Date(n.createdAt?.toMillis ? n.createdAt.toMillis() : Date.now()).toISOString() : new Date().toISOString(),
+          isRead: !!n.read,
+          actionType: n.actionType || (n.type === "cla" ? "open_clan_profile" : n.type === "friend_request" ? "open_social_hub" : n.type === "friend_accept" ? "open_profile" : "open_zone"),
+          actionPayload: n.actionPayload || (n.type === "cla" ? { clanId: n.clanId } : n.type === "friend_request" ? { tab: "friends" } : n.type === "friend_accept" ? { playerId: n.senderId } : {})
+        }));
+        setNotifications(mappedNotifs);
+      });
     }
+
+    return () => {
+      if (unsubscribeNotifs) unsubscribeNotifs();
+    };
   }, [user.id]);
 
   useEffect(() => {
     userRef.current = user;
     try {
       localStorage.setItem('urbanozeiro_user', JSON.stringify(user));
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error saving user profile', e);
     }
   }, [user]);
@@ -271,7 +385,7 @@ export default function App() {
         const boundsMock = null; // Na vida real, Leaflet bounds
         const regionZones = await DatabaseService.getZonesInRegion(boundsMock);
         setZones(regionZones);
-      } catch (e) {
+      } catch (e: any) {
         console.error('Error loading zones via Service', e);
         setZones(INITIAL_ZONES);
       }
@@ -379,7 +493,7 @@ export default function App() {
           const res = await DatabaseService.getSessionsPaginated(user.id, 10);
           setSessionHistory(res.data);
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error('Error loading sessions via Service', e);
         setSessionHistory(INITIAL_SESSION_HISTORY);
       }
@@ -416,7 +530,7 @@ export default function App() {
       // For now, let's just prepend posts to initial activities
       setActivities(posts);
       setFeedHasMore(false);
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error loading feed', e);
     } finally {
       setIsLoadingFeed(false);
@@ -457,8 +571,26 @@ export default function App() {
     return () => window.removeEventListener('online', handleOnline);
   }, []);
 
+  // FASE 2.8: Listener real de servidor para Recordes de Segmento
+  useEffect(() => {
+    const handleSegmentRecordStatus = (e: any) => {
+      const { isNewRecord, timeSeconds, averageSpeedKmH } = e.detail;
+      if (isNewRecord) {
+        showToast(`🏆 NOVO RECORDE! Você conquistou o segmento com ${timeSeconds.toFixed(2)}s e ${averageSpeedKmH.toFixed(1)} km/h.`);
+        // Force refresh local zones to update map/lists
+        DatabaseService.invalidateZonesCache();
+        DatabaseService.getZonesInRegion(null).then(z => setZones(z));
+      } else {
+        showToast(`⏱ Tempo registrado no servidor: ${timeSeconds.toFixed(2)}s`);
+      }
+    };
+    window.addEventListener('segment-record-status', handleSegmentRecordStatus);
+    return () => window.removeEventListener('segment-record-status', handleSegmentRecordStatus);
+  }, []);
+
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [activeZones, setActiveZones] = useState<any[]>([]);
+  const [activeSegmentAttemptState, setActiveSegmentAttemptState] = useState<SegmentAttempt | null>(null);
   const [conquestProgresses, setConquestProgresses] = useState<any[]>([]);
   const [missions, setMissions] = useState<any[]>([]);
   
@@ -471,6 +603,8 @@ export default function App() {
   const [conquestResultModalData, setConquestResultModalData] = useState<any>(null);
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
 
+  const [isSeasonModalOpen, setIsSeasonModalOpen] = useState(false);
+  const [seasonModalTab, setSeasonModalTab] = useState<'visao_geral' | 'ranking' | 'recompensas' | 'historico'>('visao_geral');
   const [isSessionHistoryModalOpen, setIsSessionHistoryModalOpen] = useState(false);
   const [selectedHistoryDetailSession, setSelectedHistoryDetailSession] = useState<any>(null);
   const [notifications, setNotifications] = useState<any[]>(INITIAL_NOTIFICATIONS || []);
@@ -528,8 +662,30 @@ export default function App() {
   const setCelebrationAchievement = (ach: any) => {};
   const handleEquipTitle = (titleId: string) => { showToast('Título equipado.'); };
   
-  const handleLeaveClan = () => { showToast('Você saiu do clã.'); };
-  const handleCreateClan = (data: any) => { showToast('Clã criado com sucesso!'); setIsCreateClanModalOpen(false); };
+  const handleLeaveClan = async (clanId: string) => {
+    try {
+      if (user) {
+        await ClanService.leaveClan(clanId, user.authId || user.id);
+        showToast('Você saiu do clã.');
+        setSelectedClanProfile(null);
+        loadSocialData();
+      }
+    } catch (e: any) {
+      showToast(e.message || 'Erro ao sair do clã.');
+    }
+  };
+  const handleCreateClan = async (data: any) => {
+    try {
+      if (user) {
+        await ClanService.createClan(data.name, data.icon || '⚡', user.authId || user.id, user.name || user.nickname);
+        showToast('Clã criado com sucesso!');
+        setIsCreateClanModalOpen(false);
+        loadSocialData();
+      }
+    } catch (e: any) {
+      showToast(e.message || 'Erro ao criar clã.');
+    }
+  };
   const handleJoinClan = (clanId: string) => { showToast('Solicitação para entrar no clã enviada.'); setIsJoinClanModalOpen(false); };
 
   const handleBlockPlayer = (id: string) => { setBlockedPlayerIds(prev => [...prev, id]); showToast('Jogador bloqueado.'); };
@@ -565,6 +721,14 @@ export default function App() {
     if (user && user.id) {
       const players = await SocialService.getAllPlayers(user.id);
       setSocialPlayers(players);
+      try {
+        const allClans = await ClanService.getAllClans();
+        setClans(allClans);
+        const myClan = await ClanService.getMyClan(user.authId || user.id);
+        setUserClan(myClan);
+      } catch(e) {
+        console.error("Erro ao carregar clãs", e);
+      }
     }
   };
 
@@ -573,7 +737,7 @@ export default function App() {
   const [socialActivities, setSocialActivities] = useState<any[]>([]);
   const [socialPrivacySettings, setSocialPrivacySettings] = useState<any>({});
   const [selectedPublicPlayer, setSelectedPublicPlayer] = useState<any>(null);
-  const [activeSocialTab, setActiveSocialTab] = useState<any>('amigos');
+  const [activeSocialTab, setActiveSocialTab] = useState<any>('feed');
 
   const [isReportPlayerOpen, setIsReportPlayerOpen] = useState(false);
   const [playerToReport, setPlayerToReport] = useState<any>(null);
@@ -581,7 +745,28 @@ export default function App() {
     const [activeSeasonTab, setActiveSeasonTab] = useState<any>('temporada');
 
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-  const [wallet, setWallet] = useState<any>({ coins: 0, history: [] });
+
+  const [wallet, setWallet] = useState<any>({ 
+    id: 'temp', 
+    playerId: 'temp', 
+    currencyName: 'moedas', 
+    currencySymbol: '🪙', 
+    balance: 0, 
+    totalEarned: 0, 
+    totalSpent: 0, 
+    transactions: [], 
+    createdAt: '' 
+  });
+  
+  useEffect(() => {
+    if (user?.id) {
+       const unsub = EconomyService.subscribeToWallet(user.id, (w) => {
+           if (w) setWallet(w);
+       });
+       return () => unsub();
+    }
+  }, [user?.id]);
+
 
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
   const [accountStatus, setAccountStatus] = useState<any>({ isBanned: false, trustScore: 100 });
@@ -655,7 +840,7 @@ export default function App() {
       if (user) {
         await SocialService.toggleFollow(user.id, id);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.warn("Could not sync follow state to mock db", e);
     }
 
@@ -689,11 +874,8 @@ export default function App() {
   };
   const handleSubmitPlayerReport = (report: any) => { showToast('Denúncia enviada com sucesso!'); setIsReportPlayerOpen(false); };
   
-  const handleEarnCoins = (amount: number, source: any, desc: string, relatedId?: string) => { setWallet((prev: any) => ({...prev, coins: prev.coins + amount})); };
-  const handleSpendCoins = (amount: number, source: any, desc: string, relatedId?: string) => { 
-    if (wallet.coins >= amount) { setWallet((prev: any) => ({...prev, coins: prev.coins - amount})); return true; } 
-    return false; 
-  };
+  const handleEarnCoins = async (amount: number, source: any, desc: string, relatedId?: string) => { /* Disabled: Server Authoritative */ };
+  const handleSpendCoins = (amount: number, source: any, desc: string, relatedId?: string) => { /* Disabled: Server Authoritative */ return false; };
   const handleSimulateAdReward = () => { handleEarnCoins(50, 'AD_REWARD', 'Anúncio Assistido'); showToast('Recompensa recebida!'); };
   
   const handleSimulateGpsAnomaly = () => { showToast('Anomalia de GPS detectada.'); };
@@ -701,7 +883,10 @@ export default function App() {
   const handleReportPlayer = (id: string) => { setIsReportPlayerOpen(true); setPlayerToReport({ id }); };
   
   const handleUpdatePlayerSettings = (settings: any) => { setPlayerSettings(settings); showToast('Configurações atualizadas!'); };
-  const handleOpenSocialHub = (tab: any) => { setActiveSocialTab(tab); setIsSocialHubOpen(true); };
+  const handleOpenSocialHub = (tab: any) => { 
+    setActiveSocialTab(tab === 'amigos' ? 'friends' : tab); 
+    setActiveTab('feed'); 
+  };
   const handleUpdateTutorial = (state: any) => { setTutorialState(state); };
 
 
@@ -714,6 +899,12 @@ export default function App() {
   const sessionDistanceRef = useRef<number>(0.0);
   const sessionMaxSpeedRef = useRef<number>(0.0);
   const lastTrackPointRef = useRef<ActivityTrackPoint | null>(null);
+
+  // Segment Engine Refs
+  const segmentAttemptRef = useRef<SegmentAttempt | null>(null);
+  const segmentOffPathCountRef = useRef<number>(0);
+  const lastFinishedSegmentAttemptRef = useRef<SegmentAttempt | null>(null);
+
 
   // Visited, Conquered Zones and Challenges during the active session
   const sessionVisitedZonesRef = useRef<Map<string, SessionZoneVisit>>(new Map());
@@ -753,7 +944,7 @@ export default function App() {
              const ds = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
              if (Capacitor.isNativePlatform()) ForegroundService.updateForegroundService({
                 id: 111,
-                title: 'Urbanozeiro',
+                title: 'THE ROLLING WARS',
                 body: `⏱ ${ds} | 📏 ${sessionDistanceRef.current.toFixed(1)}km | ⚡ ${(lastTrackPointRef.current?.speed || 0).toFixed(1)}km/h | 🔥 ${sessionMaxSpeedRef.current.toFixed(1)}km/h`,
                 smallIcon: 'ic_stat_name',
                 buttons: [
@@ -930,6 +1121,15 @@ export default function App() {
                 ) {
                   return;
                 }
+
+                // Filtro Espacial Otimizado (Bounding Box de ~2.2km) para evitar Haversine desnecessário
+                if (
+                  Math.abs(latitude - z.center[0]) > 0.02 ||
+                  Math.abs(longitude - z.center[1]) > 0.02
+                ) {
+                  return;
+                }
+
                 const distMeters = calculateDistanceKm(latitude, longitude, z.center[0], z.center[1]) * 1000;
                 const wasActive = currentActiveMap.has(z.id);
                 const threshold = wasActive ? (z.radius || 300) + HYSTERESIS_METERS : (z.radius || 300);
@@ -1038,8 +1238,11 @@ export default function App() {
                           nickname: currentUserProfile.nickname,
                           avatar: currentUserProfile.avatar,
                           level: currentUserProfile.level,
-                          clan: currentUserProfile.crew || 'Sem Clã',
+                          clan: userClan?.name || currentUserProfile.crew || 'Sem Clã',
                           crew: currentUserProfile.crew || 'Sem Clã',
+                          clanId: userClan?.id || undefined,
+                          clanName: userClan?.name || undefined,
+                          clanIcon: userClan?.icon || userClan?.symbol || undefined,
                         };
 
                         const zoneOperation = {
@@ -1085,6 +1288,34 @@ export default function App() {
                           console.error("Falha ao salvar conquista na Outbox:", e);
                         });
 
+                        let clanPointsAwarded = 0;
+                        let clanResultStr = '';
+                        if (userClan) {
+                          if (z.status === 'free') {
+                            clanPointsAwarded = 100;
+                            clanResultStr = 'CAPTURED';
+                          } else if (z.controller?.clanId === userClan.id) {
+                            clanPointsAwarded = 25;
+                            clanResultStr = 'DEFENDED';
+                          } else {
+                            clanPointsAwarded = 150;
+                            clanResultStr = 'CAPTURED';
+                          }
+                        }
+
+
+                        // Submit to Season
+                        try {
+                          const processEvent = httpsCallable(functions, 'processSeasonEvent');
+                          processEvent({
+                            type: 'ZONE_CONQUEST',
+                            sourceEventId: zoneOperation.operationId,
+                            zoneId: z.id
+                          }).catch((e: any) => console.error("Falha na Season:", e));
+                        } catch (e: any) {
+                          console.error(e);
+                        }
+
                         setConquestResultModalData({
                           zone: conqueredZone,
                           zoneName: z.name,
@@ -1095,6 +1326,11 @@ export default function App() {
                           xpEarned,
                           player: currentUserProfile,
                           trackPoints: attempt.trackPoints,
+                          clanWar: userClan ? {
+                            points: clanPointsAwarded,
+                            result: clanResultStr,
+                            clanName: userClan.name,
+                          } : undefined
                         });
 
                         setUser((prev) => ({
@@ -1127,6 +1363,147 @@ export default function App() {
 
               setActiveZones(nextActiveZones);
               syncConquestProgresses(nextActiveZones);
+              // =============================================================
+              // ETAPA 4: SEGMENT ENGINE NOVO
+              // =============================================================
+              const ptSegment: [number, number] = [latitude, longitude];
+              const SEGMENT_LATERAL_TOLERANCE_METERS = 30;
+              const SEGMENT_START_RADIUS_METERS = 20;
+              const SEGMENT_MAX_OFF_PATH_POINTS = 2;
+
+              if (!segmentAttemptRef.current) {
+                // Procurar segmentos próximos para iniciar
+                for (const seg of zonesRef.current) {
+                  if (seg.shape !== 'segment' || !seg.path || seg.path.length < 2) continue;
+
+                  const bbox = getPathBoundingBox(seg.path, SEGMENT_START_RADIUS_METERS);
+                  if (!bbox || !isPointInsideBoundingBox(ptSegment, bbox)) continue;
+
+                  const endpoint = getNearestEndpoint(ptSegment, seg.path, SEGMENT_START_RADIUS_METERS);
+                  if (endpoint === 'start' || endpoint === 'end') {
+                    segmentAttemptRef.current = {
+                      segmentId: seg.id,
+                      status: 'approaching',
+                      direction: endpoint === 'start' ? 'forward' : 'reverse',
+                      startTime: 0,
+                      startPointIndex: 0,
+                      trackPoints: [newPoint],
+                      distanceCovered: 0
+                    };
+                    segmentOffPathCountRef.current = 0;
+                    console.log(`[SEGMENT_ENGINE] Approaching segment ${seg.id} (${endpoint})`);
+                    setActiveSegmentAttemptState({ ...segmentAttemptRef.current } as any);
+                    break;
+                  }
+                }
+              } else {
+                const attempt = segmentAttemptRef.current;
+                const seg = zonesRef.current.find((z) => z.id === attempt.segmentId);
+
+                if (!seg || !seg.path || seg.path.length < 2) {
+                  segmentAttemptRef.current = null;
+                } else {
+                  attempt.trackPoints.push(newPoint);
+
+                  const bbox = getPathBoundingBox(seg.path, SEGMENT_LATERAL_TOLERANCE_METERS);
+                  let isOffPath = false;
+
+                  if (!bbox || !isPointInsideBoundingBox(ptSegment, bbox)) {
+                    isOffPath = true;
+                  } else {
+                    const distResult = getDistanceToPath(ptSegment, seg.path);
+                    if (!distResult || distResult.distanceMeters > SEGMENT_LATERAL_TOLERANCE_METERS) {
+                      isOffPath = true;
+                    }
+                  }
+
+                  if (isOffPath) {
+                    segmentOffPathCountRef.current += 1;
+                    if (segmentOffPathCountRef.current >= SEGMENT_MAX_OFF_PATH_POINTS) {
+                      attempt.status = 'aborted';
+                      console.log(`[SEGMENT_ENGINE] Aborted segment ${attempt.segmentId}: exited path`);
+                      segmentAttemptRef.current = null;
+                      setActiveSegmentAttemptState(null);
+                    }
+                  } else {
+                    segmentOffPathCountRef.current = 0;
+
+                    if (attempt.status === 'approaching') {
+                      const startPtDist = attempt.direction === 'forward'
+                        ? distanceToSegmentStart(ptSegment, seg.path)
+                        : distanceToSegmentEnd(ptSegment, seg.path);
+
+                      if (startPtDist !== null && startPtDist > 5) {
+                        attempt.status = 'active';
+                        attempt.startTime = performance.now();
+                        setActiveSegmentAttemptState({ ...attempt });
+                        console.log(`[SEGMENT_ENGINE] Active on segment ${attempt.segmentId}`);
+                      }
+                    } else if (attempt.status === 'active') {
+                      const targetEndpointStr = attempt.direction === 'forward' ? 'end' : 'start';
+                      const arrivalStatus = getNearestEndpoint(ptSegment, seg.path, SEGMENT_START_RADIUS_METERS);
+
+                      if (arrivalStatus === targetEndpointStr) {
+                        attempt.status = 'finished';
+                        const endTime = performance.now();
+                        const durationMs = endTime - attempt.startTime;
+
+                        let distCovered = 0;
+                        for (let i = 1; i < attempt.trackPoints.length; i++) {
+                          const p1 = attempt.trackPoints[i - 1];
+                          const p2 = attempt.trackPoints[i];
+                          distCovered += calculateDistanceKm(p1.latitude, p1.longitude, p2.latitude, p2.longitude) * 1000;
+                        }
+                        attempt.distanceCovered = distCovered;
+
+                        console.log(`[SEGMENT_ENGINE] Finished segment ${attempt.segmentId}!`, {
+                          durationMs,
+                          distanceCovered: attempt.distanceCovered
+                        });
+                        attempt.durationMs = durationMs;
+                        lastFinishedSegmentAttemptRef.current = attempt;
+                        setActiveSegmentAttemptState({ ...attempt });
+                        setTimeout(() => setActiveSegmentAttemptState(null), 5000);
+
+                        // Fase 2.3: Persistência Offline-First
+                        const timeSeconds = durationMs / 1000;
+                        const distKm = distCovered / 1000;
+                        const avgSpeed = timeSeconds > 0 ? (distKm / (timeSeconds / 3600)) : 0;
+                        let maxSpeed = 0;
+                        attempt.trackPoints.forEach(p => {
+                          if (p.speed && p.speed > maxSpeed) maxSpeed = p.speed;
+                        });
+
+                        const operation: SegmentOperation = {
+                          operationId: `seg_op_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                          attemptId: `att_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                          segmentId: attempt.segmentId,
+                          playerId: user.id,
+                          playerName: user.name || user.nickname,
+                          createdAt: Date.now(),
+                          durationMs,
+                          timeSeconds,
+                          averageSpeedKmH: avgSpeed,
+                          maxSpeedKmH: maxSpeed,
+                          direction: attempt.direction,
+                          trackPoints: [...attempt.trackPoints],
+                          retryCount: 0,
+                          syncStatus: 'pending',
+                          validationStatus: 'pending_validation'
+                        };
+
+                        DatabaseService.queueSegmentOperation(operation).catch(console.error);
+
+                        // FASE 2.8: Notificação neutra, a confirmação real do recorde vem via evento 'segment-record-status'
+                        showToast(`🏁 Sprint concluído! Tempo: ${(timeSeconds).toFixed(2)}s. Sincronizando...`);
+
+                        segmentAttemptRef.current = null;
+                      }
+                    }
+                  }
+                }
+              }
+
             }
           }
 
@@ -1198,7 +1575,7 @@ export default function App() {
           if (perm.display !== 'granted') await ForegroundService.requestPermissions();
           await ForegroundService.startForegroundService({
             id: 111,
-            title: 'Urbanozeiro',
+            title: 'THE ROLLING WARS',
             body: `⏱ 00:00 | 📏 0.0km | ⚡ ${(user.currentSpeedKmH || 0).toFixed(1)}km/h | 🔥 ${(user.currentSpeedKmH || 0).toFixed(1)}km/h`,
             smallIcon: 'ic_stat_name',
             serviceType: 8, // Location
@@ -1240,6 +1617,15 @@ export default function App() {
         ) {
           return;
         }
+
+        // Filtro Espacial Otimizado (Bounding Box de ~2.2km) para evitar Haversine desnecessário
+        if (
+          Math.abs(initialCoords.latitude - z.center[0]) > 0.02 ||
+          Math.abs(initialCoords.longitude - z.center[1]) > 0.02
+        ) {
+          return;
+        }
+
         const distMeters = calculateDistanceKm(initialCoords.latitude, initialCoords.longitude, z.center[0], z.center[1]) * 1000;
         if (distMeters <= (z.radius || 300)) {
           initialActive.push(z);
@@ -1294,7 +1680,7 @@ export default function App() {
     try {
       if (Capacitor.isNativePlatform()) ForegroundService.updateForegroundService({
          id: 111,
-         title: 'Urbanozeiro',
+         title: 'THE ROLLING WARS',
          body: `⏸ Pausada | 📏 ${sessionDistanceRef.current.toFixed(1)}km | ⚡ ${(lastTrackPointRef.current?.speed || 0).toFixed(1)}km/h | 🔥 ${sessionMaxSpeedRef.current.toFixed(1)}km/h`,
          smallIcon: 'ic_stat_name',
          buttons: [
@@ -1315,7 +1701,7 @@ export default function App() {
     try {
       if (Capacitor.isNativePlatform()) ForegroundService.updateForegroundService({
          id: 111,
-         title: 'Urbanozeiro',
+         title: 'THE ROLLING WARS',
          body: `▶️ Retomando... | 📏 ${sessionDistanceRef.current.toFixed(1)}km | ⚡ ${(lastTrackPointRef.current?.speed || 0).toFixed(1)}km/h`,
          smallIcon: 'ic_stat_name',
          buttons: [
@@ -1512,7 +1898,7 @@ export default function App() {
           if (perm.display !== 'granted') await ForegroundService.requestPermissions();
           await ForegroundService.startForegroundService({
             id: 111,
-            title: 'Urbanozeiro',
+            title: 'THE ROLLING WARS',
             body: `⏱ 00:00 | 📏 0.0km | ⚡ ${(user.currentSpeedKmH || 0).toFixed(1)}km/h | 🔥 ${(user.currentSpeedKmH || 0).toFixed(1)}km/h`,
             smallIcon: 'ic_stat_name',
             serviceType: 8, // Location
@@ -1889,8 +2275,11 @@ export default function App() {
         nickname: currentUserProfile.nickname,
         avatar: currentUserProfile.avatar,
         level: currentUserProfile.level,
-        clan: currentUserProfile.crew || 'Sem Clã',
+        clan: userClan?.name || currentUserProfile.crew || 'Sem Clã',
         crew: currentUserProfile.crew || 'Sem Clã',
+        clanId: userClan?.id || undefined,
+        clanName: userClan?.name || undefined,
+        clanIcon: userClan?.icon || userClan?.symbol || undefined,
       };
 
       const zoneOperation = {
@@ -1934,6 +2323,21 @@ export default function App() {
         console.error("Falha ao salvar conquista simulada na Outbox:", e);
       });
 
+      let clanPointsAwarded = 0;
+      let clanResultStr = '';
+      if (userClan) {
+        if (z.status === 'free') {
+          clanPointsAwarded = 100;
+          clanResultStr = 'CAPTURED';
+        } else if (z.controller?.clanId === userClan.id) {
+          clanPointsAwarded = 25;
+          clanResultStr = 'DEFENDED';
+        } else {
+          clanPointsAwarded = 150;
+          clanResultStr = 'CAPTURED';
+        }
+      }
+
       setConquestResultModalData({
         zone: conqueredZone,
         zoneName: z.name,
@@ -1944,6 +2348,11 @@ export default function App() {
         xpEarned,
         player: currentUserProfile,
         trackPoints: attempt.trackPoints,
+        clanWar: userClan ? {
+          points: clanPointsAwarded,
+          result: clanResultStr,
+          clanName: userClan.name,
+        } : undefined
       });
 
       setUser((prev) => ({
@@ -2114,6 +2523,32 @@ export default function App() {
     setNotifications((prev) => [newNotif, ...prev]);
   };
 
+  
+  useEffect(() => {
+    const handleMissionCompleted = (e: any) => {
+      const { title, xp, clanId } = e.detail;
+      // We could check if it's our clan, but if we triggered it, it likely is.
+      const notifData = {
+        type: 'system' as const,
+        title: '🏆 MISSÃO CONCLUÍDA',
+        message: `Seu Clã concluiu "${title}" e recebeu +${xp} XP.`,
+      };
+      
+      const newNotif = {
+        ...notifData,
+        id: `notif_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        timeAgo: 'Agora mesmo',
+        isRead: false,
+        timestamp: new Date().toISOString(),
+      };
+      setNotifications((prev) => [newNotif, ...prev]);
+      showToast(`🏆 MISSÃO DO CLÃ: ${title} CONCLUÍDA! +${xp} XP`);
+    };
+
+    window.addEventListener('clan-mission-completed', handleMissionCompleted);
+    return () => window.removeEventListener('clan-mission-completed', handleMissionCompleted);
+  }, []);
+
   const handleNotificationAction = (notification: AppNotification) => {
     setIsNotificationsModalOpen(false);
     if (!notification.actionType) return;
@@ -2145,7 +2580,19 @@ export default function App() {
         setActiveTab('desafios');
       }
     } else if (notification.actionType === 'open_profile') {
-      setActiveTab('perfil');
+      if (notification.actionPayload?.playerId) {
+        setSelectedPublicPlayer({ id: notification.actionPayload.playerId });
+      } else {
+        setActiveTab('perfil');
+      }
+    } else if (notification.actionType === 'open_clan_profile') {
+      const cId = notification.actionPayload?.clanId;
+      if (cId) {
+        const clan = clans.find(c => c.id === cId);
+        if (clan) setSelectedClanProfile(clan);
+        else ClanService.getClan(cId).then((fetchedClan: any) => { if(fetchedClan) setSelectedClanProfile(fetchedClan); });
+      }
+    } else if (notification.actionType === 'open_social_hub') {
     } else if (notification.actionType === 'open_routes') {
       setActiveTab('feed');
     } else if (notification.actionType === 'open_direct_challenge') {
@@ -2194,9 +2641,38 @@ export default function App() {
 
   if (authState === 'LOADING') {
     return (
-      <div className="flex justify-center w-full h-full bg-[#05070a]">
-        <main className="relative flex flex-col items-center justify-center w-full h-full max-w-md md:max-w-lg bg-[#080B0E] border-x border-slate-800/40">
-          <div className="w-16 h-16 rounded-full border-4 border-emerald-400/20 border-t-emerald-400 animate-spin mb-4" />
+      <div className="flex justify-center w-full h-full bg-black relative overflow-hidden">
+        <div className="sparks-container">
+          {Array.from({ length: 25 }).map((_, i) => (
+            <div key={i} className="spark" style={{
+              left: `${Math.random() * 100}%`,
+              top: `${50 + Math.random() * 50}%`,
+              animationDuration: `${2 + Math.random() * 4}s`,
+              animationDelay: `${Math.random() * 3}s`
+            }} />
+          ))}
+        </div>
+        <main className="relative z-10 flex flex-col items-center justify-center w-full h-full max-w-md md:max-w-lg bg-transparent border-x border-slate-800/40 p-6">
+          <div className="relative w-40 h-40 mx-auto mb-8 flex items-center justify-center">
+            {/* NOVO: Engrenagens no fundo */}
+            <div className="absolute inset-0 flex items-center justify-between px-1" style={{ zIndex: 0, opacity: 0.15 }}>
+              <Settings className="w-14 h-14 text-white -scale-x-100 transform rotate-12 animate-spin" strokeWidth={1.5} style={{ animationDuration: '8s' }} />
+              <Settings className="w-14 h-14 text-white transform -rotate-12 animate-spin" strokeWidth={1.5} style={{ animationDuration: '6s', animationDirection: 'reverse' }} />
+            </div>
+
+            {/* NOVO: Raio pulsando */}
+            <div className="absolute inset-0 flex items-center justify-center animate-pulse" style={{ zIndex: 1 }}>
+              <Zap className="w-28 h-28 text-white opacity-25" strokeWidth={1.5} />
+            </div>
+
+            <div className="absolute inset-0 bg-blue-700 rounded-full blur-[60px] opacity-20 animate-pulse" style={{ transform: 'scale(1.2)' }}></div>
+            <div className="absolute inset-0 bg-[#fce803] rounded-full blur-[40px] opacity-20 animate-pulse"></div>
+            <img src="/logo-rw-dark.png" alt="The Rolling Wars" className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_15px_rgba(252,232,3,0.4)]" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            <div className="absolute inset-0 flex items-center justify-center border-2 border-[#fce803]/30 rounded-full" style={{ zIndex: 0 }}>
+              <span className="text-[#fce803] font-black text-3xl tracking-widest opacity-50">RW</span>
+            </div>
+          </div>
+          <div className="w-16 h-16 rounded-full border-4 border-[#fce803]/20 border-t-[#fce803] animate-spin mb-4" />
           <h2 className="text-xl font-black text-white font-display uppercase tracking-wider mb-2">Autenticando</h2>
           <p className="text-sm text-slate-400 font-medium">Verificando identidade...</p>
         </main>
@@ -2222,7 +2698,7 @@ export default function App() {
             } else {
               setAuthState('UNAUTHENTICATED');
             }
-          } catch (e) {
+          } catch (e: any) {
             setAuthState('ERROR');
           }
         }} 
@@ -2234,7 +2710,7 @@ export default function App() {
     return (
       <div className="flex justify-center w-full h-full bg-[#05070a]">
         <main className="relative flex flex-col items-center justify-center w-full h-full max-w-md md:max-w-lg bg-[#080B0E] border-x border-slate-800/40">
-          <div className="w-16 h-16 rounded-full border-4 border-emerald-400/20 border-t-emerald-400 animate-spin mb-4" />
+          <div className="w-16 h-16 rounded-full border-4 border-yellow-400/20 border-t-yellow-400 animate-spin mb-4" />
           <h2 className="text-xl font-black text-white font-display uppercase tracking-wider mb-2">Sincronizando</h2>
           <p className="text-sm text-slate-400 font-medium">Carregando dados do jogador...</p>
         </main>
@@ -2253,7 +2729,7 @@ export default function App() {
           <p className="text-sm text-slate-400 font-medium mb-6">{dbError}</p>
           <button 
             onClick={() => window.location.reload()}
-            className="px-6 py-3 rounded-xl bg-emerald-500 text-black font-black font-display uppercase tracking-wider"
+            className="px-6 py-3 rounded-xl bg-yellow-500 text-black font-black font-display uppercase tracking-wider"
           >
             Tentar Novamente
           </button>
@@ -2307,6 +2783,7 @@ export default function App() {
               selectedRoute={selectedRoute}
               selectedChallenge={selectedChallenge}
               liveChallenge={activeLiveChallenge}
+              activeSegmentAttempt={activeSegmentAttemptState}
               centerTrigger={centerTrigger}
               focusChallengeTrigger={focusChallengeTrigger}
               onPickCoordinateForNewZone={(coords) => {
@@ -2323,14 +2800,14 @@ export default function App() {
             
             {/* Drawing Zone Overlay */}
             {isDrawingZone && (
-              <div className="absolute top-20 inset-x-4 z-40 flex flex-col gap-2 bg-[#0d141d]/95 p-3 rounded-2xl border border-emerald-500 shadow-[0_0_20px_rgba(0,255,102,0.3)] ">
+              <div className="absolute top-20 inset-x-4 z-40 flex flex-col gap-2 bg-[#0d141d]/95 p-3 rounded-2xl border border-yellow-500 shadow-[0_0_20px_rgba(252,232,3,0.3)] ">
                 <div className="flex justify-between items-center">
-                  <span className="text-emerald-400 text-xs font-bold font-mono-stat uppercase">Modo de Desenho</span>
+                  <span className="text-yellow-400 text-xs font-bold font-mono-stat uppercase">Modo de Desenho</span>
                   <span className="text-slate-300 text-xs font-mono-stat">{drawnPath.length} pontos</span>
                 </div>
                 <div className="flex gap-2 mt-1">
                   <button onClick={() => { setIsDrawingZone(false); setDrawnPath([]); }} className="flex-1 bg-red-500/20 text-red-400 border border-red-500/50 py-2 rounded-xl text-xs font-bold uppercase tracking-wider">Cancelar</button>
-                  <button onClick={handleFinishDrawing} disabled={drawnPath.length < 2} className="flex-1 bg-emerald-500 text-black py-2 rounded-xl text-xs font-black uppercase tracking-wider disabled:opacity-50 disabled:bg-slate-700 disabled:text-slate-400">Confirmar</button>
+                  <button onClick={handleFinishDrawing} disabled={drawnPath.length < 2} className="flex-1 bg-yellow-500 text-black py-2 rounded-xl text-xs font-black uppercase tracking-wider disabled:opacity-50 disabled:bg-slate-700 disabled:text-slate-400">Confirmar</button>
                 </div>
               </div>
             )}
@@ -2391,15 +2868,27 @@ export default function App() {
               onOpenDesafios={() => setActiveTab('desafios')}
             />
 
-            {/* Bottom Sheet Details for selected circular zone */}
-            <ZoneDetailsModal
-              zone={selectedZone}
-              currentUser={user}
-              userLocation={playerLocation}
-              isSessionActive={isSessionActive}
-              onClose={() => setSelectedZone(null)}
-              onChallengeZone={handleChallengeZone}
-            />
+            {/* Bottom Sheet Details for selected circular zone or segment */}
+            {selectedZone?.shape === 'segment' ? (
+              <SegmentDetailsModal
+                segmentId={selectedZone.id}
+                segmentData={selectedZone}
+                onClose={() => setSelectedZone(null)}
+                onChallenge={() => {
+                  setSelectedZone(null);
+                  showToast('🏁 Dirija-se ao início do segmento. O motor de velocidade o detectará automaticamente.');
+                }}
+              />
+            ) : (
+              <ZoneDetailsModal
+                zone={selectedZone}
+                currentUser={user}
+                userLocation={playerLocation}
+                isSessionActive={isSessionActive}
+                onClose={() => setSelectedZone(null)}
+                onChallengeZone={handleChallengeZone}
+              />
+            )}
 
             {/* Nearby Zones & Urban Discovery Exploration Drawer */}
             <NearbyZonesDrawer
@@ -2423,7 +2912,7 @@ export default function App() {
           </div>
 
           {/* Tab 2: ROTAS */}
-          {activeTab === 'feed' && (
+          {activeTab === 'rotas' as any && (
             <RotasView
               routes={routes}
               onSelectRouteOnMap={handleSelectRouteOnMap}
@@ -2438,8 +2927,11 @@ export default function App() {
               currentUser={user}
               onSelectClan={(clan) => setSelectedClanProfile(clan)}
               onSelectPlayer={(player) => setSelectedPublicPlayer(player)}
+              onOpenSeasonHub={(tab) => {
+                setSeasonModalTab(tab || 'visao_geral');
+                setIsSeasonModalOpen(true);
+              }}
               onSendChallenge={handleOpenCreateDirectChallenge}
-              onOpenSeasonHub={handleOpenSeasonHub}
             />
           )}
 
@@ -2465,7 +2957,11 @@ export default function App() {
                   setSelectedRoute(null);
                   setSelectedChallenge(null);
                   setActiveTab('mapa');
-                  showToast(`📍 Zona selecionada: ${found.name}`);
+                  if (found.shape === 'segment') {
+                    showToast(`⚡ Dirija-se ao início do Sprint: ${found.name}. O GPS detectará automaticamente.`);
+                  } else {
+                    showToast(`📍 Zona selecionada: ${found.name}`);
+                  }
                 }
               }}
             />
@@ -2486,7 +2982,6 @@ export default function App() {
               titlesCount={(titles || []).filter((t) => t.unlocked).length}
               progression={progression}
               onOpenProgressionHub={handleOpenProgressionHub}
-              onOpenSeasonHub={handleOpenSeasonHub}
               wallet={wallet}
               onOpenWallet={() => setIsWalletModalOpen(true)}
               onOpenSecurity={() => setIsSecurityModalOpen(true)}
@@ -2499,7 +2994,7 @@ export default function App() {
               userClan={userClan}
               onOpenClanProfile={(clan) => setSelectedClanProfile(clan)}
               onOpenCreateClan={() => setIsCreateClanModalOpen(true)}
-              onOpenJoinClan={() => setIsJoinClanModalOpen(true)}
+              onOpenJoinClan={() => setIsClanLeaderboardModalOpen(true)}
               onOpenClanLeaderboard={() => setIsClanLeaderboardModalOpen(true)}
               friendsCount={(socialPlayers || []).filter((p) => p.isFriend).length}
               followersCount={128}
@@ -2517,8 +3012,8 @@ export default function App() {
 
           {/* Interactive Toast Notification */}
           {toastMessage && (
-            <div className="absolute top-24 inset-x-4 z-50 flex items-center gap-2.5 px-4 py-3 bg-[#0a0f15]/95 border-2 border-emerald-400 text-white text-xs font-bold rounded-2xl shadow-[0_10px_35px_rgba(0,255,102,0.4)]  animate-in slide-in-from-top duration-200 font-mono-stat uppercase tracking-wide">
-              <Zap className="w-4 h-4 text-emerald-400 shrink-0 stroke-[2.5]" />
+            <div className="absolute top-24 inset-x-4 z-50 flex items-center gap-2.5 px-4 py-3 bg-[#1d4ed8]/95 border-2 border-yellow-400 text-white text-xs font-bold rounded-2xl shadow-[0_10px_35px_rgba(252,232,3,0.4)]  animate-in slide-in-from-top duration-200 font-mono-stat uppercase tracking-wide">
+              <Zap className="w-4 h-4 text-yellow-400 shrink-0 stroke-[2.5]" />
               <span>{toastMessage}</span>
             </div>
           )}
@@ -2591,7 +3086,7 @@ export default function App() {
           isOtherPlayer={false}
         />
 
-        {/* Modal: Esqueleto de Busca e Descoberta Global (Urbanozeiro) */}
+        {/* Modal: Esqueleto de Busca e Descoberta Global (THE ROLLING WARS) */}
         <SearchDiscoveryModal
           isOpen={isSearchModalOpen}
           onClose={() => setIsSearchModalOpen(false)}
@@ -2681,7 +3176,7 @@ export default function App() {
         />
 
         {/* Modal: Entrar em um Clã */}
-        <JoinClanModal
+        {/* <JoinClanModal
           isOpen={isJoinClanModalOpen}
           onClose={() => setIsJoinClanModalOpen(false)}
           clans={clans}
@@ -2692,7 +3187,7 @@ export default function App() {
             setSelectedClanProfile(clan);
           }}
           onCreateClanClick={() => setIsCreateClanModalOpen(true)}
-        />
+        /> */}
 
         {/* Modal: Perfil Público de Jogador (quando clicado de um membro de clã, ranking ou social) */}
         <PublicProfileModal
@@ -2840,44 +3335,13 @@ export default function App() {
 
         
 
-        {/* Modal: Central Social de Jogadores (Urbanozeiro Social Hub) */}
-        <SocialHubModal
-          isOpen={isSocialHubOpen}
-          onClose={() => setIsSocialHubOpen(false)}
-          currentUser={user}
-          players={socialPlayers}
-          relationships={socialRelationships}
-          publicActivities={socialActivities}
-          privacySettings={socialPrivacySettings}
-          onUpdatePrivacySettings={(newSettings) => {
-            setSocialPrivacySettings(newSettings);
-            showToast('Configurações de privacidade salvas!');
-          }}
-          onSelectPlayer={(player) => setSelectedPublicPlayer(player)}
-          onSendChallenge={(player) => handleOpenCreateDirectChallenge(player)}
-          onSendFriendRequest={handleSendFriendRequest}
-          onAcceptFriendRequest={handleAcceptFriendRequest}
-          onDeclineFriendRequest={handleDeclineFriendRequest}
-          onCancelFriendRequest={handleCancelFriendRequest}
-          onRemoveFriend={handleRemoveFriend}
-          onToggleFollow={handleToggleFollow}
-          onOpenActivityFeed={() => {
-            setIsSocialHubOpen(false);
-            
-          }}
-          initialTab={activeSocialTab}
-        />
-
-        {/* Modal: Central de Atividades & Feed Urbanozeiro */}
+        {/* Modal: Central Social THE ROLLING WARS */}
         {activeTab === 'feed' && (
-        <FeedView
+        <SocialHub
+          initialTab={activeSocialTab as any}
           onClose={() => setActiveTab('mapa')}
           currentUser={user}
-          activities={activities}
-          hasMore={feedHasMore}
-          onLoadMore={loadMoreActivities}
-          isLoading={isLoadingFeed}
-          onRedoRoute={(activityId, metadata) => {
+          onRedoRoute={(activityId, metadata) => { 
              if (metadata?.trackPreview && metadata.trackPreview.length > 0) {
                 // Future: Prepare a route from trackPreview and start
                 showToast("Rota carregada no mapa para iniciar futura sessão.");
@@ -2891,61 +3355,6 @@ export default function App() {
                 }
              }
           }}
-          friendIds={(socialPlayers || []).filter((p) => p.isFriend).map((p) => p.id)}
-          followingIds={(socialPlayers || []).filter((p) => p.isFollowing).map((p) => p.id)}
-          blockedIds={socialRelationships
-            .filter((r) => r.type === 'BLOCK' && r.fromPlayerId === user.id)
-            .map((r) => r.toPlayerId)}
-          onToggleLike={handleToggleActivityLike}
-          onSelectPlayer={(playerId: string) => {
-            const foundPlayer = socialPlayers.find((p) => p.id === playerId);
-            if (foundPlayer) {
-              setSelectedPublicPlayer(foundPlayer);
-            }
-          }}
-          onOpenZone={(zoneId?: string) => {
-            if (!zoneId) return;
-            const foundZone = zones.find((z) => z.id === zoneId);
-            if (foundZone) {
-              setSelectedZone(foundZone);
-              setSelectedRoute(null);
-              setSelectedChallenge(null);
-              
-              setActiveTab('mapa');
-              showToast(`📍 Zona focada no mapa: ${foundZone.name}`);
-            }
-          }}
-          onOpenChallenge={(challengeId?: string) => {
-            if (!challengeId) return;
-            const foundChallenge = challenges.find((c) => c.id === challengeId);
-            if (foundChallenge) {
-              setSelectedChallenge(foundChallenge);
-              setSelectedRoute(null);
-              setSelectedZone(null);
-              
-              setActiveTab('mapa');
-              showToast(`⚔️ Desafio selecionado: ${foundChallenge.title}`);
-            }
-          }}
-          onOpenEvent={(eventId?: string) => {
-            if (!eventId) return;
-            const foundEvent = events.find((e) => e.id === eventId);
-            if (foundEvent) {
-              setSelectedEvent(foundEvent);
-              
-            }
-          }}
-          onOpenAchievements={() => {
-            setActiveHonorsTab('conquistas');
-            setIsAchievementsModalOpen(true);
-          }}
-
-          onNewPost={(newPost) => {
-             setActivities(prev => [newPost, ...prev]);
-             showToast("Publicação realizada com sucesso!");
-          }}
-          initialFilter={activityFeedInitialFilter}
-
         />
         )}
 
@@ -3026,6 +3435,12 @@ export default function App() {
             currentUser={user}
             targetUser={chatTargetUser}
           />
+        )}
+                {/* Segment UI Overlay */}
+        {activeSegmentAttemptState && (
+          <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[2000] pointer-events-none w-11/12 max-w-sm flex justify-center">
+             <SprintOverlay attempt={activeSegmentAttemptState} />
+          </div>
         )}
         {/* Bottom Fixed Navigation Bar */}
         <BottomNav activeTab={activeTab} onChangeTab={setActiveTab} />

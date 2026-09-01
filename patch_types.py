@@ -1,32 +1,38 @@
-import re
+import sys
 
 with open('src/types/index.ts', 'r') as f:
     content = f.read()
 
-replacement = """export interface ZoneOperation {
-  operationId: string;
-  zoneId: string;
-  type: 'CONQUEST';
-  playerId: string;
-  payload: {
-    controller: ZoneController;
-    conquestHistoryEntry: any; // Ideally we can define this better, but `any` matches the ad-hoc usage
-  };
-  createdAt: number;
-  syncStatus: 'pending' | 'error' | 'synced';
-  retryCount: number;
+# Add Chest Types
+chest_types = """
+export type ChestStatus = 'locked' | 'available' | 'opened';
+export type ChestType = 'bronze' | 'silver' | 'gold' | 'epic' | 'legendary';
+
+export interface ChestReward {
+  type: 'currency' | 'seasonXp' | 'clanXp' | 'cosmeticUnlock' | 'chest';
+  amount?: number;
+  cosmeticId?: string;
+  name?: string;
 }
 
-export interface ZoneActivity {"""
+export interface Chest {
+  id: string;
+  userId: string;
+  type: ChestType;
+  source: string;
+  sourceId: string;
+  seasonId?: string;
+  status: ChestStatus;
+  createdAt: string;
+  openedAt?: string;
+  rewardTransactionId?: string;
+  rewards?: ChestReward[];
+}
 
-content = content.replace("export interface ZoneActivity {", replacement)
+"""
 
-# Add operationId to conquestHistory item inside Zone interface
-pattern = r"conquestHistory\?: Array<\{\n\s*playerId: string;"
-replacement_history = """  conquestHistory?: Array<{
-    operationId?: string;
-    playerId: string;"""
-content = re.sub(pattern, replacement_history, content)
+if "export interface Chest {" not in content:
+    content += chest_types
 
 with open('src/types/index.ts', 'w') as f:
     f.write(content)

@@ -103,14 +103,14 @@ export const ReportPlayerModal: React.FC<ReportPlayerModalProps> = ({
         {/* Content */}
         {isSubmitted ? (
           <div className="p-6 text-center space-y-3">
-            <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/40 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(0,255,102,0.3)]">
+            <div className="w-12 h-12 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-400/40 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(252,232,3,0.3)]">
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <h4 className="text-base font-black text-white uppercase font-display">
               DENÚNCIA REGISTRADA
             </h4>
             <p className="text-xs text-slate-300">
-              Obrigado por manter o asfalto do Urbanozeiro seguro e justo. Nossa moderação irá analisar o histórico.
+              Obrigado por manter o asfalto do THE ROLLING WARS seguro e justo. Nossa moderação irá analisar o histórico.
             </p>
           </div>
         ) : (

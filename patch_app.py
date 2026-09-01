@@ -1,68 +1,46 @@
-import re
-
 with open('src/App.tsx', 'r') as f:
-    content = f.read()
+    c = f.read()
 
-# For the GPS capture block
-gps_capture_replacement = """                        };
+filter_watch = """                ) {
+                  return;
+                }
 
-                        const operationId = 'op_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                        const conquestHistoryEntryWithOp = { ...conquestHistoryEntry, operationId };
-                        
-                        const controllerData = {
-                          id: currentUserProfile.id || 'usr_me',
-                          name: currentUserProfile.name,
-                          nickname: currentUserProfile.nickname,
-                          avatar: currentUserProfile.avatar,
-                          level: currentUserProfile.level,
-                          clan: currentUserProfile.crew || 'Sem Clã',
-                          crew: currentUserProfile.crew || 'Sem Clã',
-                        };
+                // Filtro Espacial Otimizado (Bounding Box de ~2.2km) para evitar Haversine desnecessário
+                if (
+                  Math.abs(latitude - z.center[0]) > 0.02 ||
+                  Math.abs(longitude - z.center[1]) > 0.02
+                ) {
+                  return;
+                }
 
-                        const zoneOperation = {
-                          operationId,
-                          zoneId: z.id,
-                          type: 'CONQUEST' as const,
-                          playerId: currentUserProfile.id || 'usr_me',
-                          payload: {
-                            controller: controllerData,
-                            conquestHistoryEntry: conquestHistoryEntryWithOp
-                          },
-                          createdAt: Date.now(),
-                          syncStatus: 'pending' as const,
-                          retryCount: 0
-                        };
+                const distMeters = calculateDistanceKm(latitude, longitude, z.center[0], z.center[1]) * 1000;"""
 
-                        const conqueredZone: Zone = {
-                          ...z,
-                          status: 'controlled',
-                          activeDispute: null,
-                          conquestHistory: [conquestHistoryEntryWithOp, ...pastHistory],
-                          controller: controllerData,
-                          dominance: 100,
-                          dominancePercent: 100,
-                          controllerName: controllerData.name,
-                          controllerNickname: controllerData.nickname,
-                          controllerAvatar: controllerData.avatar,
-                          controllerLevel: controllerData.level,
-                          controllerCrew: controllerData.crew,
-                          lastConquered: new Date().toISOString(),
-                        };
+c = c.replace(
+"""                ) {
+                  return;
+                }
+                const distMeters = calculateDistanceKm(latitude, longitude, z.center[0], z.center[1]) * 1000;""", filter_watch)
 
-                        z.status = 'controlled';
-                        z.activeDispute = null;
-                        z.dominance = 100;
+filter_start = """        ) {
+          return;
+        }
 
-                        // Atualização otimista
-                        setZones((prev) => prev.map((item) => (item.id === z.id ? conqueredZone : item)));
-                        setSelectedZone((prev) => (prev?.id === z.id ? conqueredZone : prev));
+        // Filtro Espacial Otimizado (Bounding Box de ~2.2km) para evitar Haversine desnecessário
+        if (
+          Math.abs(initialCoords.latitude - z.center[0]) > 0.02 ||
+          Math.abs(initialCoords.longitude - z.center[1]) > 0.02
+        ) {
+          return;
+        }
 
-                        // Fire & Forget Database Transaction
-                        DatabaseService.queueZoneOperation(zoneOperation).catch(e => {
-                          console.error("Falha ao salvar conquista na Outbox:", e);
-                        });"""
+        const distMeters = calculateDistanceKm(initialCoords.latitude, initialCoords.longitude, z.center[0], z.center[1]) * 1000;"""
 
-content = re.sub(r'                        \};\n\n                        const conqueredZone: Zone = \{.*?                        \}\)\.catch\(e => \{\n                          console\.error\("Falha ao salvar conquista no Firestore:", e\);\n                          // Atualização otimista fallback\n                          setZones\(\(prev\) => prev\.map\(\(item\) => \(item\.id === z\.id \? conqueredZone : item\)\)\);\n                          setSelectedZone\(\(prev\) => \(prev\?\.id === z\.id \? conqueredZone : prev\)\);\n                        \}\);', gps_capture_replacement, content, flags=re.DOTALL)
+c = c.replace(
+"""        ) {
+          return;
+        }
+        const distMeters = calculateDistanceKm(initialCoords.latitude, initialCoords.longitude, z.center[0], z.center[1]) * 1000;""", filter_start)
+
 
 with open('src/App.tsx', 'w') as f:
-    f.write(content)
+    f.write(c)

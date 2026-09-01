@@ -91,17 +91,17 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
       <div
         id="security-integrity-modal-container"
-        className="relative w-full max-w-2xl max-h-[92vh] flex flex-col bg-[#0a0f16] border-2 border-emerald-500/40 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.85)] overflow-hidden"
+        className="relative w-full max-w-2xl max-h-[92vh] flex flex-col bg-[#1d4ed8] border-2 border-yellow-500/40 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.85)] overflow-hidden"
       >
         {/* Ambient background glows */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-72 h-72 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Modal Header */}
         <div className="relative z-10 flex items-center justify-between p-4 sm:p-5 border-b border-white/10 bg-[#0d141e]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 p-0.5 shadow-[0_0_15px_rgba(16,185,129,0.35)] flex items-center justify-center">
-              <div className="w-full h-full bg-[#080d13] rounded-[14px] flex items-center justify-center text-emerald-400">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 p-0.5 shadow-[0_0_15px_rgba(16,185,129,0.35)] flex items-center justify-center">
+              <div className="w-full h-full bg-[#080d13] rounded-[14px] flex items-center justify-center text-yellow-400">
                 <ShieldCheck className="w-5 h-5" />
               </div>
             </div>
@@ -110,7 +110,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
                 <h2 className="text-base sm:text-lg font-black uppercase text-white font-display tracking-tight">
                   SEGURANÇA & FAIR PLAY
                 </h2>
-                <span className="px-2 py-0.5 text-[9px] font-black uppercase tracking-wider bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 rounded-md font-mono-stat">
+                <span className="px-2 py-0.5 text-[9px] font-black uppercase tracking-wider bg-yellow-400/20 text-yellow-300 border border-yellow-400/30 rounded-md font-mono-stat">
                   INTEGRIDADE
                 </span>
               </div>
@@ -133,8 +133,8 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
 
         {/* Feedback Alert Toast */}
         {feedbackToast && (
-          <div className="relative z-20 px-4 py-2.5 mx-4 mt-3 flex items-center gap-2 rounded-2xl text-xs font-bold font-mono-stat shadow-lg bg-emerald-950/95 border border-emerald-400 text-emerald-200 animate-in slide-in-from-top-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="relative z-20 px-4 py-2.5 mx-4 mt-3 flex items-center gap-2 rounded-2xl text-xs font-bold font-mono-stat shadow-lg bg-blue-950/95 border border-yellow-400 text-yellow-200 animate-in slide-in-from-top-2">
+            <CheckCircle2 className="w-4 h-4 text-yellow-400 shrink-0" />
             <span className="flex-1">{feedbackToast}</span>
           </div>
         )}
@@ -142,17 +142,17 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
         {/* Modal Scrollable Body */}
         <div className="relative z-10 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-4">
           {/* Account Status Card */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-b from-[#111924] via-[#0d141e] to-[#090e15] border-2 border-emerald-500/30 relative overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-b from-[#111924] via-[#0d141e] to-[#090e15] border-2 border-yellow-500/30 relative overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="space-y-1">
-                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400/90 font-mono-stat">
+                <span className="text-[10px] font-black uppercase tracking-widest text-yellow-400/90 font-mono-stat">
                   ESTADO DA CONTA
                 </span>
                 <div className="flex items-center gap-2">
                   <span className="text-xl sm:text-2xl font-black text-white font-mono-stat">
                     {statusInfo.label}
                   </span>
-                  <span className="px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-md font-mono-stat bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  <span className="px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-md font-mono-stat bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
                     VERIFICADO
                   </span>
                 </div>
@@ -163,8 +163,8 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
 
               {/* Security Badges */}
               <div className="grid grid-cols-2 gap-2 shrink-0">
-                <div className="px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center">
-                  <span className="text-[9px] font-black uppercase text-emerald-400 font-mono-stat block">
+                <div className="px-3 py-1.5 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-center">
+                  <span className="text-[9px] font-black uppercase text-yellow-400 font-mono-stat block">
                     TELEMETRIA
                   </span>
                   <span className="text-xs font-black text-white font-mono-stat">
@@ -184,7 +184,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
 
             {/* Core Principle Notice */}
             <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2 text-[10px] text-slate-400">
-              <Lock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <Lock className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
               <span>
                 <strong>Princípio de Fair Play:</strong> Sinalizações são avaliadas contextualmente. Variações ambientais de GPS não bloqueiam o jogador.
               </span>
@@ -199,7 +199,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
               onClick={() => setActiveTab('eventos')}
               className={`flex-1 min-w-[90px] py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 font-mono-stat cursor-pointer ${
                 activeTab === 'eventos'
-                  ? 'bg-emerald-400 text-black font-black shadow-md'
+                  ? 'bg-yellow-400 text-black font-black shadow-md'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -213,7 +213,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
               onClick={() => setActiveTab('auditoria')}
               className={`flex-1 min-w-[90px] py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 font-mono-stat cursor-pointer ${
                 activeTab === 'auditoria'
-                  ? 'bg-emerald-400 text-black font-black shadow-md'
+                  ? 'bg-yellow-400 text-black font-black shadow-md'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -227,7 +227,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
               onClick={() => setActiveTab('denuncias')}
               className={`flex-1 min-w-[90px] py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 font-mono-stat cursor-pointer ${
                 activeTab === 'denuncias'
-                  ? 'bg-emerald-400 text-black font-black shadow-md'
+                  ? 'bg-yellow-400 text-black font-black shadow-md'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -241,7 +241,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
               onClick={() => setActiveTab('simulador')}
               className={`flex-1 min-w-[90px] py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 font-mono-stat cursor-pointer ${
                 activeTab === 'simulador'
-                  ? 'bg-emerald-400 text-black font-black shadow-md'
+                  ? 'bg-yellow-400 text-black font-black shadow-md'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -255,7 +255,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
               onClick={() => setActiveTab('diretrizes')}
               className={`flex-1 min-w-[90px] py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 font-mono-stat cursor-pointer ${
                 activeTab === 'diretrizes'
-                  ? 'bg-emerald-400 text-black font-black shadow-md'
+                  ? 'bg-yellow-400 text-black font-black shadow-md'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -270,7 +270,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
               {/* Severity Filter Header */}
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-300 font-mono-stat flex items-center gap-1.5">
-                  <Filter className="w-3.5 h-3.5 text-emerald-400" />
+                  <Filter className="w-3.5 h-3.5 text-yellow-400" />
                   FILTRAR SEVERIDADE:
                 </span>
                 <div className="flex items-center gap-1">
@@ -281,7 +281,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
                       onClick={() => setSeverityFilter(sev)}
                       className={`px-2 py-0.5 rounded-lg text-[9px] font-black font-mono-stat transition-all cursor-pointer ${
                         severityFilter === sev
-                          ? 'bg-emerald-400 text-black'
+                          ? 'bg-yellow-400 text-black'
                           : 'bg-white/5 text-slate-400 hover:text-white'
                       }`}
                     >
@@ -375,7 +375,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
                   >
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="px-1.5 py-0.5 text-[9px] font-black uppercase rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono-stat">
+                        <span className="px-1.5 py-0.5 text-[9px] font-black uppercase rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 font-mono-stat">
                           {log.action}
                         </span>
                         <span className="text-[10px] text-slate-500 font-mono-stat">
@@ -453,7 +453,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
             <div className="space-y-3">
               <div className="p-3 rounded-2xl bg-[#0e1622] border border-white/10 text-xs text-slate-300">
                 <p className="font-bold text-white flex items-center gap-1.5">
-                  <Zap className="w-4 h-4 text-emerald-400" />
+                  <Zap className="w-4 h-4 text-yellow-400" />
                   Simulador de Integridade e Proteções
                 </p>
                 <p className="text-[11px] text-slate-400 mt-1">
@@ -502,7 +502,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
                       }
                       showToast('🛡️ Idempotência ativa: tentativa duplicada bloqueada com sucesso!');
                     }}
-                    className="px-3 py-1.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black text-[10px] font-black font-mono-stat uppercase cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-[10px] font-black font-mono-stat uppercase cursor-pointer"
                   >
                     TESTAR IDEMPOTÊNCIA
                   </button>
@@ -538,7 +538,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
           {activeTab === 'diretrizes' && (
             <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1 text-xs">
               <div className="p-4 rounded-2xl bg-[#0e1622] border border-white/10 space-y-3">
-                <div className="flex items-center gap-2 text-emerald-400 font-bold font-mono-stat">
+                <div className="flex items-center gap-2 text-yellow-400 font-bold font-mono-stat">
                   <ShieldCheck className="w-4 h-4" />
                   <span>DIRETRIZES DE MODERAÇÃO E SEGURANÇA</span>
                 </div>
@@ -581,7 +581,7 @@ export const SecurityIntegrityModal: React.FC<SecurityIntegrityModalProps> = ({
         <div className="relative z-10 p-3 sm:p-4 bg-[#080d13] border-t border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-mono-stat">
             <span>Status:</span>
-            <strong className="text-emerald-400 font-bold">FAIR PLAY ATIVO</strong>
+            <strong className="text-yellow-400 font-bold">FAIR PLAY ATIVO</strong>
           </div>
 
           <button

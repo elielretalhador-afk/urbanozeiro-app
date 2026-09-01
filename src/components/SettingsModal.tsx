@@ -112,23 +112,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
       <div
         id="settings-modal"
-        className="w-full max-w-lg max-h-[92vh] flex flex-col rounded-3xl bg-[#080d14] border-2 border-emerald-500/40 shadow-[0_15px_60px_rgba(0,255,102,0.25)] overflow-hidden text-white font-sans relative"
+        className="w-full max-w-lg max-h-[92vh] flex flex-col rounded-3xl bg-[#080d14] border-2 border-yellow-500/40 shadow-[0_15px_60px_rgba(252,232,3,0.25)] overflow-hidden text-white font-sans relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Glow Superior */}
-        <div className="absolute -top-12 inset-x-0 h-24 bg-gradient-to-b from-emerald-500/20 to-transparent blur-xl pointer-events-none" />
+        <div className="absolute -top-12 inset-x-0 h-24 bg-gradient-to-b from-yellow-500/20 to-transparent blur-xl pointer-events-none" />
 
         {/* HEADER */}
         <div className="p-4 bg-gradient-to-b from-[#101824] to-[#0a0f16] border-b border-white/10 relative z-10 shrink-0">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-emerald-400/20 border border-emerald-400/40 text-emerald-400">
+              <div className="p-2 rounded-xl bg-yellow-400/20 border border-yellow-400/40 text-yellow-400">
                 <Settings className="w-5 h-5 stroke-[2.2]" />
               </div>
               <div>
                 <h2 className="text-base font-black uppercase tracking-tight font-display text-white flex items-center gap-1.5">
                   CONFIGURAÇÕES
-                  <span className="px-1.5 py-0.2 rounded-md bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 text-[9px] font-mono-stat font-black">
+                  <span className="px-1.5 py-0.2 rounded-md bg-yellow-400/20 text-yellow-300 border border-yellow-400/30 text-[9px] font-mono-stat font-black">
                     PREFERÊNCIAS
                   </span>
                 </h2>
@@ -162,7 +162,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   onClick={() => setActiveCategory(cat.id)}
                   className={`px-3 py-1.5 rounded-xl font-black uppercase tracking-wider transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
                     isActive
-                      ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.4)]'
+                      ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.4)]'
                       : 'bg-[#121a24] text-slate-400 hover:text-white border border-white/10'
                   }`}
                 >
@@ -176,8 +176,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         {/* TOAST DE FEEDBACK DE SALVAMENTO */}
         {saveToast && (
-          <div className="px-4 py-1.5 bg-emerald-500/20 border-b border-emerald-500/30 text-emerald-300 text-[10px] font-bold font-mono-stat flex items-center justify-center gap-1.5 animate-in fade-in">
-            <Check className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="px-4 py-1.5 bg-yellow-500/20 border-b border-yellow-500/30 text-yellow-300 text-[10px] font-bold font-mono-stat flex items-center justify-center gap-1.5 animate-in fade-in">
+            <Check className="w-3.5 h-3.5 text-yellow-400" />
             <span>{saveToast}</span>
           </div>
         )}
@@ -195,19 +195,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <img
                     src={user.avatar}
                     alt={user.nickname}
-                    className="w-14 h-14 rounded-2xl object-cover border-2 border-emerald-400 shadow-md"
+                    className="w-14 h-14 rounded-2xl object-cover border-2 border-yellow-400 shadow-md"
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <h3 className="text-sm font-black text-white truncate font-display">
                         {user.nickname}
                       </h3>
-                      <span className="px-1.5 py-0.2 rounded bg-emerald-400 text-black text-[9px] font-black font-mono-stat">
+                      <span className="px-1.5 py-0.2 rounded bg-yellow-400 text-black text-[9px] font-black font-mono-stat">
                         L{user.level}
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 font-mono-stat">{user.name}</p>
-                    <p className="text-[10px] text-emerald-400 font-mono-stat mt-0.5">
+                    <p className="text-[10px] text-yellow-400 font-mono-stat mt-0.5">
                       Clã: {user.crew || 'Sem Clã'} • {user.tag || '#042'}
                     </p>
                   </div>
@@ -217,7 +217,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               {/* Informações Básicas da Conta */}
               <div className="p-4 rounded-2xl bg-[#0c131c] border border-white/10 space-y-3">
                 <h4 className="text-xs font-black uppercase text-slate-300 tracking-wider font-mono-stat flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-emerald-400" />
+                  <User className="w-3.5 h-3.5 text-yellow-400" />
                   DADOS DO CADASTRO
                 </h4>
 
@@ -234,7 +234,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
                   <div className="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-white/5">
                     <span className="text-slate-400">Membro desde</span>
-                    <span className="text-emerald-400 font-bold">
+                    <span className="text-yellow-400 font-bold">
                       {settings.account.registeredSince}
                     </span>
                   </div>
@@ -299,7 +299,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('privacy', 'isProfilePublic', e.target.checked, 'Preferência de perfil público atualizada')
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -319,7 +319,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('privacy', 'showActivityInFeed', e.target.checked, 'Visibilidade de feed atualizada')
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -339,7 +339,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('privacy', 'showStatsOnProfile', e.target.checked, 'Exibição de estatísticas atualizada')
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -359,7 +359,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('privacy', 'appearInNearbyRadar', e.target.checked, 'Preferência de radar atualizada')
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -379,7 +379,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('privacy', 'allowFriendRequests', e.target.checked, 'Pedidos de amizade atualizados')
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
                 </div>
@@ -400,7 +400,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       }
                       className={`p-2 rounded-xl font-bold uppercase transition-all cursor-pointer ${
                         settings.privacy.challengePermission === perm
-                          ? 'bg-emerald-400 text-black shadow-md'
+                          ? 'bg-yellow-400 text-black shadow-md'
                           : 'bg-black/40 text-slate-400 hover:text-white border border-white/5'
                       }`}
                     >
@@ -438,7 +438,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onChange={(e) =>
                       updateSetting('notifications', 'enablePushNotifications', e.target.checked, 'Notificações push atualizadas')
                     }
-                    className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                    className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                   />
                 </div>
 
@@ -455,7 +455,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('notifications', 'notifyDirectChallenges', e.target.checked)
                       }
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -470,7 +470,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('notifications', 'notifyZoneConquest', e.target.checked)
                       }
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -485,7 +485,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('notifications', 'notifyAchievements', e.target.checked)
                       }
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -500,7 +500,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('notifications', 'notifyEvents', e.target.checked)
                       }
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -515,7 +515,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('notifications', 'notifyMissions', e.target.checked)
                       }
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -530,7 +530,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('notifications', 'notifySocialActivities', e.target.checked)
                       }
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
                 </div>
@@ -545,7 +545,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="space-y-4 animate-in fade-in">
               <div className="p-4 rounded-2xl bg-[#0c131c] border border-white/10 space-y-3">
                 <h4 className="text-xs font-black uppercase text-slate-300 tracking-wider font-mono-stat flex items-center gap-1.5">
-                  <Gamepad2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <Gamepad2 className="w-3.5 h-3.5 text-yellow-400" />
                   PREFERÊNCIAS DE PATINAÇÃO & HUD
                 </h4>
 
@@ -565,7 +565,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('gameplay', 'confirmBeforeZoneCapture', e.target.checked, 'Preferência de confirmação salva')
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -584,7 +584,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('gameplay', 'showProximityAlerts', e.target.checked)
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -603,7 +603,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('gameplay', 'showInGameTutorialTips', e.target.checked)
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -622,7 +622,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('gameplay', 'enableInterfaceEffects', e.target.checked)
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -641,7 +641,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('gameplay', 'autoRecenterMap', e.target.checked)
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
                 </div>
@@ -667,7 +667,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onClick={() => updateSetting('map', 'mapTheme', 'DARK', 'Mapa definido para Modo Escuro')}
                     className={`p-3 rounded-2xl flex flex-col items-center gap-1.5 border transition-all cursor-pointer ${
                       settings.map.mapTheme === 'DARK'
-                        ? 'bg-slate-900 border-emerald-400 text-white shadow-[0_0_12px_rgba(0,255,102,0.3)]'
+                        ? 'bg-slate-900 border-yellow-400 text-white shadow-[0_0_12px_rgba(252,232,3,0.3)]'
                         : 'bg-black/40 border-white/5 text-slate-400 hover:text-white'
                     }`}
                   >
@@ -680,7 +680,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onClick={() => updateSetting('map', 'mapTheme', 'LIGHT', 'Mapa definido para Modo Claro')}
                     className={`p-3 rounded-2xl flex flex-col items-center gap-1.5 border transition-all cursor-pointer ${
                       settings.map.mapTheme === 'LIGHT'
-                        ? 'bg-slate-800 border-emerald-400 text-white shadow-[0_0_12px_rgba(0,255,102,0.3)]'
+                        ? 'bg-slate-800 border-yellow-400 text-white shadow-[0_0_12px_rgba(252,232,3,0.3)]'
                         : 'bg-black/40 border-white/5 text-slate-400 hover:text-white'
                     }`}
                   >
@@ -693,11 +693,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onClick={() => updateSetting('map', 'mapTheme', 'AUTO', 'Mapa definido para Modo Automático')}
                     className={`p-3 rounded-2xl flex flex-col items-center gap-1.5 border transition-all cursor-pointer ${
                       settings.map.mapTheme === 'AUTO'
-                        ? 'bg-slate-900 border-emerald-400 text-white shadow-[0_0_12px_rgba(0,255,102,0.3)]'
+                        ? 'bg-slate-900 border-yellow-400 text-white shadow-[0_0_12px_rgba(252,232,3,0.3)]'
                         : 'bg-black/40 border-white/5 text-slate-400 hover:text-white'
                     }`}
                   >
-                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                    <Sparkles className="w-4 h-4 text-yellow-400" />
                     <span className="font-black">Auto</span>
                   </button>
                 </div>
@@ -718,7 +718,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       type="checkbox"
                       checked={settings.map.showZonesOnMap}
                       onChange={(e) => updateSetting('map', 'showZonesOnMap', e.target.checked)}
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -730,7 +730,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       type="checkbox"
                       checked={settings.map.showRoutesOnMap}
                       onChange={(e) => updateSetting('map', 'showRoutesOnMap', e.target.checked)}
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -744,7 +744,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('map', 'showOtherSkatersOnMap', e.target.checked)
                       }
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -756,7 +756,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       type="checkbox"
                       checked={settings.map.showHeatmapTrails}
                       onChange={(e) => updateSetting('map', 'showHeatmapTrails', e.target.checked)}
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
                 </div>
@@ -781,11 +781,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onClick={() => updateSetting('appearance', 'appTheme', 'DARK', 'Tema Escuro selecionado')}
                     className={`p-3 rounded-2xl flex flex-col items-center gap-1.5 border transition-all cursor-pointer ${
                       settings.appearance.appTheme === 'DARK'
-                        ? 'bg-slate-900 border-emerald-400 text-white shadow-[0_0_12px_rgba(0,255,102,0.3)]'
+                        ? 'bg-slate-900 border-yellow-400 text-white shadow-[0_0_12px_rgba(252,232,3,0.3)]'
                         : 'bg-black/40 border-white/5 text-slate-400 hover:text-white'
                     }`}
                   >
-                    <Moon className="w-4 h-4 text-emerald-400" />
+                    <Moon className="w-4 h-4 text-yellow-400" />
                     <span className="font-black">Escuro</span>
                   </button>
 
@@ -794,7 +794,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onClick={() => updateSetting('appearance', 'appTheme', 'LIGHT', 'Tema Claro selecionado')}
                     className={`p-3 rounded-2xl flex flex-col items-center gap-1.5 border transition-all cursor-pointer ${
                       settings.appearance.appTheme === 'LIGHT'
-                        ? 'bg-slate-800 border-emerald-400 text-white shadow-[0_0_12px_rgba(0,255,102,0.3)]'
+                        ? 'bg-slate-800 border-yellow-400 text-white shadow-[0_0_12px_rgba(252,232,3,0.3)]'
                         : 'bg-black/40 border-white/5 text-slate-400 hover:text-white'
                     }`}
                   >
@@ -807,7 +807,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onClick={() => updateSetting('appearance', 'appTheme', 'SYSTEM', 'Tema do Sistema selecionado')}
                     className={`p-3 rounded-2xl flex flex-col items-center gap-1.5 border transition-all cursor-pointer ${
                       settings.appearance.appTheme === 'SYSTEM'
-                        ? 'bg-slate-900 border-emerald-400 text-white shadow-[0_0_12px_rgba(0,255,102,0.3)]'
+                        ? 'bg-slate-900 border-yellow-400 text-white shadow-[0_0_12px_rgba(252,232,3,0.3)]'
                         : 'bg-black/40 border-white/5 text-slate-400 hover:text-white'
                     }`}
                   >
@@ -832,7 +832,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     type="checkbox"
                     checked={settings.appearance.compactMode}
                     onChange={(e) => updateSetting('appearance', 'compactMode', e.target.checked)}
-                    className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                    className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                   />
                 </label>
               </div>
@@ -846,7 +846,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="space-y-4 animate-in fade-in">
               <div className="p-4 rounded-2xl bg-[#0c131c] border border-white/10 space-y-3">
                 <h4 className="text-xs font-black uppercase text-slate-300 tracking-wider font-mono-stat flex items-center gap-1.5">
-                  <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <Volume2 className="w-3.5 h-3.5 text-yellow-400" />
                   EFEITOS SONOROS
                 </h4>
 
@@ -866,7 +866,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('audioHaptics', 'soundEffectsEnabled', e.target.checked, 'Configuração de som alterada')
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -874,7 +874,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <div className="p-3 rounded-xl bg-black/40 border border-white/5 space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-mono-stat">
                       <span className="text-slate-400">Volume dos Efeitos</span>
-                      <span className="text-emerald-400 font-bold">
+                      <span className="text-yellow-400 font-bold">
                         {settings.audioHaptics.soundVolume}%
                       </span>
                     </div>
@@ -887,7 +887,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('audioHaptics', 'soundVolume', parseInt(e.target.value, 10))
                       }
-                      className="w-full accent-emerald-400 cursor-pointer"
+                      className="w-full accent-yellow-400 cursor-pointer"
                     />
                   </div>
                 </div>
@@ -916,7 +916,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('audioHaptics', 'vibrationEnabled', e.target.checked, 'Vibração tátil atualizada')
                       }
-                      className="w-5 h-5 accent-emerald-400 rounded cursor-pointer"
+                      className="w-5 h-5 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -931,7 +931,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('audioHaptics', 'vibrateOnZoneEntry', e.target.checked)
                       }
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
 
@@ -946,7 +946,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={(e) =>
                         updateSetting('audioHaptics', 'vibrateOnAchievement', e.target.checked)
                       }
-                      className="w-4 h-4 accent-emerald-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-yellow-400 rounded cursor-pointer"
                     />
                   </label>
                 </div>
@@ -960,18 +960,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {activeCategory === 'SEGURANCA' && (
             <div className="space-y-4 animate-in fade-in">
               {/* Status de Integridade */}
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#101c18] to-[#0c1613] border border-emerald-500/30 space-y-2">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-[#0b1b42] to-[#081330] border border-yellow-500/30 space-y-2">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-black uppercase text-emerald-400 tracking-wider font-mono-stat flex items-center gap-1.5">
+                  <h4 className="text-xs font-black uppercase text-yellow-400 tracking-wider font-mono-stat flex items-center gap-1.5">
                     <Shield className="w-4 h-4" />
                     INTEGRIDADE DA CONTA
                   </h4>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[9px] font-black font-mono-stat">
+                  <span className="px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-400/30 text-[9px] font-black font-mono-stat">
                     PROTEGIDA
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-300 leading-relaxed font-sans">
-                  Sua conta está operando em conformidade total com o protocolo Fair Play do Urbanozeiro.
+                  Sua conta está operando em conformidade total com o protocolo Fair Play do THE ROLLING WARS.
                 </p>
               </div>
 
@@ -1032,14 +1032,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
              ========================================== */}
           {activeCategory === 'SOBRE' && (
             <div className="space-y-4 animate-in fade-in">
-              <div className="p-5 rounded-2xl bg-gradient-to-br from-[#121c2a] to-[#0c1420] border border-emerald-500/30 text-center space-y-2">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-400/20 border border-emerald-400/40 flex items-center justify-center mx-auto text-emerald-400 shadow-[0_0_15px_rgba(0,255,102,0.3)]">
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-[#121c2a] to-[#0c1420] border border-yellow-500/30 text-center space-y-2">
+                <div className="w-12 h-12 rounded-2xl bg-yellow-400/20 border border-yellow-400/40 flex items-center justify-center mx-auto text-yellow-400 shadow-[0_0_15px_rgba(252,232,3,0.3)]">
                   <Flame className="w-6 h-6 stroke-[2.2]" />
                 </div>
                 <h3 className="text-base font-black text-white font-display uppercase tracking-tight">
-                  URBANOZEIRO
+                  THE ROLLING WARS
                 </h3>
-                <p className="text-xs text-emerald-400 font-mono-stat font-bold">
+                <p className="text-xs text-yellow-400 font-mono-stat font-bold">
                   Versão {settings.about.appVersion}
                 </p>
                 <p className="text-[10px] text-slate-400 font-mono-stat">
@@ -1094,7 +1094,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
                 <div className="p-3 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between text-xs font-mono-stat">
                   <span className="text-slate-400">Canal de Suporte</span>
-                  <span className="text-emerald-400 font-bold">{settings.about.supportEmail}</span>
+                  <span className="text-yellow-400 font-bold">{settings.about.supportEmail}</span>
                 </div>
               </div>
 
@@ -1109,14 +1109,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         {/* FOOTER */}
         <div className="p-3 bg-[#080d14] border-t border-white/10 flex items-center justify-between text-[10px] font-mono-stat text-slate-400 shrink-0">
           <span className="flex items-center gap-1">
-            <Radio className="w-3 h-3 text-emerald-400" />
+            <Radio className="w-3 h-3 text-yellow-400" />
             Preferências Salvas Automaticamente
           </span>
           <button
             type="button"
             id="btn-close-settings-footer"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-black font-black uppercase tracking-wider transition-colors cursor-pointer shadow-[0_0_10px_rgba(0,255,102,0.4)]"
+            className="px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black uppercase tracking-wider transition-colors cursor-pointer shadow-[0_0_10px_rgba(252,232,3,0.4)]"
           >
             Concluir
           </button>

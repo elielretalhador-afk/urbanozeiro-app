@@ -128,8 +128,8 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
         );
       case 'FRIENDS':
         return (
-          <span className="flex items-center gap-1 text-[9px] font-mono-stat text-emerald-400">
-            <Users className="w-2.5 h-2.5 text-emerald-400" />
+          <span className="flex items-center gap-1 text-[9px] font-mono-stat text-yellow-400">
+            <Users className="w-2.5 h-2.5 text-yellow-400" />
             AMIGOS
           </span>
         );
@@ -159,11 +159,11 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
       id="activity-feed-modal"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85  animate-fade-in"
     >
-      <div className="relative w-full max-w-xl max-h-[92vh] flex flex-col bg-[#070b10] border-2 border-emerald-500/40 rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.9)] overflow-hidden text-white">
+      <div className="relative w-full max-w-xl max-h-[92vh] flex flex-col bg-[#070b10] border-2 border-yellow-500/40 rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.9)] overflow-hidden text-white">
         {/* Header */}
         <div className="p-4 bg-gradient-to-r from-[#0d141e] via-[#091119] to-[#0d141e] border-b border-white/10 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(0,255,102,0.2)]">
+            <div className="w-10 h-10 rounded-2xl bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center text-yellow-400 shadow-[0_0_15px_rgba(252,232,3,0.2)]">
               <ActivityIcon className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
@@ -171,7 +171,7 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
                 <h3 className="text-base font-black text-white font-display uppercase tracking-wider">
                   CENTRAL DE ATIVIDADES
                 </h3>
-                <span className="px-1.5 py-0.5 rounded bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 text-[9px] font-mono-stat font-bold">
+                <span className="px-1.5 py-0.5 rounded bg-yellow-400/20 text-yellow-300 border border-yellow-400/40 text-[9px] font-mono-stat font-bold">
                   FEED
                 </span>
               </div>
@@ -208,7 +208,7 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
                 }}
                 className={`px-3 py-1.5 rounded-xl text-[11px] font-black uppercase font-mono-stat transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? 'bg-emerald-400 text-black shadow-[0_0_12px_rgba(0,255,102,0.4)]'
+                    ? 'bg-yellow-400 text-black shadow-[0_0_12px_rgba(252,232,3,0.4)]'
                     : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-slate-200 border border-white/5'
                 }`}
               >
@@ -231,7 +231,7 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
                 <div
                   key={act.id}
                   id={`activity-card-${act.id}`}
-                  className={`p-3.5 rounded-2xl bg-[#0d141e] border ${style.borderColor} hover:border-emerald-400/50 transition-all shadow-md relative overflow-hidden`}
+                  className={`p-3.5 rounded-2xl bg-[#0d141e] border ${style.borderColor} hover:border-yellow-400/50 transition-all shadow-md relative overflow-hidden`}
                 >
                   {/* Top Bar: Author, Level & Metadata */}
                   <div className="flex items-center justify-between gap-2 mb-2">
@@ -262,7 +262,7 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
                             </span>
                           )}
                           {isOwner && (
-                            <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[8px] font-bold font-mono-stat border border-emerald-500/40">
+                            <span className="px-1.5 py-0.2 rounded bg-yellow-500/20 text-yellow-300 text-[8px] font-bold font-mono-stat border border-yellow-500/40">
                               VOCÊ
                             </span>
                           )}
@@ -297,12 +297,12 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
                       <div className="mt-2 pl-6">
                         <div className="h-24 w-full bg-[#111824] rounded-xl border border-white/5 relative overflow-hidden flex items-center justify-center">
                            <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
-                           <Compass className="w-8 h-8 text-emerald-500/50" />
+                           <Compass className="w-8 h-8 text-yellow-500/50" />
                            <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent flex justify-end">
                              {onRedoRoute && (
                                <button 
                                  onClick={() => onRedoRoute(act.id, act.metadata)}
-                                 className="px-2 py-1 bg-emerald-500 hover:bg-emerald-400 text-black text-[10px] font-bold rounded cursor-pointer uppercase font-display"
+                                 className="px-2 py-1 bg-yellow-500 hover:bg-yellow-400 text-black text-[10px] font-bold rounded cursor-pointer uppercase font-display"
                                >
                                  Refazer Rota
                                </button>
@@ -315,12 +315,12 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
                     {act.metadata && (
                       <div className="flex flex-wrap gap-1.5 pt-1 pl-6">
                         {act.metadata.zoneName && (
-                          <span className="px-2 py-0.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-mono-stat font-bold">
+                          <span className="px-2 py-0.5 rounded-lg bg-yellow-500/15 border border-yellow-500/30 text-yellow-300 text-[10px] font-mono-stat font-bold">
                             📍 {act.metadata.zoneName}
                           </span>
                         )}
                         {act.metadata.dominancePercent && (
-                          <span className="px-2 py-0.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-mono-stat font-bold">
+                          <span className="px-2 py-0.5 rounded-lg bg-yellow-500/15 border border-yellow-500/30 text-yellow-300 text-[10px] font-mono-stat font-bold">
                             Domínio {act.metadata.dominancePercent}%
                           </span>
                         )}
@@ -445,7 +445,7 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
                             onClose();
                             onOpenZone(act.relatedId);
                           }}
-                          className="px-2.5 py-1 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold uppercase font-mono-stat transition-all flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1 rounded-xl bg-yellow-500/15 hover:bg-yellow-500/25 border border-yellow-500/40 text-yellow-300 text-[10px] font-bold uppercase font-mono-stat transition-all flex items-center gap-1 cursor-pointer"
                         >
                           <span>VER ZONA</span>
                           <ArrowRight className="w-3 h-3" />
@@ -529,7 +529,7 @@ export const ActivityFeedModal: React.FC<ActivityFeedModalProps> = ({
         {/* Footer with Privacy Notice */}
         <div className="p-3 bg-[#080d14] border-t border-white/10 flex items-center justify-between gap-2 text-[11px] text-slate-400 font-mono-stat">
           <div className="flex items-center gap-1.5 text-slate-400">
-            <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
+            <Lock className="w-3 h-3 text-yellow-400 shrink-0" />
             <span className="truncate">
               Privacidade: Apenas resumos e conquistas esportivas públicas são exibidas.
             </span>

@@ -145,15 +145,15 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
       id="modal-achievements-center"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85  animate-in fade-in duration-200"
     >
-      <div className="w-full max-w-lg h-[92vh] max-h-[740px] rounded-3xl bg-[#0a0f15] border-2 border-emerald-500/40 shadow-[0_0_50px_rgba(0,255,102,0.25)] flex flex-col relative overflow-hidden">
+      <div className="w-full max-w-lg h-[92vh] max-h-[740px] rounded-3xl bg-[#1d4ed8] border-2 border-yellow-500/40 shadow-[0_0_50px_rgba(252,232,3,0.25)] flex flex-col relative overflow-hidden">
         {/* Glow Decorators */}
-        <div className="absolute -top-16 -left-16 w-44 h-44 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -left-16 w-44 h-44 rounded-full bg-yellow-500/15 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 -right-16 w-44 h-44 rounded-full bg-cyan-500/15 blur-3xl pointer-events-none" />
 
         {/* Header */}
         <div className="p-4 pb-3 border-b border-white/10 flex items-center justify-between gap-2 shrink-0 bg-[#0c121a]">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-400/15 border border-emerald-400/40 flex items-center justify-center text-xl text-emerald-400 shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-yellow-400/15 border border-yellow-400/40 flex items-center justify-center text-xl text-yellow-400 shadow-sm">
               🏆
             </div>
             <div>
@@ -187,7 +187,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
             onClick={() => setActiveMainTab('conquistas')}
             className={`flex-1 py-2 px-2.5 rounded-xl font-mono-stat font-black text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeMainTab === 'conquistas'
-                ? 'bg-emerald-400 text-black shadow-[0_0_14px_rgba(0,255,102,0.35)]'
+                ? 'bg-yellow-400 text-black shadow-[0_0_14px_rgba(252,232,3,0.35)]'
                 : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
             }`}
           >
@@ -201,7 +201,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
             onClick={() => setActiveMainTab('medalhas')}
             className={`flex-1 py-2 px-2.5 rounded-xl font-mono-stat font-black text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeMainTab === 'medalhas'
-                ? 'bg-emerald-400 text-black shadow-[0_0_14px_rgba(0,255,102,0.35)]'
+                ? 'bg-yellow-400 text-black shadow-[0_0_14px_rgba(252,232,3,0.35)]'
                 : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
             }`}
           >
@@ -215,7 +215,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
             onClick={() => setActiveMainTab('titulos')}
             className={`flex-1 py-2 px-2.5 rounded-xl font-mono-stat font-black text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeMainTab === 'titulos'
-                ? 'bg-emerald-400 text-black shadow-[0_0_14px_rgba(0,255,102,0.35)]'
+                ? 'bg-yellow-400 text-black shadow-[0_0_14px_rgba(252,232,3,0.35)]'
                 : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
             }`}
           >
@@ -233,11 +233,11 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                 {activeMainTab === 'medalhas' && `🏅 ${unlockedMedalsCount} DE ${medals.length} MEDALHAS COLECIONADAS`}
                 {activeMainTab === 'titulos' && `👑 ${unlockedTitlesCount} DE ${titles.length} TÍTULOS DISPONÍVEIS`}
               </span>
-              <span className="text-[10px] text-emerald-400 font-bold font-mono-stat">
+              <span className="text-[10px] text-yellow-400 font-bold font-mono-stat">
                 ({overallPercentage}%)
               </span>
             </div>
-            <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-[10px] font-black text-emerald-300 font-mono-stat">
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-yellow-500/15 border border-yellow-500/30 text-[10px] font-black text-yellow-300 font-mono-stat">
               <Zap className="w-3 h-3 text-yellow-400 fill-yellow-400/30" />
               <span>+{totalXpEarned} XP GANHOS</span>
             </div>
@@ -245,7 +245,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
 
           <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden p-[1px]">
             <div
-              className="h-full bg-gradient-to-r from-emerald-500 to-emerald-300 rounded-full shadow-[0_0_10px_#00ff66] transition-all duration-300"
+              className="h-full bg-gradient-to-r from-yellow-500 to-yellow-300 rounded-full shadow-[0_0_10px_#fce803] transition-all duration-300"
               style={{ width: `${overallPercentage}%` }}
             />
           </div>
@@ -265,7 +265,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                   onClick={() => setActiveFilter('todas')}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase font-mono-stat transition-all shrink-0 cursor-pointer ${
                     activeFilter === 'todas'
-                      ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.3)]'
+                      ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.3)]'
                       : 'bg-white/5 text-slate-400 hover:text-white'
                   }`}
                 >
@@ -276,7 +276,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                   onClick={() => setActiveFilter('desbloqueadas')}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase font-mono-stat transition-all shrink-0 cursor-pointer ${
                     activeFilter === 'desbloqueadas'
-                      ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.3)]'
+                      ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.3)]'
                       : 'bg-white/5 text-slate-400 hover:text-white'
                   }`}
                 >
@@ -287,7 +287,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                   onClick={() => setActiveFilter('em_progresso')}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase font-mono-stat transition-all shrink-0 cursor-pointer ${
                     activeFilter === 'em_progresso'
-                      ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.3)]'
+                      ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.3)]'
                       : 'bg-white/5 text-slate-400 hover:text-white'
                   }`}
                 >
@@ -298,7 +298,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                   onClick={() => setActiveFilter('bloqueadas')}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase font-mono-stat transition-all shrink-0 cursor-pointer ${
                     activeFilter === 'bloqueadas'
-                      ? 'bg-emerald-400 text-black shadow-[0_0_10px_rgba(0,255,102,0.3)]'
+                      ? 'bg-yellow-400 text-black shadow-[0_0_10px_rgba(252,232,3,0.3)]'
                       : 'bg-white/5 text-slate-400 hover:text-white'
                   }`}
                 >
@@ -326,7 +326,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-2 py-0.5 rounded-md uppercase font-bold transition-all shrink-0 cursor-pointer ${
                       selectedCategory === cat
-                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                        ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-400/40'
                         : 'bg-white/5 text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -343,7 +343,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                   placeholder="Buscar conquista ou requisito..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-black/40 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 font-mono-stat"
+                  className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-black/40 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-yellow-500/60 font-mono-stat"
                 />
               </div>
             </div>
@@ -369,7 +369,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                       id={`achievement-card-${achievement.id}`}
                       className={`p-3.5 rounded-2xl border transition-all relative overflow-hidden ${
                         isUnlocked
-                          ? 'bg-[#0f1722] border-emerald-500/50 shadow-md shadow-emerald-500/5'
+                          ? 'bg-[#0f1722] border-yellow-500/50 shadow-md shadow-yellow-500/5'
                           : achievement.isSecret && !isUnlocked
                           ? 'bg-[#0a0c10] border-purple-500/30 opacity-80'
                           : 'bg-[#0c1118] border-white/10 opacity-90'
@@ -380,7 +380,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                         <div
                           className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 border relative ${
                             isUnlocked
-                              ? 'bg-emerald-500/15 border-emerald-400/60 shadow-[0_0_15px_rgba(0,255,102,0.3)]'
+                              ? 'bg-yellow-500/15 border-yellow-400/60 shadow-[0_0_15px_rgba(252,232,3,0.3)]'
                               : achievement.isSecret
                               ? 'bg-purple-950/30 border-purple-500/40 text-purple-400'
                               : 'bg-slate-900 border-white/10 text-slate-500'
@@ -388,7 +388,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                         >
                           {achievement.isSecret && !isUnlocked ? '🔒' : (achievement.icon || achievement.iconEmoji || '🏆')}
                           {isUnlocked && (
-                            <div className="absolute -top-1 -right-1 p-0.5 rounded-full bg-emerald-400 text-black">
+                            <div className="absolute -top-1 -right-1 p-0.5 rounded-full bg-yellow-400 text-black">
                               <Check className="w-3 h-3 stroke-[3]" />
                             </div>
                           )}
@@ -468,7 +468,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                             <div className="flex items-center justify-between text-[10px] font-mono-stat mb-1 font-bold">
                               <span className="text-slate-400">
                                 {isUnlocked ? (
-                                  <span className="text-emerald-400 flex items-center gap-1">
+                                  <span className="text-yellow-400 flex items-center gap-1">
                                     <Sparkles className="w-3 h-3" />
                                     {achievement.unlockedAt ? `Desbloqueada em ${achievement.unlockedAt}` : 'Concluída'}
                                   </span>
@@ -476,7 +476,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                                   'Progresso'
                                 )}
                               </span>
-                              <span className={isUnlocked ? 'text-emerald-400' : 'text-white'}>
+                              <span className={isUnlocked ? 'text-yellow-400' : 'text-white'}>
                                 {currentProg} / {targetProg} {unit}
                                 {!isUnlocked && ` (${progressPct}%)`}
                               </span>
@@ -486,8 +486,8 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                               <div
                                 className={`h-full rounded-full transition-all duration-300 ${
                                   isUnlocked
-                                    ? 'bg-emerald-400 shadow-[0_0_8px_#00ff66]'
-                                    : 'bg-gradient-to-r from-emerald-600 to-cyan-400'
+                                    ? 'bg-yellow-400 shadow-[0_0_8px_#fce803]'
+                                    : 'bg-gradient-to-r from-yellow-600 to-cyan-400'
                                 }`}
                                 style={{ width: `${progressPct}%` }}
                               />
@@ -500,7 +500,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                               <button
                                 type="button"
                                 onClick={() => onTriggerAchievementUnlock(achievement)}
-                                className="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-emerald-400/20 text-slate-400 hover:text-emerald-300 text-[9px] font-mono-stat font-bold transition-all cursor-pointer border border-white/5"
+                                className="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-yellow-400/20 text-slate-400 hover:text-yellow-300 text-[9px] font-mono-stat font-bold transition-all cursor-pointer border border-white/5"
                               >
                                 Simular Desbloqueio ⚡
                               </button>
@@ -521,7 +521,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
         {/* ========================================================================= */}
         {activeMainTab === 'medalhas' && (
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            <div className="p-3 rounded-2xl bg-gradient-to-r from-emerald-950/30 to-[#0a121c] border border-emerald-500/30 flex items-center justify-between">
+            <div className="p-3 rounded-2xl bg-gradient-to-r from-blue-950/30 to-[#0a121c] border border-yellow-500/30 flex items-center justify-between">
               <div>
                 <h3 className="text-xs font-black text-white font-display uppercase tracking-wider">
                   GALERIA DE MEDALHAS URBANAS
@@ -531,7 +531,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                 </p>
               </div>
               <div className="text-right">
-                <span className="text-lg font-black text-emerald-400 font-mono-stat">
+                <span className="text-lg font-black text-yellow-400 font-mono-stat">
                   {unlockedMedalsCount} / {medals.length}
                 </span>
                 <div className="text-[9px] text-slate-500 uppercase font-mono-stat">Colecionadas</div>
@@ -551,15 +551,15 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                     onClick={() => setSelectedMedalDetail(medal)}
                     className={`p-3 rounded-2xl border transition-all cursor-pointer text-center relative overflow-hidden flex flex-col items-center justify-between ${
                       medal.unlocked
-                        ? 'bg-gradient-to-b from-[#111c28] to-[#0a1017] border-emerald-400/50 shadow-md hover:scale-[1.02]'
+                        ? 'bg-gradient-to-b from-[#111c28] to-[#0a1017] border-yellow-400/50 shadow-md hover:scale-[1.02]'
                         : 'bg-[#090d13] border-white/5 opacity-60 hover:opacity-80'
-                    } ${isSelected ? 'ring-2 ring-emerald-400' : ''}`}
+                    } ${isSelected ? 'ring-2 ring-yellow-400' : ''}`}
                   >
                     {/* Glow on unlocked */}
                     {medal.unlocked && (
                       <div
                         className="absolute -top-8 -left-8 w-20 h-20 rounded-full blur-xl pointer-events-none opacity-40"
-                        style={{ backgroundColor: medal.visualGlowColor || '#00ff66' }}
+                        style={{ backgroundColor: medal.visualGlowColor || '#fce803' }}
                       />
                     )}
 
@@ -572,7 +572,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                     <div
                       className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl my-1 border relative ${
                         medal.unlocked
-                          ? 'bg-black/50 border-emerald-400/60 shadow-[0_0_20px_rgba(0,255,102,0.3)]'
+                          ? 'bg-black/50 border-yellow-400/60 shadow-[0_0_20px_rgba(252,232,3,0.3)]'
                           : 'bg-black/30 border-white/10 grayscale'
                       }`}
                     >
@@ -602,10 +602,10 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
 
             {/* Selected Medal Detail Modal Card */}
             {selectedMedalDetail && (
-              <div className="p-4 rounded-2xl bg-[#0e1622] border-2 border-emerald-400/60 shadow-xl mt-4 animate-in fade-in">
+              <div className="p-4 rounded-2xl bg-[#0e1622] border-2 border-yellow-400/60 shadow-xl mt-4 animate-in fade-in">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-black/50 border border-emerald-400/50 flex items-center justify-center text-3xl">
+                    <div className="w-12 h-12 rounded-2xl bg-black/50 border border-yellow-400/50 flex items-center justify-center text-3xl">
                       {selectedMedalDetail.icon}
                     </div>
                     <div>
@@ -621,7 +621,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                         {selectedMedalDetail.description}
                       </p>
                       {selectedMedalDetail.unlockedAt && (
-                        <p className="text-[10px] text-emerald-400 font-mono-stat font-bold mt-1">
+                        <p className="text-[10px] text-yellow-400 font-mono-stat font-bold mt-1">
                           Conquistada em: {selectedMedalDetail.unlockedAt}
                         </p>
                       )}
@@ -677,7 +677,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                       isEquipped
                         ? 'bg-gradient-to-r from-amber-950/40 via-[#131b26] to-[#0f1722] border-amber-400/80 shadow-[0_0_20px_rgba(251,191,36,0.15)]'
                         : title.unlocked
-                        ? 'bg-[#0d141e] border-white/15 hover:border-emerald-400/50'
+                        ? 'bg-[#0d141e] border-white/15 hover:border-yellow-400/50'
                         : 'bg-[#080c12] border-white/5 opacity-60'
                     }`}
                   >
@@ -728,7 +728,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                           type="button"
                           id={`btn-equip-title-${title.id}`}
                           onClick={() => handleEquip(title)}
-                          className="px-3 py-1.5 rounded-xl bg-emerald-400/15 hover:bg-emerald-400 text-emerald-300 hover:text-black font-black text-[10px] font-mono-stat uppercase tracking-wider border border-emerald-400/40 active:scale-95 transition-all cursor-pointer"
+                          className="px-3 py-1.5 rounded-xl bg-yellow-400/15 hover:bg-yellow-400 text-yellow-300 hover:text-black font-black text-[10px] font-mono-stat uppercase tracking-wider border border-yellow-400/40 active:scale-95 transition-all cursor-pointer"
                         >
                           EQUIPAR
                         </button>
@@ -749,8 +749,8 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
         {/* Footer */}
         <div className="p-3 bg-[#080c10] border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400 font-mono-stat shrink-0">
           <div className="flex items-center gap-1.5">
-            <Shield className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Estrutura de Honra Urbanozeiro</span>
+            <Shield className="w-3.5 h-3.5 text-yellow-400" />
+            <span>Estrutura de Honra THE ROLLING WARS</span>
           </div>
           <span className="text-[9px] text-slate-500">v1.2</span>
         </div>

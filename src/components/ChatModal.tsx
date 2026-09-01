@@ -92,9 +92,9 @@ export const ChatModal: React.FC<ChatModalProps> = ({
               const isMe = msg.senderId === currentUser.id;
               return (
                 <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${isMe ? 'bg-emerald-500/20 text-emerald-100 border border-emerald-500/30 rounded-br-sm' : 'bg-[#151f2b] text-white border border-white/10 rounded-bl-sm'}`}>
+                  <div className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${isMe ? 'bg-yellow-500/20 text-yellow-100 border border-yellow-500/30 rounded-br-sm' : 'bg-[#151f2b] text-white border border-white/10 rounded-bl-sm'}`}>
                     {msg.text}
-                    <div className={`text-[9px] mt-1 opacity-50 ${isMe ? 'text-right text-emerald-200' : 'text-left text-slate-400'}`}>
+                    <div className={`text-[9px] mt-1 opacity-50 ${isMe ? 'text-right text-yellow-200' : 'text-left text-slate-400'}`}>
                       {msg.createdAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
@@ -112,12 +112,12 @@ export const ChatModal: React.FC<ChatModalProps> = ({
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Digite uma mensagem..."
-            className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+            className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-yellow-500/50 transition-colors"
           />
           <button
             type="submit"
             disabled={!text.trim()}
-            className="p-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:hover:bg-emerald-500 text-black font-black transition-all"
+            className="p-3 rounded-xl bg-yellow-500 hover:bg-yellow-400 disabled:opacity-50 disabled:hover:bg-yellow-500 text-black font-black transition-all"
           >
             <Send className="w-4 h-4" />
           </button>

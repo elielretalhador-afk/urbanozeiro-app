@@ -120,8 +120,8 @@ export const FeedView: React.FC<FeedViewProps> = ({
         );
       case 'FRIENDS':
         return (
-          <span className="flex items-center gap-1 text-[9px] font-mono-stat text-emerald-400">
-            <Users className="w-2.5 h-2.5 text-emerald-400" />
+          <span className="flex items-center gap-1 text-[9px] font-mono-stat text-yellow-400">
+            <Users className="w-2.5 h-2.5 text-yellow-400" />
             AMIGOS
           </span>
         );
@@ -215,7 +215,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
           pagedActivities.map((act) => {
             const isOwner = act.playerId === currentUser.id;
             return (
-              <div key={act.id} className="p-3.5 rounded-2xl bg-[#0d141e] border border-white/10 hover:border-emerald-400/50 transition-all shadow-md relative overflow-hidden">
+              <div key={act.id} className="p-3.5 rounded-2xl bg-[#0d141e] border border-white/10 hover:border-yellow-400/50 transition-all shadow-md relative overflow-hidden">
                 {/* Top Bar: Author & Metadata */}
                 <div className="flex items-center justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2.5 min-w-0 cursor-pointer" onClick={() => !isOwner && onSelectPlayer && onSelectPlayer(act.playerId)}>
@@ -284,7 +284,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     <button type="button" onClick={async () => {
                       try {
                         if (window.navigator && window.navigator.share) {
-                          await window.navigator.share({ title: act.title, text: act.description, url: 'https://urbanozeiro.com/activity/' + act.id });
+                          await window.navigator.share({ title: act.title, text: act.description, url: 'https://therollingwars.com/activity/' + act.id });
                         }
                       } catch (e) {
                         console.warn('Share error', e);
@@ -299,12 +299,12 @@ export const FeedView: React.FC<FeedViewProps> = ({
           })
         ) : (
           <div className="p-8 text-center bg-[#0d141e] border border-white/10 rounded-2xl space-y-4 mt-8">
-            <ActivityIcon className="w-12 h-12 text-emerald-500/40 mx-auto" />
+            <ActivityIcon className="w-12 h-12 text-yellow-500/40 mx-auto" />
             <div>
               <h4 className="text-base font-bold text-slate-200 font-display uppercase tracking-wider">O Feed está vazio</h4>
               <p className="text-sm text-slate-400 mt-2">Comece uma conversa ou compartilhe uma foto da sua sessão.</p>
             </div>
-            <button onClick={() => setIsComposerOpen(true)} className="px-5 py-2.5 bg-emerald-500 text-black font-bold uppercase font-mono-stat text-[11px] rounded-xl hover:bg-emerald-400">
+            <button onClick={() => setIsComposerOpen(true)} className="px-5 py-2.5 bg-yellow-500 text-black font-bold uppercase font-mono-stat text-[11px] rounded-xl hover:bg-yellow-400">
               Criar Publicação
             </button>
           </div>
@@ -327,7 +327,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
             <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/10">
               <button onClick={() => setIsComposerOpen(false)} className="text-slate-400 hover:text-white font-bold text-sm">Cancelar</button>
               <h3 className="text-sm font-bold text-white uppercase tracking-wider font-display">Nova Publicação</h3>
-              <button disabled={isPublishing} onClick={handlePublish} className="bg-emerald-500 text-black px-4 py-1.5 rounded-full font-bold text-xs uppercase hover:bg-emerald-400 transition-colors disabled:opacity-50">{isPublishing ? "Publicando..." : "Publicar"}</button>
+              <button disabled={isPublishing} onClick={handlePublish} className="bg-yellow-500 text-black px-4 py-1.5 rounded-full font-bold text-xs uppercase hover:bg-yellow-400 transition-colors disabled:opacity-50">{isPublishing ? "Publicando..." : "Publicar"}</button>
             </div>
             
             
@@ -367,10 +367,10 @@ export const FeedView: React.FC<FeedViewProps> = ({
                 onChange={handleFileSelect} 
                 className="hidden" 
               />
-              <button disabled={isPublishing} onClick={requestCamera} className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 px-4 py-2 rounded-xl font-bold text-xs uppercase hover:bg-emerald-500/20 disabled:opacity-50">
+              <button disabled={isPublishing} onClick={requestCamera} className="flex items-center gap-2 text-yellow-400 bg-yellow-500/10 px-4 py-2 rounded-xl font-bold text-xs uppercase hover:bg-yellow-500/20 disabled:opacity-50">
                 <Camera className="w-5 h-5" /> Foto
               </button>
-              <button disabled={isPublishing} onClick={requestVideo} className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 px-4 py-2 rounded-xl font-bold text-xs uppercase hover:bg-emerald-500/20 disabled:opacity-50">
+              <button disabled={isPublishing} onClick={requestVideo} className="flex items-center gap-2 text-yellow-400 bg-yellow-500/10 px-4 py-2 rounded-xl font-bold text-xs uppercase hover:bg-yellow-500/20 disabled:opacity-50">
                 <Video className="w-5 h-5" /> Vídeo
               </button>
             </div>
@@ -401,7 +401,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       setVisibleCount(8);
                       setIsFiltersOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive ? 'bg-yellow-500/20 text-yellow-400' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
                   >
                     <Icon className="w-5 h-5" />
                     <span className="text-xs font-bold font-mono-stat uppercase">{f.label}</span>
